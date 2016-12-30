@@ -43,10 +43,12 @@ namespace PhysicsTest
 
         bool levelEditor_IsRegBlock;
         
-
+        //key inputs
         bool swappingModes;
         bool swappingBlocks;
 
+        bool isPlacingBlock;
+        //Input end
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -80,7 +82,7 @@ namespace PhysicsTest
             projectiles = new List<Projectile>();
             playerList = new List<Player>();
 
-
+           
             for(int i = 0; i < 15; i++)
             {
                 if (i < 3)
@@ -139,7 +141,7 @@ namespace PhysicsTest
 
                 if (Keyboard.GetState().IsKeyDown(Keys.Space) && !pl.shooting)
                 {
-                    if (pl.ammoCounter > 0)
+                    if (pl.ammoCounter > 0 && !devMode)
                     {
                         if (pl.IdlingLeft || pl.MoveLeft)
                         {
@@ -361,6 +363,8 @@ namespace PhysicsTest
 
         void LevelEditor()
         {
+            
+            
             if (devMode)
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.D1) && !swappingBlocks)
@@ -381,14 +385,34 @@ namespace PhysicsTest
                 }
                     if (levelEditor_IsRegBlock)
                     {
-                        LevelEditor_RegularBlock.Move(Mouse.GetState().X - (LevelEditor_RegularBlock.blockRect.Width * 2 + LevelEditor_RegularBlock.blockRect.Width/3) ,Mouse.GetState().Y - LevelEditor_RegularBlock.blockRect.Height/2);
+                        if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                        {
+                            LevelEditor_RegularBlock.Move(LevelEditor_RegularBlock.blockRect.X-3,LevelEditor_RegularBlock.blockRect.Y);
+                        }
+                    if (Mouse.GetState().LeftButton == ButtonState.Pressed && !isPlacingBlock)
+                        {
+                            Blocks b = new Blocks(new Rectangle(LevelEditor_RegularBlock.blockRect.X, LevelEditor_RegularBlock.blockRect.Y, 200, 50), blockTex);
+                            RegularBlockList.Add(b);
+
+                            isPlacingBlock = true;
+                        }
+                            if(Mouse.GetState().LeftButton == ButtonState.Released)
+                        {
+                            isPlacingBlock = false;
+                        }
                     }
+               
 
                 IsMouseVisible = true;
+
             }
             else
             {
-                Console.WriteLine("Not developer deeeks");
+                foreach (Player p in playerList)
+                {
+                    LevelEditor_RegularBlock.Move(p.playerRect.Location.X,p.playerRect.Location.Y);
+                }
+             //   LevelEditor_RegularBlock.Move(Mouse.GetState().X - (LevelEditor_RegularBlock.blockRect.Width * 2 + LevelEditor_RegularBlock.blockRect.Width / 3), Mouse.GetState().Y - LevelEditor_RegularBlock.blockRect.Height / 2);
                 IsMouseVisible = false;
             }
         }

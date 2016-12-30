@@ -53,6 +53,13 @@ namespace PhysicsTest
 
         public void Move(int x, int y)
         {
+            if (_blockRect.X != x)
+            {
+                if (_blockRect.X > x)
+                {
+
+                }
+            }
             _blockRect.Location = new Point(x,y);
         }
     }
