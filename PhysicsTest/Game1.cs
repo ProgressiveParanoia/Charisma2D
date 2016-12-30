@@ -21,6 +21,8 @@ namespace PhysicsTest
         Blocks LevelEditor_RegularBlock;
         Blocks LevelEditor_SlipBlock;
 
+        int RegularBlockSize;
+
         LevelEditor editor;
 
         List<Blocks> RegularBlockList;
@@ -49,6 +51,8 @@ namespace PhysicsTest
 
         bool isPlacingBlock;
         bool isRemovingBlock;
+
+        bool isLoading;
         //Input end
         public Game1()
         {
@@ -203,9 +207,15 @@ namespace PhysicsTest
                     savePlayer();
                 }
 
-                if (Keyboard.GetState().IsKeyDown(Keys.L))
+                if (Keyboard.GetState().IsKeyDown(Keys.L) && !isLoading)
                 {
                     loadPlayer();
+                    isLoading = true;
+                }
+
+                if (Keyboard.GetState().IsKeyUp(Keys.L))
+                {
+                    isLoading = false;
                 }
 
             if (Keyboard.GetState().IsKeyDown(Keys.T) && !swappingModes)
@@ -266,7 +276,7 @@ namespace PhysicsTest
 
             //end camera
 
-            
+            RegularBlockSize = RegularBlockList.Count - 1;
             base.Update(gameTime);
         }
 
@@ -334,6 +344,9 @@ namespace PhysicsTest
             {
                 sw.WriteLine(b.blockRect.X+","+b.blockRect.Y);
             }
+            sw.WriteLine("");
+
+            
 
             sw.Close();
         }
@@ -347,11 +360,20 @@ namespace PhysicsTest
         {
             StreamReader sr = new StreamReader("Stage1.SWAG");
 
-            foreach (Player p in playerList)
+            //foreach (Player p in playerList)
+            //{
+            //    foreach(Blocks regB in RegularBlockList)
+            //    {
+            //        RegularBlockList.Remove(regB);
+            //        break;
+            //    }
+            //}
+            for(int i = RegularBlockSize; i >0; i--)
             {
-                playerList.Remove(p);
-                break;
+                RegularBlockList.Remove(RegularBlockList[i]);
             }
+            RegularBlockList.Remove(RegularBlockList[0]);
+            
 
             string fileData = "";
 
@@ -367,6 +389,7 @@ namespace PhysicsTest
                 int posX = int.Parse(playerPosData[0]);
                 int posY = int.Parse(playerPosData[1]);
 
+               
                 Player P = new Player(new Rectangle(posX, posY, 64, 64), playerTex, Color.White, new Point(Window.ClientBounds.Width, Window.ClientBounds.Height));
                 playerList.Add(P);
             }
@@ -375,7 +398,7 @@ namespace PhysicsTest
 
         void LevelEditor()
         {
-            
+            Console.WriteLine("Player Size:"+playerList.Count+"Regular blocks count:"+RegularBlockList.Count);
             
             if (devMode)
             {
