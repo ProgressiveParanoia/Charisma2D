@@ -109,7 +109,7 @@ namespace PhysicsTest
                 Exit();
 
             //player related methods
-
+           
             foreach (Player pl in playerList) {
                 pl.move();
 
@@ -119,10 +119,10 @@ namespace PhysicsTest
                     {
                         if (pl.IdlingLeft || pl.MoveLeft)
                         {
-                            //if player has shotgun do this
-                            Projectile p1 = new Projectile(new Rectangle(_player.playerRect.X, _player.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 1);
-                            Projectile p2 = new Projectile(new Rectangle(_player.playerRect.X, _player.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 0);
-                            Projectile p3 = new Projectile(new Rectangle(_player.playerRect.X, _player.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, -1);
+                            //if player has shotgun do this                               
+                            Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 1);
+                            Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 0);
+                            Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, -1);
 
                             projectiles.Add(p1);
                             projectiles.Add(p2);
@@ -132,37 +132,37 @@ namespace PhysicsTest
                         if (pl.IdlingRight || pl.MoveRight)
                         {
                             //if player has shotgun do this
-                            Projectile p1 = new Projectile(new Rectangle(_player.playerRect.X + _player.playerRect.Width, _player.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 1);
-                            Projectile p2 = new Projectile(new Rectangle(_player.playerRect.X + _player.playerRect.Width, _player.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 0);
-                            Projectile p3 = new Projectile(new Rectangle(_player.playerRect.X + _player.playerRect.Width, _player.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, -1);
+                            Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 1);
+                            Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 0);
+                            Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, -1);
 
                             projectiles.Add(p1);
                             projectiles.Add(p2);
                             projectiles.Add(p3);
                             //end shotgun condition
                         }
-                        _player.shooting = true;
+                        pl.shooting = true;
                     }
                 }
                 else
                     if (Keyboard.GetState().IsKeyUp(Keys.Space))
                 {
-                    _player.shooting = false;
+                    pl.shooting = false;
                 }
 
-                _player.DoPhysics();
+                pl.DoPhysics();
 
                 foreach (Blocks b in RegularBlockList)
                 {
-                    _player.Colliders(b);
+                    pl.Colliders(b);
                 }
 
                 foreach (Blocks sb in SkateBlockList)
                 {
-                    _player.Colliders(sb);
+                    pl.Colliders(sb);
                 }
 
-                _player.Animation();
+                pl.Animation();
             }
                 //save and load inputs
                 if (Keyboard.GetState().IsKeyDown(Keys.F))
