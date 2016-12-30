@@ -337,7 +337,7 @@ namespace PhysicsTest
         {
             StreamWriter sw = new StreamWriter("Stage1.SWAG");
 
-            sw.WriteLine(_player.playerRect.X+","+_player.playerRect.Y); //save player pos
+            sw.WriteLine(playerList[0].playerRect.X+","+playerList[0].playerRect.Y); //save player pos
 
             sw.WriteLine("");
             foreach (Blocks b in RegularBlockList)
@@ -346,7 +346,8 @@ namespace PhysicsTest
             }
             sw.WriteLine("");
 
-            
+            sw.WriteLine(RegularBlockSize);
+            sw.WriteLine("");
 
             sw.Close();
         }
@@ -359,40 +360,64 @@ namespace PhysicsTest
         void loadPlayer()
         {
             StreamReader sr = new StreamReader("Stage1.SWAG");
+            string spaceEater;
 
-            //foreach (Player p in playerList)
-            //{
-            //    foreach(Blocks regB in RegularBlockList)
-            //    {
-            //        RegularBlockList.Remove(regB);
-            //        break;
-            //    }
-            //}
             for(int i = RegularBlockSize; i >0; i--)
             {
                 RegularBlockList.Remove(RegularBlockList[i]);
             }
             RegularBlockList.Remove(RegularBlockList[0]);
-            
+
+            playerList.Remove(playerList[0]);            
 
             string fileData = "";
 
             while ((fileData=sr.ReadLine())!=null)
             {
-                string[] playerPosData = fileData.Split(',');
+                string[] PosData = fileData.Split(',');
 
                 if (fileData == "")
                 {
                     break;
                 }
 
-                int posX = int.Parse(playerPosData[0]);
-                int posY = int.Parse(playerPosData[1]);
+                int posX = int.Parse(PosData[0]);
+                int posY = int.Parse(PosData[1]);
 
                
                 Player P = new Player(new Rectangle(posX, posY, 64, 64), playerTex, Color.White, new Point(Window.ClientBounds.Width, Window.ClientBounds.Height));
                 playerList.Add(P);
             }
+
+            spaceEater = fileData;
+
+            while ((fileData = sr.ReadLine()) != null)
+            {
+                string[] PosData = fileData.Split(',');
+
+                if (fileData == "")
+                {
+                    break;
+                }
+
+                int posX = int.Parse(PosData[0]);
+                int posY = int.Parse(PosData[1]);
+
+
+       
+                Blocks b = new Blocks(new Rectangle(posX,posY, 200, 50), blockTex);
+                RegularBlockList.Add(b);
+            }
+
+            spaceEater = fileData;
+            while ((fileData = sr.ReadLine()) != null)
+            {
+                if (fileData == "")
+                    break;
+                RegularBlockSize = int.Parse(fileData);
+
+            }
+            sr.Close();
         }
         //save and load finish
 
@@ -457,7 +482,7 @@ namespace PhysicsTest
                     foreach (Blocks b in RegularBlockList)
                     {
                         
-                            if (LevelEditor_RegularBlock.blockRect.Intersects(b.blockRect))
+                            if (playerList[0].playerRect.Intersects(b.blockRect))
                             {
                                 if (Keyboard.GetState().IsKeyDown(Keys.B) && !isRemovingBlock)
                                 {
