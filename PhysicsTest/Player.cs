@@ -376,14 +376,14 @@ namespace PhysicsTest
                 movingLeft = false;
                 idleRight = false;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.F))
-            {
-                saveAndLoad.savePlayer(new Point(_playerRect.X,_playerRect.Y));
-
-               
-            }
+          
             
             _playerRect.Location = new Point(posX,posY);
+
+            if (Keyboard.GetState().IsKeyDown(Keys.F))
+            {
+                saveAndLoad.savePlayer(_playerRect.Location);
+            }
         }
 
         public void DoPhysics()

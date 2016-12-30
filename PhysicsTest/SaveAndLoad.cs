@@ -33,6 +33,8 @@ namespace PhysicsTest
 
         public void savePlayer(Point playerPosition)
         {
+            this.playerPosition = playerPosition;
+
             gameplaySave();
         }
 
