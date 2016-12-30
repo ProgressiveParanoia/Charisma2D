@@ -59,7 +59,9 @@ namespace PhysicsTest
             _player = new Player(new Rectangle(0,0,64,64),playerTex,Color.White,new Point(Window.ClientBounds.Width,Window.ClientBounds.Height));
             cam = new Camera(GraphicsDevice.Viewport);
 
-            editor = new LevelEditor();
+            Texture2D editorTex = Content.Load<Texture2D>(@"editorBackdrop");
+
+            editor = new LevelEditor(new Rectangle(0,0,Window.ClientBounds.Width/4,Window.ClientBounds.Height),editorTex);
 
             RegularBlockList = new List<Blocks>();
             SkateBlockList = new List<Blocks>();
@@ -243,6 +245,7 @@ namespace PhysicsTest
             {
                 Console.WriteLine("Not developer deeeks");
             }
+
             base.Update(gameTime);
         }
 
@@ -260,6 +263,11 @@ namespace PhysicsTest
 
                     spriteBatch.DrawString(sF, "X:" + p.playerRect.X + " Y:" + p.playerRect.Y, new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 0), Color.White);
                     spriteBatch.DrawString(sF, "[F]Save [L]Load [T]Level Editor",new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 20),Color.White);
+
+                    
+                    
+                    spriteBatch.Draw(editor.editorTexture, new Rectangle(p.playerRect.X + ((cam.myView.Bounds.Right / 2 )- (editor.editorRect.Width/ 2)),0,editor.editorRect.Width,editor.editorRect.Height), Color.White);
+              //  new Rectangle(0, 0, Window.ClientBounds.Width / 4, Window.ClientBounds.Height),editorTex
                 }
                 foreach (Blocks b in RegularBlockList)
                 {
@@ -275,8 +283,9 @@ namespace PhysicsTest
                 {
                     spriteBatch.Draw(p.projectileTexture,p.projectileRect,p.projectileColor);
                 }
-               
-                
+
+
+              
             spriteBatch.End();
 
             base.Draw(gameTime);
