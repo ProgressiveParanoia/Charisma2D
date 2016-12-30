@@ -323,23 +323,29 @@ namespace PhysicsTest
 
         //saving and loading methods
 
-        void gameplaySave()
+        void LevelSave()
         {
-            StreamWriter sw = new StreamWriter("GameplaySave.SWAG");
+            StreamWriter sw = new StreamWriter("Stage1.SWAG");
 
-            sw.WriteLine(_player.playerRect.X+","+_player.playerRect.Y);
+            sw.WriteLine(_player.playerRect.X+","+_player.playerRect.Y); //save player pos
+
+            sw.WriteLine("");
+            foreach (Blocks b in RegularBlockList)
+            {
+                sw.WriteLine(b.blockRect.X+","+b.blockRect.Y);
+            }
 
             sw.Close();
         }
 
         void savePlayer()
         {
-            gameplaySave();
+            LevelSave();
         }
 
         void loadPlayer()
         {
-            StreamReader sr = new StreamReader("GameplaySave.SWAG");
+            StreamReader sr = new StreamReader("Stage1.SWAG");
 
             foreach (Player p in playerList)
             {
