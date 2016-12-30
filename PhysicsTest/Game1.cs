@@ -70,7 +70,7 @@ namespace PhysicsTest
             _player = new Player(new Rectangle(0,0,64,64),playerTex,Color.White,new Point(Window.ClientBounds.Width,Window.ClientBounds.Height));
             cam = new Camera(GraphicsDevice.Viewport);
 
-            LevelEditor_RegularBlock = new Blocks(new Rectangle(0,0,200,500),blockTex);
+            LevelEditor_RegularBlock = new Blocks(new Rectangle(0,0,200,50),blockTex);
 
             Texture2D editorTex = Content.Load<Texture2D>(@"editorBackdrop");
 
@@ -300,7 +300,12 @@ namespace PhysicsTest
                     spriteBatch.Draw(p.projectileTexture,p.projectileRect,p.projectileColor);
                 }
 
+            //dev mode stuff
+            if (devMode) {
+                spriteBatch.Draw(LevelEditor_RegularBlock.blockTexture, LevelEditor_RegularBlock.blockRect, Color.White);
 
+            }
+            //end
               
             spriteBatch.End();
 
@@ -374,10 +379,10 @@ namespace PhysicsTest
                 {
 
                 }
-                if (levelEditor_IsRegBlock)
-                {
-
-                }
+                    if (levelEditor_IsRegBlock)
+                    {
+                        LevelEditor_RegularBlock.Move(Mouse.GetState().X - (LevelEditor_RegularBlock.blockRect.Width * 2 + LevelEditor_RegularBlock.blockRect.Width/3) ,Mouse.GetState().Y - LevelEditor_RegularBlock.blockRect.Height/2);
+                    }
 
                 IsMouseVisible = true;
             }

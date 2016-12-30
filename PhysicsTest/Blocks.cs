@@ -50,5 +50,10 @@ namespace PhysicsTest
             get { return isSlippery; }
             set { isSlippery = value; }
         }
+
+        public void Move(int x, int y)
+        {
+            _blockRect.Location = new Point(x,y);
+        }
     }
 }
