@@ -402,8 +402,6 @@ namespace PhysicsTest
                 _playerRect.Location = new Point(50, 0);
             }
 
-            Console.WriteLine("left:" + slideLeft + "right:" + slideRight);
-
             _playerRect.Location = new Point(_playerRect.X, _playerRect.Y);
         }
 

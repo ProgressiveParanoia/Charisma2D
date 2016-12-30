@@ -16,8 +16,9 @@ namespace PhysicsTest
         SpriteBatch spriteBatch;
 
         Player _player;
-
         Camera cam;
+
+        LevelEditor editor;
 
         List<Blocks> RegularBlockList;
         List<Blocks> SkateBlockList;
@@ -34,10 +35,16 @@ namespace PhysicsTest
 
         SpriteFont sF;
 
+        bool playMode;
+        bool devMode;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            devMode = false;
+            playMode = true;
         }
         protected override void Initialize()
         {
@@ -50,8 +57,9 @@ namespace PhysicsTest
             sF = Content.Load<SpriteFont>(@"spriteFont");
 
             _player = new Player(new Rectangle(0,0,64,64),playerTex,Color.White,new Point(Window.ClientBounds.Width,Window.ClientBounds.Height));
-
             cam = new Camera(GraphicsDevice.Viewport);
+
+            editor = new LevelEditor();
 
             RegularBlockList = new List<Blocks>();
             SkateBlockList = new List<Blocks>();
@@ -176,7 +184,21 @@ namespace PhysicsTest
                 {
                     loadPlayer();
                 }
-                //end sve and load
+
+                if (Keyboard.GetState().IsKeyDown(Keys.T))
+                {
+                    if (playMode)
+                    {
+                        playMode = false;
+                        devMode = true;
+                    }else
+                        if (devMode)
+                        {
+                            devMode = false;
+                            playMode = true;
+                        }
+                }
+                //end save and load
 
             //end player methods
 
@@ -213,7 +235,14 @@ namespace PhysicsTest
 
             //end camera
 
-            
+            if (devMode)
+            {
+                Console.WriteLine("Developer eksdee");
+            }
+            else
+            {
+                Console.WriteLine("Not developer deeeks");
+            }
             base.Update(gameTime);
         }
 
@@ -230,6 +259,7 @@ namespace PhysicsTest
                     spriteBatch.Draw(p.playerTexture,p.playerRect, new Rectangle(p.spriteSheetX, p.spriteSheetY, 192, 192), p.playerColor);
 
                     spriteBatch.DrawString(sF, "X:" + p.playerRect.X + " Y:" + p.playerRect.Y, new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 0), Color.White);
+                    spriteBatch.DrawString(sF, "[F]Save [L]Load [T]Level Editor",new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 20),Color.White);
                 }
                 foreach (Blocks b in RegularBlockList)
                 {
