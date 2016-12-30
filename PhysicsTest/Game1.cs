@@ -163,6 +163,8 @@ namespace PhysicsTest
                 }
 
                 pl.Animation();
+
+                cam.setToCenter(pl.playerRect, new Point(Window.ClientBounds.Width, Window.ClientBounds.Height));
             }
                 //save and load inputs
                 if (Keyboard.GetState().IsKeyDown(Keys.F))
@@ -211,7 +213,7 @@ namespace PhysicsTest
 
             //end camera
 
-            cam.setToCenter(_player.playerRect,new Point(Window.ClientBounds.Width,Window.ClientBounds.Height));
+            
             base.Update(gameTime);
         }
 
@@ -223,9 +225,11 @@ namespace PhysicsTest
             //spriteBatch.Draw(_player.playerTexture, _player.playerRect, new Rectangle(_player.spriteSheetX, _player.spriteSheetY, 192, 192), _player.playerColor);
 
 
-            foreach (Player p in playerList)
+                foreach (Player p in playerList)
                 {
                     spriteBatch.Draw(p.playerTexture,p.playerRect, new Rectangle(p.spriteSheetX, p.spriteSheetY, 192, 192), p.playerColor);
+
+                    spriteBatch.DrawString(sF, "X:" + p.playerRect.X + " Y:" + p.playerRect.Y, new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 0), Color.White);
                 }
                 foreach (Blocks b in RegularBlockList)
                 {
@@ -242,7 +246,7 @@ namespace PhysicsTest
                     spriteBatch.Draw(p.projectileTexture,p.projectileRect,p.projectileColor);
                 }
                
-                spriteBatch.DrawString(sF,"X:" + _player.playerRect.X +" Y:"+ _player.playerRect.Y, new Vector2(_player.playerRect.X -( cam.myView.Bounds.Right/2 - _player.playerRect.Width/2) , 0),Color.White);
+                
             spriteBatch.End();
 
             base.Draw(gameTime);
