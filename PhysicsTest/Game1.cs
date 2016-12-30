@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace PhysicsTest
 {
@@ -21,9 +22,15 @@ namespace PhysicsTest
         List<Blocks> RegularBlockList;
         List<Blocks> SkateBlockList;
 
+        List<Player> playerList;
+
         List<Projectile> projectiles;
 
         Texture2D shotgunPellet;
+
+        Texture2D playerTex;
+        Texture2D blockTex;
+        Texture2D skateBlockTex;
 
         SpriteFont sF;
 
@@ -34,9 +41,9 @@ namespace PhysicsTest
         }
         protected override void Initialize()
         {
-            Texture2D playerTex = Content.Load<Texture2D>(@"Elf_shotty_sheet");
-            Texture2D blockTex = Content.Load<Texture2D>(@"BlockTest");
-            Texture2D skateBlockTex = Content.Load<Texture2D>(@"skateBlocks");
+            playerTex = Content.Load<Texture2D>(@"Elf_shotty_sheet");
+            blockTex = Content.Load<Texture2D>(@"BlockTest");
+            skateBlockTex = Content.Load<Texture2D>(@"skateBlocks");
 
             shotgunPellet = Content.Load<Texture2D>(@"enemyProjectile");
 
@@ -49,6 +56,7 @@ namespace PhysicsTest
             RegularBlockList = new List<Blocks>();
             SkateBlockList = new List<Blocks>();
             projectiles = new List<Projectile>();
+            playerList = new List<Player>();
 
             for(int i = 0; i < 15; i++)
             {
@@ -76,7 +84,8 @@ namespace PhysicsTest
                     
             }
 
-            
+            playerList.Add(_player);
+
             base.Initialize();
         }
 
@@ -101,64 +110,77 @@ namespace PhysicsTest
 
             //player related methods
 
-             _player.move();
+            foreach (Player pl in playerList) {
+                pl.move();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Space) && !_player.shooting)
-            {
-                if (_player.ammoCounter > 0)
+                if (Keyboard.GetState().IsKeyDown(Keys.Space) && !pl.shooting)
                 {
-                    if (_player.IdlingLeft || _player.MoveLeft)
+                    if (pl.ammoCounter > 0)
                     {
-                        //if player has shotgun do this
-                        Projectile p1 = new Projectile(new Rectangle(_player.playerRect.X, _player.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 1);
-                        Projectile p2 = new Projectile(new Rectangle(_player.playerRect.X, _player.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 0);
-                        Projectile p3 = new Projectile(new Rectangle(_player.playerRect.X, _player.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, -1);
+                        if (pl.IdlingLeft || pl.MoveLeft)
+                        {
+                            //if player has shotgun do this
+                            Projectile p1 = new Projectile(new Rectangle(_player.playerRect.X, _player.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 1);
+                            Projectile p2 = new Projectile(new Rectangle(_player.playerRect.X, _player.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 0);
+                            Projectile p3 = new Projectile(new Rectangle(_player.playerRect.X, _player.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, -1);
 
-                        projectiles.Add(p1);
-                        projectiles.Add(p2);
-                        projectiles.Add(p3);
-                        //end shotgun condition
-                    }
-                    if (_player.IdlingRight || _player.MoveRight)
-                    {
-                        //if player has shotgun do this
-                        Projectile p1 = new Projectile(new Rectangle(_player.playerRect.X + _player.playerRect.Width, _player.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 1);
-                        Projectile p2 = new Projectile(new Rectangle(_player.playerRect.X + _player.playerRect.Width, _player.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 0);
-                        Projectile p3 = new Projectile(new Rectangle(_player.playerRect.X + _player.playerRect.Width, _player.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, -1);
+                            projectiles.Add(p1);
+                            projectiles.Add(p2);
+                            projectiles.Add(p3);
+                            //end shotgun condition
+                        }
+                        if (pl.IdlingRight || pl.MoveRight)
+                        {
+                            //if player has shotgun do this
+                            Projectile p1 = new Projectile(new Rectangle(_player.playerRect.X + _player.playerRect.Width, _player.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 1);
+                            Projectile p2 = new Projectile(new Rectangle(_player.playerRect.X + _player.playerRect.Width, _player.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 0);
+                            Projectile p3 = new Projectile(new Rectangle(_player.playerRect.X + _player.playerRect.Width, _player.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, -1);
 
-                        projectiles.Add(p1);
-                        projectiles.Add(p2);
-                        projectiles.Add(p3);
-                        //end shotgun condition
+                            projectiles.Add(p1);
+                            projectiles.Add(p2);
+                            projectiles.Add(p3);
+                            //end shotgun condition
+                        }
+                        _player.shooting = true;
                     }
-                    _player.shooting = true;
                 }
-            }
-            else
-                if (Keyboard.GetState().IsKeyUp(Keys.Space))
-            {
-                _player.shooting = false;
-            }
+                else
+                    if (Keyboard.GetState().IsKeyUp(Keys.Space))
+                {
+                    _player.shooting = false;
+                }
 
-            _player.DoPhysics();
+                _player.DoPhysics();
 
-            foreach (Blocks b in RegularBlockList)
-            {
-                _player.Colliders(b);
+                foreach (Blocks b in RegularBlockList)
+                {
+                    _player.Colliders(b);
+                }
+
+                foreach (Blocks sb in SkateBlockList)
+                {
+                    _player.Colliders(sb);
+                }
+
+                _player.Animation();
             }
+                //save and load inputs
+                if (Keyboard.GetState().IsKeyDown(Keys.F))
+                {
+                    savePlayer();
+                }
 
-            foreach(Blocks sb in SkateBlockList)
-            {
-                _player.Colliders(sb);
-            }
-
-            _player.Animation();
+                if (Keyboard.GetState().IsKeyDown(Keys.L))
+                {
+                    loadPlayer();
+                }
+                //end sve and load
 
             //end player methods
 
             //projectile stuff
 
-            foreach(Projectile p in projectiles)
+            foreach (Projectile p in projectiles)
             {
                 p.shotgunShoot();
             }
@@ -198,8 +220,13 @@ namespace PhysicsTest
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin(SpriteSortMode.Deferred,BlendState.AlphaBlend,null,null,null,null,cam.Transform);
-                spriteBatch.Draw(_player.playerTexture, _player.playerRect,new Rectangle(_player.spriteSheetX,_player.spriteSheetY,192,192),_player.playerColor);
+            //spriteBatch.Draw(_player.playerTexture, _player.playerRect, new Rectangle(_player.spriteSheetX, _player.spriteSheetY, 192, 192), _player.playerColor);
 
+
+            foreach (Player p in playerList)
+                {
+                    spriteBatch.Draw(p.playerTexture,p.playerRect, new Rectangle(p.spriteSheetX, p.spriteSheetY, 192, 192), p.playerColor);
+                }
                 foreach (Blocks b in RegularBlockList)
                 {
                     spriteBatch.Draw(b.blockTexture,b.blockRect,Color.White);
@@ -220,5 +247,52 @@ namespace PhysicsTest
 
             base.Draw(gameTime);
         }
+
+
+        //saving and loading methods
+
+        void gameplaySave()
+        {
+            StreamWriter sw = new StreamWriter("GameplaySave.SWAG");
+
+            sw.WriteLine(_player.playerRect.X+","+_player.playerRect.Y);
+
+            sw.Close();
+        }
+
+        void savePlayer()
+        {
+            gameplaySave();
+        }
+
+        void loadPlayer()
+        {
+            StreamReader sr = new StreamReader("GameplaySave.SWAG");
+
+            foreach (Player p in playerList)
+            {
+                playerList.Remove(p);
+                break;
+            }
+
+            string fileData = "";
+
+            while ((fileData=sr.ReadLine())!=null)
+            {
+                string[] playerPosData = fileData.Split(',');
+
+                if (fileData == "")
+                {
+                    break;
+                }
+
+                int posX = int.Parse(playerPosData[0]);
+                int posY = int.Parse(playerPosData[1]);
+
+                Player P = new Player(new Rectangle(posX, posY, 64, 64), playerTex, Color.White, new Point(Window.ClientBounds.Width, Window.ClientBounds.Height));
+                playerList.Add(P);
+            }
+        }
+        //save and load finish
     }
 }

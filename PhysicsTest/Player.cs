@@ -9,7 +9,6 @@ namespace PhysicsTest
     {
         private Collision collision;
         private Projectile projectile;
-        private SaveAndLoad saveAndLoad;
 
         private Rectangle _playerRect;
         private Texture2D _playerTexture;
@@ -58,7 +57,6 @@ namespace PhysicsTest
             this._bounds = _bounds;
 
             collision = new Collision();
-            saveAndLoad = new SaveAndLoad();
 
             _jumpTime = 0.2f;
             _physicsTimer = 0.5f;
@@ -379,11 +377,6 @@ namespace PhysicsTest
           
             
             _playerRect.Location = new Point(posX,posY);
-
-            if (Keyboard.GetState().IsKeyDown(Keys.F))
-            {
-                saveAndLoad.savePlayer(_playerRect.Location);
-            }
         }
 
         public void DoPhysics()
