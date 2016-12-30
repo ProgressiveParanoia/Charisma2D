@@ -18,6 +18,9 @@ namespace PhysicsTest
         Player _player;
         Camera cam;
 
+        Blocks LevelEditor_RegularBlock;
+        Blocks LevelEditor_SlipBlock;
+
         LevelEditor editor;
 
         List<Blocks> RegularBlockList;
@@ -38,6 +41,12 @@ namespace PhysicsTest
         bool playMode;
         bool devMode;
 
+        bool levelEditor_IsRegBlock;
+        
+
+        bool swappingModes;
+        bool swappingBlocks;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -45,6 +54,8 @@ namespace PhysicsTest
 
             devMode = false;
             playMode = true;
+
+            levelEditor_IsRegBlock = true;
         }
         protected override void Initialize()
         {
@@ -59,14 +70,16 @@ namespace PhysicsTest
             _player = new Player(new Rectangle(0,0,64,64),playerTex,Color.White,new Point(Window.ClientBounds.Width,Window.ClientBounds.Height));
             cam = new Camera(GraphicsDevice.Viewport);
 
+            LevelEditor_RegularBlock = new Blocks(new Rectangle(0,0,200,500),blockTex);
+
             Texture2D editorTex = Content.Load<Texture2D>(@"editorBackdrop");
 
-            editor = new LevelEditor(new Rectangle(0,0,Window.ClientBounds.Width/4,Window.ClientBounds.Height),editorTex);
-
+     
             RegularBlockList = new List<Blocks>();
             SkateBlockList = new List<Blocks>();
             projectiles = new List<Projectile>();
             playerList = new List<Player>();
+
 
             for(int i = 0; i < 15; i++)
             {
@@ -93,6 +106,7 @@ namespace PhysicsTest
                 }
                     
             }
+
 
             playerList.Add(_player);
 
@@ -187,20 +201,28 @@ namespace PhysicsTest
                     loadPlayer();
                 }
 
-                if (Keyboard.GetState().IsKeyDown(Keys.T))
+            if (Keyboard.GetState().IsKeyDown(Keys.T) && !swappingModes)
+            {
+                if (playMode)
                 {
-                    if (playMode)
-                    {
-                        playMode = false;
-                        devMode = true;
-                    }else
-                        if (devMode)
-                        {
-                            devMode = false;
-                            playMode = true;
-                        }
+                    playMode = false;
+                    devMode = true;
                 }
-                //end save and load
+                else
+                    if (devMode)
+                {
+                    devMode = false;
+                    playMode = true;
+                }
+                swappingModes = true;
+            }
+
+            if (Keyboard.GetState().IsKeyUp(Keys.T))
+            {
+                swappingModes = false;
+            }
+
+            //end save and load
 
             //end player methods
 
@@ -227,7 +249,7 @@ namespace PhysicsTest
                     }
                 }
             }
-            
+
             here:
             //end projectiles
 
@@ -237,15 +259,7 @@ namespace PhysicsTest
 
             //end camera
 
-            if (devMode)
-            {
-                Console.WriteLine("Developer eksdee");
-            }
-            else
-            {
-                Console.WriteLine("Not developer deeeks");
-            }
-
+            LevelEditor();
             base.Update(gameTime);
         }
 
@@ -264,10 +278,12 @@ namespace PhysicsTest
                     spriteBatch.DrawString(sF, "X:" + p.playerRect.X + " Y:" + p.playerRect.Y, new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 0), Color.White);
                     spriteBatch.DrawString(sF, "[F]Save [L]Load [T]Level Editor",new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 20),Color.White);
 
-                    
-                    
-                    spriteBatch.Draw(editor.editorTexture, new Rectangle(p.playerRect.X + ((cam.myView.Bounds.Right / 2 )- (editor.editorRect.Width/ 2)),0,editor.editorRect.Width,editor.editorRect.Height), Color.White);
-              //  new Rectangle(0, 0, Window.ClientBounds.Width / 4, Window.ClientBounds.Height),editorTex
+
+                    if (devMode)
+                    {
+                    spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 40), Color.White);
+                    }
+                    //  new Rectangle(0, 0, Window.ClientBounds.Width / 4, Window.ClientBounds.Height),editorTex
                 }
                 foreach (Blocks b in RegularBlockList)
                 {
@@ -337,5 +353,39 @@ namespace PhysicsTest
             }
         }
         //save and load finish
+
+        void LevelEditor()
+        {
+            if (devMode)
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.D1) && !swappingBlocks)
+                {
+                    levelEditor_IsRegBlock = true;
+
+                    swappingBlocks = true;
+                }
+
+                if (Keyboard.GetState().IsKeyUp(Keys.D1))
+                {
+                    swappingBlocks = false;
+                }
+
+                if (Keyboard.GetState().IsKeyDown(Keys.D2))
+                {
+
+                }
+                if (levelEditor_IsRegBlock)
+                {
+
+                }
+
+                IsMouseVisible = true;
+            }
+            else
+            {
+                Console.WriteLine("Not developer deeeks");
+                IsMouseVisible = false;
+            }
+        }
     }
 }

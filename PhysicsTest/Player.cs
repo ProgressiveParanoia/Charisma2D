@@ -22,6 +22,8 @@ namespace PhysicsTest
         private bool isPressingJump;
         private bool isShooting;
 
+        private bool isSwappingModes;
+
         //physics stuff
         private bool slideLeft;
         private bool slideRight;
@@ -154,6 +156,11 @@ namespace PhysicsTest
             get{ return isGrounded; }
         }
 
+        public bool swappingMode
+        {
+            get { return isSwappingModes; }
+            set { isSwappingModes = value; }
+        }
         public int spriteSheetX
         {
             get { return _SpriteSheetX; }
