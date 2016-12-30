@@ -8,7 +8,6 @@ namespace PhysicsTest
     class Player
     {
         private Collision collision;
-        private Projectile projectile;
 
         private Rectangle _playerRect;
         private Texture2D _playerTexture;
@@ -59,6 +58,7 @@ namespace PhysicsTest
             this._bounds = _bounds;
 
             collision = new Collision();
+          
 
             _jumpTime = 0.2f;
             _physicsTimer = 0.5f;
@@ -292,7 +292,7 @@ namespace PhysicsTest
             _animationDelay++;
         }
 
-        public void move()
+        public void move(bool devMode)
         {
             int posX = _playerRect.X;
             int posY = _playerRect.Y;
@@ -368,6 +368,18 @@ namespace PhysicsTest
 
             }
 
+            if (devMode)
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.W))
+                {
+                    posY -= 3;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.S))
+                {
+                    posY += 3;
+                }
+               
+            }
 
             if (idleRight)
             {
@@ -381,8 +393,8 @@ namespace PhysicsTest
                 movingLeft = false;
                 idleRight = false;
             }
+
           
-            
             _playerRect.Location = new Point(posX,posY);
         }
 

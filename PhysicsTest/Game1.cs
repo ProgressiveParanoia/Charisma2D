@@ -48,6 +48,7 @@ namespace PhysicsTest
         bool swappingBlocks;
 
         bool isPlacingBlock;
+        bool isRemovingBlock;
         //Input end
         public Game1()
         {
@@ -131,63 +132,67 @@ namespace PhysicsTest
 
         protected override void Update(GameTime gameTime)
         {
+            LevelEditor();
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
             //player related methods
            
             foreach (Player pl in playerList) {
-                pl.move();
+                pl.move(devMode);
 
-                if (Keyboard.GetState().IsKeyDown(Keys.Space) && !pl.shooting)
+                if (!devMode)
                 {
-                    if (pl.ammoCounter > 0 && !devMode)
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space) && !pl.shooting)
                     {
-                        if (pl.IdlingLeft || pl.MoveLeft)
+                        if (pl.ammoCounter > 0)
                         {
-                            //if player has shotgun do this                               
-                            Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 1);
-                            Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 0);
-                            Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, -1);
+                            if (pl.IdlingLeft || pl.MoveLeft)
+                            {
+                                //if player has shotgun do this                               
+                                Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 1);
+                                Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 0);
+                                Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, -1);
 
-                            projectiles.Add(p1);
-                            projectiles.Add(p2);
-                            projectiles.Add(p3);
-                            //end shotgun condition
-                        }
-                        if (pl.IdlingRight || pl.MoveRight)
-                        {
-                            //if player has shotgun do this
-                            Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 1);
-                            Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 0);
-                            Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, -1);
+                                projectiles.Add(p1);
+                                projectiles.Add(p2);
+                                projectiles.Add(p3);
+                                //end shotgun condition
+                            }
+                            if (pl.IdlingRight || pl.MoveRight)
+                            {
+                                //if player has shotgun do this
+                                Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 1);
+                                Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 0);
+                                Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, -1);
 
-                            projectiles.Add(p1);
-                            projectiles.Add(p2);
-                            projectiles.Add(p3);
-                            //end shotgun condition
+                                projectiles.Add(p1);
+                                projectiles.Add(p2);
+                                projectiles.Add(p3);
+                                //end shotgun condition
+                            }
+                            pl.shooting = true;
                         }
-                        pl.shooting = true;
+                    }
+                    else
+                        if (Keyboard.GetState().IsKeyUp(Keys.Space))
+                    {
+                        pl.shooting = false;
+                    }
+
+                    pl.DoPhysics();
+
+                    foreach (Blocks b in RegularBlockList)
+                    {
+                        pl.Colliders(b);
+                    }
+
+                    foreach (Blocks sb in SkateBlockList)
+                    {
+                        pl.Colliders(sb);
                     }
                 }
-                else
-                    if (Keyboard.GetState().IsKeyUp(Keys.Space))
-                {
-                    pl.shooting = false;
-                }
-
-                pl.DoPhysics();
-
-                foreach (Blocks b in RegularBlockList)
-                {
-                    pl.Colliders(b);
-                }
-
-                foreach (Blocks sb in SkateBlockList)
-                {
-                    pl.Colliders(sb);
-                }
-
                 pl.Animation();
 
                 cam.setToCenter(pl.playerRect, new Point(Window.ClientBounds.Width, Window.ClientBounds.Height));
@@ -261,7 +266,7 @@ namespace PhysicsTest
 
             //end camera
 
-            LevelEditor();
+            
             base.Update(gameTime);
         }
 
@@ -279,12 +284,13 @@ namespace PhysicsTest
 
                     spriteBatch.DrawString(sF, "X:" + p.playerRect.X + " Y:" + p.playerRect.Y, new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 0), Color.White);
                     spriteBatch.DrawString(sF, "[F]Save [L]Load [T]Level Editor",new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 20),Color.White);
-
+                    
 
                     if (devMode)
                     {
                         spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 40), Color.White);
-                    }
+                        spriteBatch.DrawString(sF, "[Space]Place Block [B]Remove Block", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 80), Color.White);
+                }
                     //  new Rectangle(0, 0, Window.ClientBounds.Width / 4, Window.ClientBounds.Height),editorTex
                 }
                 foreach (Blocks b in RegularBlockList)
@@ -385,6 +391,7 @@ namespace PhysicsTest
                 }
                     if (levelEditor_IsRegBlock)
                     {
+                        //movement
                         if (Keyboard.GetState().IsKeyDown(Keys.Left))
                         {
                             LevelEditor_RegularBlock.Move(LevelEditor_RegularBlock.blockRect.X-3,LevelEditor_RegularBlock.blockRect.Y);
@@ -402,6 +409,9 @@ namespace PhysicsTest
                         {
                             LevelEditor_RegularBlock.Move(LevelEditor_RegularBlock.blockRect.X, LevelEditor_RegularBlock.blockRect.Y+3);
                         }
+                        //move end
+
+                        //input place
                     if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isPlacingBlock)
                         {
                             Blocks b = new Blocks(new Rectangle(LevelEditor_RegularBlock.blockRect.X, LevelEditor_RegularBlock.blockRect.Y, 200, 50), blockTex);
@@ -413,8 +423,28 @@ namespace PhysicsTest
                         {
                             isPlacingBlock = false;
                         }
+                    //input place done
+
+                    foreach (Blocks b in RegularBlockList)
+                    {
+                        
+                            if (LevelEditor_RegularBlock.blockRect.Intersects(b.blockRect))
+                            {
+                                if (Keyboard.GetState().IsKeyDown(Keys.B) && !isRemovingBlock)
+                                {
+                                    RegularBlockList.Remove(b);
+                                    break;
+                                }
+                            }
+                            isRemovingBlock = true;
+                        
                     }
-               
+
+                    if (Keyboard.GetState().IsKeyUp(Keys.B))
+                    {
+                        isRemovingBlock = false;
+                    }
+                }
 
                 IsMouseVisible = true;
 
