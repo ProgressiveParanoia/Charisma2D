@@ -283,7 +283,7 @@ namespace PhysicsTest
 
                     if (devMode)
                     {
-                    spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 40), Color.White);
+                        spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 40), Color.White);
                     }
                     //  new Rectangle(0, 0, Window.ClientBounds.Width / 4, Window.ClientBounds.Height),editorTex
                 }
@@ -389,14 +389,27 @@ namespace PhysicsTest
                         {
                             LevelEditor_RegularBlock.Move(LevelEditor_RegularBlock.blockRect.X-3,LevelEditor_RegularBlock.blockRect.Y);
                         }
-                    if (Mouse.GetState().LeftButton == ButtonState.Pressed && !isPlacingBlock)
+                        if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                        {
+                            LevelEditor_RegularBlock.Move(LevelEditor_RegularBlock.blockRect.X + 3, LevelEditor_RegularBlock.blockRect.Y);
+                        }
+
+                        if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                        {
+                            LevelEditor_RegularBlock.Move(LevelEditor_RegularBlock.blockRect.X, LevelEditor_RegularBlock.blockRect.Y-3);
+                        }
+                        if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                        {
+                            LevelEditor_RegularBlock.Move(LevelEditor_RegularBlock.blockRect.X, LevelEditor_RegularBlock.blockRect.Y+3);
+                        }
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isPlacingBlock)
                         {
                             Blocks b = new Blocks(new Rectangle(LevelEditor_RegularBlock.blockRect.X, LevelEditor_RegularBlock.blockRect.Y, 200, 50), blockTex);
                             RegularBlockList.Add(b);
 
                             isPlacingBlock = true;
                         }
-                            if(Mouse.GetState().LeftButton == ButtonState.Released)
+                            if(Keyboard.GetState().IsKeyUp(Keys.Space))
                         {
                             isPlacingBlock = false;
                         }
