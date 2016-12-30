@@ -25,6 +25,8 @@ namespace PhysicsTest
 
         Texture2D shotgunPellet;
 
+        SpriteFont sF;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -37,6 +39,8 @@ namespace PhysicsTest
             Texture2D skateBlockTex = Content.Load<Texture2D>(@"skateBlocks");
 
             shotgunPellet = Content.Load<Texture2D>(@"enemyProjectile");
+
+            sF = Content.Load<SpriteFont>(@"spriteFont");
 
             _player = new Player(new Rectangle(0,0,64,64),playerTex,Color.White,new Point(Window.ClientBounds.Width,Window.ClientBounds.Height));
 
@@ -210,7 +214,8 @@ namespace PhysicsTest
                 {
                     spriteBatch.Draw(p.projectileTexture,p.projectileRect,p.projectileColor);
                 }
-
+               
+                spriteBatch.DrawString(sF,"X:" + _player.playerRect.X +" Y:"+ _player.playerRect.Y, new Vector2(_player.playerRect.X -( cam.myView.Bounds.Right/2 - _player.playerRect.Width/2) , 0),Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);
