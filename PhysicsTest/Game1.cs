@@ -21,6 +21,10 @@ namespace PhysicsTest
         Blocks LevelEditor_RegularBlock;
         Blocks LevelEditor_SlipBlock;
 
+        Blocks LevelEditor_spikeBlock;
+
+        //Blocks LevelEditor_
+
         int RegularBlockSize;
         int SlipBlockSize;
         int SpikeBlockSize;
@@ -29,6 +33,8 @@ namespace PhysicsTest
 
         List<Blocks> RegularBlockList;
         List<Blocks> SkateBlockList;
+
+        List<Blocks> spikeBlockList;
 
         List<Player> playerList;
 
@@ -39,6 +45,7 @@ namespace PhysicsTest
         Texture2D playerTex;
         Texture2D blockTex;
         Texture2D skateBlockTex;
+        Texture2D spikeBlockTex;
 
         SpriteFont sF;
 
@@ -79,6 +86,7 @@ namespace PhysicsTest
             playerTex = Content.Load<Texture2D>(@"Elf_shotty_sheet");
             blockTex = Content.Load<Texture2D>(@"BlockTest");
             skateBlockTex = Content.Load<Texture2D>(@"skateBlocks");
+            spikeBlockTex = Content.Load<Texture2D>(@"icicleDown");
 
             shotgunPellet = Content.Load<Texture2D>(@"enemyProjectile");
 
@@ -90,11 +98,15 @@ namespace PhysicsTest
             LevelEditor_RegularBlock = new Blocks(new Rectangle(0,0,200,50),blockTex);
             LevelEditor_SlipBlock = new Blocks(new Rectangle(0,0,200,50),skateBlockTex);
 
+            LevelEditor_spikeBlock = new Blocks(new Rectangle(0,0,32,32),spikeBlockTex);
+
             Texture2D editorTex = Content.Load<Texture2D>(@"editorBackdrop");
 
             
             RegularBlockList = new List<Blocks>();
             SkateBlockList = new List<Blocks>();
+            spikeBlockList = new List<Blocks>();
+
             projectiles = new List<Projectile>();
             playerList = new List<Player>();
 
@@ -266,6 +278,7 @@ namespace PhysicsTest
 
             RegularBlockSize = RegularBlockList.Count - 1;
             SlipBlockSize = SkateBlockList.Count - 1;
+            SpikeBlockSize = spikeBlockList.Count - 1;
             base.Update(gameTime);
         }
 
@@ -309,12 +322,19 @@ namespace PhysicsTest
                     spriteBatch.Draw(p.projectileTexture,p.projectileRect,p.projectileColor);
                 }
 
+                foreach (Blocks b in spikeBlockList)
+                {
+                    spriteBatch.Draw(b.blockTexture, b.blockRect, Color.White);
+                }
+
             //dev mode stuff
             if (devMode) {
                 if(levelEditor_IsRegBlock)
                     spriteBatch.Draw(LevelEditor_RegularBlock.blockTexture, LevelEditor_RegularBlock.blockRect, Color.White);
                 if(levelEditor_IsSlipBlock)
                     spriteBatch.Draw(LevelEditor_SlipBlock.blockTexture, LevelEditor_SlipBlock.blockRect, Color.White);
+                if (levelEditor_IsSpikeBlock)
+                    spriteBatch.Draw(LevelEditor_spikeBlock.blockTexture, LevelEditor_spikeBlock.blockRect, Color.White);
             }
             //end
               
@@ -454,6 +474,8 @@ namespace PhysicsTest
         }
         //save and load finish
 
+            //level editor section
+
         void LevelEditor()
         {
           //  Console.WriteLine("Player Size:"+playerList.Count+"Regular blocks count:"+RegularBlockList.Count);
@@ -471,7 +493,7 @@ namespace PhysicsTest
                     swappingBlocks = true;
                 }
 
-                if (Keyboard.GetState().IsKeyUp(Keys.D1))
+                if (Keyboard.GetState().IsKeyUp(Keys.D1)&& Keyboard.GetState().IsKeyUp(Keys.D2)|| Keyboard.GetState().IsKeyUp(Keys.D3))
                 {
                     swappingBlocks = false;
                 }
@@ -482,6 +504,14 @@ namespace PhysicsTest
                     levelEditor_IsSlipBlock = true;
 
                     levelEditor_IsSpikeBlock = false;
+                }
+
+                if (Keyboard.GetState().IsKeyDown(Keys.D3))
+                {
+                    levelEditor_IsRegBlock = false;
+                    levelEditor_IsSlipBlock = false;
+
+                    levelEditor_IsSpikeBlock = true;
                 }
 
                 //regular block
@@ -539,10 +569,14 @@ namespace PhysicsTest
                     {
                         isRemovingBlock = false;
                     }
+
+                    LevelEditor_SlipBlock.blockRect = LevelEditor_RegularBlock.blockRect;
+                    LevelEditor_spikeBlock.blockRect = LevelEditor_RegularBlock.blockRect;
                 }//end reugular block
                 else 
                     if (levelEditor_IsSlipBlock)
                     {
+                   
                         //movement
                         if (Keyboard.GetState().IsKeyDown(Keys.Left))
                         {
@@ -609,11 +643,12 @@ namespace PhysicsTest
                  
                         LevelEditor_RegularBlock.Move(p.playerRect.Location.X, p.playerRect.Location.Y);    
                         LevelEditor_SlipBlock.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
+                        LevelEditor_spikeBlock.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
                     
                 }
              //   LevelEditor_RegularBlock.Move(Mouse.GetState().X - (LevelEditor_RegularBlock.blockRect.Width * 2 + LevelEditor_RegularBlock.blockRect.Width / 3), Mouse.GetState().Y - LevelEditor_RegularBlock.blockRect.Height / 2);
                 IsMouseVisible = false;
             }
-        }
+        } //level editor end
     }
 }
