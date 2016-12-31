@@ -22,6 +22,8 @@ namespace PhysicsTest
         Blocks LevelEditor_SlipBlock;
 
         int RegularBlockSize;
+        int SlipBlockSize;
+        int SpikeBlockSize;
 
         LevelEditor editor;
 
@@ -96,36 +98,11 @@ namespace PhysicsTest
             projectiles = new List<Projectile>();
             playerList = new List<Player>();
 
-           
-            for(int i = 0; i < 15; i++)
-            {
-                if (i < 3)
-                {
-                    Blocks b = new Blocks(new Rectangle(-100 + (i * 100), Window.ClientBounds.Height / 2, 200, 50), blockTex);
-                    RegularBlockList.Add(b);
-                }else
-                if(i<6 && i >3)
-                {
-                    Blocks b = new Blocks(new Rectangle(-100 + (i * 10), Window.ClientBounds.Height / 2- 60, 200, 50), blockTex);
-                    RegularBlockList.Add(b);
-                }
-                else
-                if(i<10 && i >6)
-                {
-                    Blocks b = new Blocks(new Rectangle(-400 + (i * 105), Window.ClientBounds.Height / 2 - 60, 200, 50), blockTex);
-                    RegularBlockList.Add(b);
-                }else
-                {
-                    Blocks sb = new Blocks(new Rectangle(500 + (i * 100), Window.ClientBounds.Height / 2 - 60, 200, 50), skateBlockTex);
-                    sb.isSlipBlock = true;
-                    SkateBlockList.Add(sb);
-                }
-                    
-            }
-
 
             playerList.Add(_player);
 
+
+            loadPlayer();
             base.Initialize();
         }
 
@@ -286,6 +263,7 @@ namespace PhysicsTest
             //end camera
 
             RegularBlockSize = RegularBlockList.Count - 1;
+            SlipBlockSize = SkateBlockList.Count - 1;
             base.Update(gameTime);
         }
 
@@ -362,6 +340,15 @@ namespace PhysicsTest
             sw.WriteLine(RegularBlockSize);
             sw.WriteLine("");
 
+            foreach (Blocks b in SkateBlockList)
+            {
+                sw.WriteLine(b.blockRect.X + "," + b.blockRect.Y);
+            }
+
+            sw.WriteLine("");
+            sw.WriteLine(SlipBlockSize);
+            sw.WriteLine("");
+
             sw.Close();
         }
 
@@ -379,6 +366,7 @@ namespace PhysicsTest
             {
                 RegularBlockList.Remove(RegularBlockList[i]);
             }
+            if(RegularBlockSize!=0)
             RegularBlockList.Remove(RegularBlockList[0]);
 
             playerList.Remove(playerList[0]);            
@@ -561,7 +549,6 @@ namespace PhysicsTest
 
                         foreach (Blocks b in SkateBlockList)
                         {
-
                             if (LevelEditor_SlipBlock.blockRect.Intersects(b.blockRect))
                             {
                                 if (Keyboard.GetState().IsKeyDown(Keys.B) && !isRemovingBlock)
@@ -588,14 +575,10 @@ namespace PhysicsTest
             {
                 foreach (Player p in playerList)
                 {
-                    if (levelEditor_IsRegBlock)
-                    {
-                        LevelEditor_RegularBlock.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
-                    }else
-                        if (levelEditor_IsSlipBlock)
-                    {
+                 
+                        LevelEditor_RegularBlock.Move(p.playerRect.Location.X, p.playerRect.Location.Y);    
                         LevelEditor_SlipBlock.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
-                    }
+                    
                 }
              //   LevelEditor_RegularBlock.Move(Mouse.GetState().X - (LevelEditor_RegularBlock.blockRect.Width * 2 + LevelEditor_RegularBlock.blockRect.Width / 3), Mouse.GetState().Y - LevelEditor_RegularBlock.blockRect.Height / 2);
                 IsMouseVisible = false;
