@@ -55,6 +55,7 @@ namespace PhysicsTest
 
         //life vars
         private int playerHP;
+        private bool isTakingDamage;
             //end life  
               
         public Player(Rectangle _playerRect, Texture2D _playerTexture, Color _playerColor, Point _bounds)
@@ -438,7 +439,8 @@ namespace PhysicsTest
 
         public void Colliders(Blocks block)
         {
-         
+            if (!block.isSpikeBlock)
+            {
                 if (collision.TouchTopOf(_playerRect, block.blockRect))
                 {
                     _velocity.Y = 0;
@@ -464,12 +466,12 @@ namespace PhysicsTest
                         if (slideRight)
                         {
 
-                        if (_velocity.X < 3 && _slideTime > 0)
+                            if (_velocity.X < 3 && _slideTime > 0)
                             {
-                                    _velocity.X += ((int)1 * (int)1.5);
+                                _velocity.X += ((int)1 * (int)1.5);
                             }
                             else
-                                if (_velocity.X > 0 && _slideTime <= 0)
+                                    if (_velocity.X > 0 && _slideTime <= 0)
                             {
                                 _velocity.X -= ((int)1 * (int)1.5);
                             }
@@ -478,44 +480,44 @@ namespace PhysicsTest
                             {
                                 _velocity.X = 0;
                             }
-                        _slideTime -= 1 / 60f;
+                            _slideTime -= 1 / 60f;
 
-                        if (shooting && !slideAndShoot)
-                        {
-                       
-                            _velocity.X -= 12;
-                            _slideTime = 0;
-                            slideAndShoot = true;
-                        }
-
-                        if (!shooting)
-                        {
-                            slideAndShoot = false;
-                        }
-                    }
-                    else
-                        if (slideLeft)
-                          {
-                              if (_velocity.X > -3 && _slideTime > 0)
-                              {
-                                  _velocity.X -= ((int)1 * (int)1.5);
-
-                              }
-                              else
-                                 if (_velocity.X < 0 && _slideTime <= 0)
-                              {
-                                  _velocity.X += ((int)1 * (int)1.5);
-                              }
-
-                              if (_velocity.X >= 0 && !shooting)
-                              {
-                                  _velocity.X = 0;
-                              }
-
-                              _slideTime -= 1 / 60f;
                             if (shooting && !slideAndShoot)
                             {
-                           
+
+                                _velocity.X -= 12;
+                                _slideTime = 0;
+                                slideAndShoot = true;
+                            }
+
+                            if (!shooting)
+                            {
+                                slideAndShoot = false;
+                            }
+                        }
+                        else
+                        if (slideLeft)
+                        {
+                            if (_velocity.X > -3 && _slideTime > 0)
+                            {
+                                _velocity.X -= ((int)1 * (int)1.5);
+
+                            }
+                            else
+                               if (_velocity.X < 0 && _slideTime <= 0)
+                            {
+                                _velocity.X += ((int)1 * (int)1.5);
+                            }
+
+                            if (_velocity.X >= 0 && !shooting)
+                            {
+                                _velocity.X = 0;
+                            }
+
+                            _slideTime -= 1 / 60f;
+                            if (shooting && !slideAndShoot)
+                            {
+
                                 _velocity.X += 12;
                                 _slideTime = 0;
                                 slideAndShoot = true;
@@ -534,30 +536,39 @@ namespace PhysicsTest
                     }
                 }
 
-            if (collision.TouchBottomOf(_playerRect, block.blockRect))
-            {
-                _velocity.Y += -_velocity.Y / 2;
-            }
-
-          
-            if (block.blockRect.Intersects(_playerRect))
-            {
-                if (block.blockRect.Left > _playerRect.Left)
+                if (collision.TouchBottomOf(_playerRect, block.blockRect))
                 {
-                   if (block.blockRect.Top != _playerRect.Bottom - 1)
-                    {
-                        _playerRect.X -= 3;
-                    }   
+                    _velocity.Y += -_velocity.Y / 2;
                 }
-                if (block.blockRect.Right < _playerRect.Right)
+
+
+                if (block.blockRect.Intersects(_playerRect))
                 {
-                   if (block.blockRect.Top != _playerRect.Bottom - 1)
+                    if (block.blockRect.Left > _playerRect.Left)
                     {
-                        _playerRect.X += 3;
+                        if (block.blockRect.Top != _playerRect.Bottom - 1)
+                        {
+                            _playerRect.X -= 3;
+                        }
+                    }
+                    if (block.blockRect.Right < _playerRect.Right)
+                    {
+                        if (block.blockRect.Top != _playerRect.Bottom - 1)
+                        {
+                            _playerRect.X += 3;
+                        }
                     }
                 }
-            }
-       
+            }else
+                if(block.isSpikeBlock)
+                {
+                if (_playerRect.Intersects(block.blockRect))
+                {
+                    Console.WriteLine("do damage");
+                }
+                else
+                    Console.WriteLine("nothing");
+                }
         }
 
         private void physicsTimers()

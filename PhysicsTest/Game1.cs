@@ -196,6 +196,11 @@ namespace PhysicsTest
                     {
                         pl.Colliders(sb);
                     }
+
+                    foreach(Blocks sb in spikeBlockList)
+                    {
+                        pl.Colliders(sb);
+                    }
                 }
                 pl.Animation();
 
