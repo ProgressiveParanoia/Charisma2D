@@ -98,7 +98,7 @@ namespace PhysicsTest
             LevelEditor_RegularBlock = new Blocks(new Rectangle(0,0,200,50),blockTex);
             LevelEditor_SlipBlock = new Blocks(new Rectangle(0,0,200,50),skateBlockTex);
 
-            LevelEditor_spikeBlock = new Blocks(new Rectangle(0,0,32,32),spikeBlockTex);
+            LevelEditor_spikeBlock = new Blocks(new Rectangle(0,0,16,16),spikeBlockTex);
 
             Texture2D editorTex = Content.Load<Texture2D>(@"editorBackdrop");
 
@@ -375,6 +375,14 @@ namespace PhysicsTest
             sw.WriteLine(SlipBlockSize);
             sw.WriteLine("");
 
+            foreach (Blocks b in spikeBlockList)
+            {
+                sw.WriteLine(b.blockRect.X + "," + b.blockRect.Y);
+            }
+
+            sw.WriteLine("");
+            sw.WriteLine(SpikeBlockSize);
+            sw.WriteLine("");
             sw.Close();
         }
 
@@ -459,8 +467,6 @@ namespace PhysicsTest
                 int posX = int.Parse(PosData[0]);
                 int posY = int.Parse(PosData[1]);
 
-
-
                 Blocks b = new Blocks(new Rectangle(posX, posY, 200, 50), skateBlockTex);
                 b.isSlipBlock = true;
                 SkateBlockList.Add(b);
@@ -473,6 +479,34 @@ namespace PhysicsTest
                 if (fileData == "")
                     break;
                 SlipBlockSize = int.Parse(fileData);
+            }
+
+            spaceEater = fileData;
+
+            while ((fileData = sr.ReadLine()) != null)
+            {
+                string[] PosData = fileData.Split(',');
+
+                if (fileData == "")
+                {
+                    break;
+                }
+
+                int posX = int.Parse(PosData[0]);
+                int posY = int.Parse(PosData[1]);
+
+                Blocks b = new Blocks(new Rectangle(posX, posY, 16, 16), spikeBlockTex);
+                b.isSpikeBlock = true;
+                spikeBlockList.Add(b);
+            }
+
+            spaceEater = fileData;
+
+            while ((fileData = sr.ReadLine())!=null)
+            {
+                if (fileData == "")
+                    break;
+                SpikeBlockSize = int.Parse(fileData);
             }
             sr.Close();
         }
@@ -626,7 +660,6 @@ namespace PhysicsTest
                                     isRemovingBlock = true;
                                     break;
                                 }
-                           
                             }
                         }
 
@@ -664,7 +697,7 @@ namespace PhysicsTest
                     //input place
                     if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isPlacingBlock)
                     {
-                        Blocks b = new Blocks(new Rectangle(LevelEditor_spikeBlock.blockRect.Location.X, LevelEditor_spikeBlock.blockRect.Location.Y, 32, 32), spikeBlockTex);
+                        Blocks b = new Blocks(new Rectangle(LevelEditor_spikeBlock.blockRect.Location.X, LevelEditor_spikeBlock.blockRect.Location.Y, 16, 16), spikeBlockTex);
 
                         b.isSpikeBlock = true;
                         spikeBlockList.Add(b);
