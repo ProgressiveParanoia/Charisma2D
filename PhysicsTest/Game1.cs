@@ -43,8 +43,16 @@ namespace PhysicsTest
         bool playMode;
         bool devMode;
 
+
+        //blocks player has
         bool levelEditor_IsRegBlock;
-        
+        bool levelEditor_IsSlipBlock;
+
+        bool levelEditor_IsSpikeBlock;
+        bool levelEditor_IsJumpBlock;
+        //end blocktypes
+
+
         //key inputs
         bool swappingModes;
         bool swappingBlocks;
@@ -78,6 +86,7 @@ namespace PhysicsTest
             cam = new Camera(GraphicsDevice.Viewport);
 
             LevelEditor_RegularBlock = new Blocks(new Rectangle(0,0,200,50),blockTex);
+            LevelEditor_SlipBlock = new Blocks(new Rectangle(0,0,200,50),skateBlockTex);
 
             Texture2D editorTex = Content.Load<Texture2D>(@"editorBackdrop");
 
@@ -432,6 +441,10 @@ namespace PhysicsTest
                 if (Keyboard.GetState().IsKeyDown(Keys.D1) && !swappingBlocks)
                 {
                     levelEditor_IsRegBlock = true;
+                    levelEditor_IsSlipBlock = false;
+
+                    levelEditor_IsSpikeBlock = false;
+                    //levelEditor_IsSpikeBlock = false;
 
                     swappingBlocks = true;
                 }
@@ -443,8 +456,13 @@ namespace PhysicsTest
 
                 if (Keyboard.GetState().IsKeyDown(Keys.D2))
                 {
+                    levelEditor_IsRegBlock = false;
+                    levelEditor_IsSlipBlock = true;
 
+                    levelEditor_IsSpikeBlock = false;
                 }
+
+                //regular block
                     if (levelEditor_IsRegBlock)
                     {
                         //movement
@@ -500,7 +518,9 @@ namespace PhysicsTest
                     {
                         isRemovingBlock = false;
                     }
-                }
+                }//end reugular block
+
+                   
 
                 IsMouseVisible = true;
 
@@ -509,7 +529,14 @@ namespace PhysicsTest
             {
                 foreach (Player p in playerList)
                 {
-                    LevelEditor_RegularBlock.Move(p.playerRect.Location.X,p.playerRect.Location.Y);
+                    if (levelEditor_IsRegBlock)
+                    {
+                        LevelEditor_RegularBlock.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
+                    }else
+                        if (levelEditor_IsSlipBlock)
+                    {
+                        LevelEditor_SlipBlock.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
+                    }
                 }
              //   LevelEditor_RegularBlock.Move(Mouse.GetState().X - (LevelEditor_RegularBlock.blockRect.Width * 2 + LevelEditor_RegularBlock.blockRect.Width / 3), Mouse.GetState().Y - LevelEditor_RegularBlock.blockRect.Height / 2);
                 IsMouseVisible = false;
