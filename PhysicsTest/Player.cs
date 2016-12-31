@@ -50,8 +50,13 @@ namespace PhysicsTest
 
         //Weapon Variables
         private int _ammoCounter;
+
         //end weapon vars
 
+        //life vars
+        private int playerHP;
+            //end life  
+              
         public Player(Rectangle _playerRect, Texture2D _playerTexture, Color _playerColor, Point _bounds)
         {
             this._playerRect = _playerRect;
@@ -116,7 +121,6 @@ namespace PhysicsTest
             }
 
         }
-
         public Point velocity
         {
             get { return _velocity; }
@@ -127,6 +131,12 @@ namespace PhysicsTest
         {
             get { return _ammoCounter; }
             set { _ammoCounter = value; }
+        }
+
+        public int playerLife
+        {
+            get { return playerHP; }
+            set { playerHP = value; }
         }
 
         public float jumpTime

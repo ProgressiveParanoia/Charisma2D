@@ -41,7 +41,7 @@ namespace PhysicsTest
         List<Projectile> projectiles;
 
         Texture2D shotgunPellet;
-
+            
         Texture2D playerTex;
         Texture2D blockTex;
         Texture2D skateBlockTex;
@@ -199,6 +199,7 @@ namespace PhysicsTest
                 }
                 pl.Animation();
 
+                //camera stuff
                 cam.setToCenter(pl.playerRect, new Point(Window.ClientBounds.Width, Window.ClientBounds.Height));
             }
                 //save and load inputs
@@ -270,15 +271,13 @@ namespace PhysicsTest
             here:
             //end projectiles
 
-            //camera related methods
 
-            //new Point(_player.playerRect.X + (_player.playerRect.Width/2),);
-
-            //end camera
-
+           
+            //size tracker for level editor
             RegularBlockSize = RegularBlockList.Count - 1;
             SlipBlockSize = SkateBlockList.Count - 1;
             SpikeBlockSize = spikeBlockList.Count - 1;
+            //end size tracker
             base.Update(gameTime);
         }
 
@@ -301,7 +300,7 @@ namespace PhysicsTest
 
                     if (devMode)
                     {
-                        spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 60), Color.White);
+                        spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks [3] spikes [4] ammo", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 60), Color.White);
                         spriteBatch.DrawString(sF, "[Space]Place Block [B]Remove Block", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 1000), Color.White);
                 }
                     
@@ -570,8 +569,8 @@ namespace PhysicsTest
                         isRemovingBlock = false;
                     }
 
-                    LevelEditor_SlipBlock.blockRect = LevelEditor_RegularBlock.blockRect;
-                    LevelEditor_spikeBlock.blockRect = LevelEditor_RegularBlock.blockRect;
+                    LevelEditor_SlipBlock.blockPos = LevelEditor_RegularBlock.blockPos;
+                    LevelEditor_spikeBlock.blockPos = LevelEditor_RegularBlock.blockPos;
                 }//end reugular block
                 else 
                     if (levelEditor_IsSlipBlock)
@@ -630,7 +629,71 @@ namespace PhysicsTest
                         {
                             isRemovingBlock = false;
                         }
+
+                    LevelEditor_RegularBlock.blockPos = LevelEditor_SlipBlock.blockRect.Location;
+                    LevelEditor_spikeBlock.blockPos = LevelEditor_RegularBlock.blockRect.Location;
+                }else
+                    if (levelEditor_IsSpikeBlock)
+                {
+
+                    //movement
+                    if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                    {
+                        LevelEditor_spikeBlock.Move(LevelEditor_spikeBlock.blockRect.X - 3, LevelEditor_spikeBlock.blockRect.Y);
                     }
+                    if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                    {
+                        LevelEditor_spikeBlock.Move(LevelEditor_spikeBlock.blockRect.X + 3, LevelEditor_spikeBlock.blockRect.Y);
+                    }
+
+                    if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                    {
+                        LevelEditor_spikeBlock.Move(LevelEditor_spikeBlock.blockRect.X, LevelEditor_spikeBlock.blockRect.Y - 3);
+                    }
+                    if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                    {
+                        LevelEditor_spikeBlock.Move(LevelEditor_spikeBlock.blockRect.X, LevelEditor_spikeBlock.blockRect.Y + 3);
+                    }
+                    //move end
+
+                    //input place
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isPlacingBlock)
+                    {
+                        Blocks b = new Blocks(new Rectangle(LevelEditor_spikeBlock.blockRect.Location.X, LevelEditor_spikeBlock.blockRect.Location.Y, 32, 32), spikeBlockTex);
+
+                        b.isSpikeBlock = true;
+                        spikeBlockList.Add(b);
+
+                        isPlacingBlock = true;
+                    }
+                    if (Keyboard.GetState().IsKeyUp(Keys.Space))
+                    {
+                        isPlacingBlock = false;
+                    }
+                    //input place done
+
+                    foreach (Blocks b in spikeBlockList)
+                    {
+                        if (LevelEditor_spikeBlock.blockRect.Intersects(b.blockRect))
+                        {
+                            if (Keyboard.GetState().IsKeyDown(Keys.B) && !isRemovingBlock)
+                            {
+                                spikeBlockList.Remove(b);
+                                isRemovingBlock = true;
+                                break;
+                            }
+
+                        }
+                    }
+
+                    if (Keyboard.GetState().IsKeyUp(Keys.B))
+                    {
+                        isRemovingBlock = false;
+                    }
+
+                    LevelEditor_RegularBlock.blockPos = LevelEditor_spikeBlock.blockPos;
+                    LevelEditor_SlipBlock.blockPos = LevelEditor_spikeBlock.blockPos;
+                }
 
 
                 IsMouseVisible = true;

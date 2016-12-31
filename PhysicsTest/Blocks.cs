@@ -14,6 +14,7 @@ namespace PhysicsTest
         private Texture2D _blockTexture;
 
         private bool isSlippery;
+        private bool isPointy;
 
         public Blocks(Rectangle _blockRect, Texture2D _blockTexture)
         {
@@ -45,12 +46,23 @@ namespace PhysicsTest
             }
         }
 
+        public Point blockPos
+        {
+            get { return _blockRect.Location; }
+            set { _blockRect.Location = value; }
+        }
+
         public bool isSlipBlock
         {
             get { return isSlippery; }
             set { isSlippery = value; }
         }
 
+        public bool isSpikeBlock
+        {
+            get { return isPointy; }
+            set { isPointy = value; }
+        }
         public void Move(int x, int y)
         {
             _blockRect.Location = new Point(x,y);
