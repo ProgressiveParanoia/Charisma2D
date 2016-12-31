@@ -462,7 +462,7 @@ namespace PhysicsTest
                                 _velocity.X -= ((int)1 * (int)1.5);
                             }
 
-                            if (_velocity.X <= 0)
+                            if (_velocity.X <= 0 && !shooting)
                             {
                                 _velocity.X = 0;
                             }
@@ -470,7 +470,7 @@ namespace PhysicsTest
 
                         if (shooting)
                         {
-                            _velocity.X -= 9;
+                            _velocity.X -= 3;
                             _slideTime = 0;
                         }
                     }
@@ -488,7 +488,7 @@ namespace PhysicsTest
                                   _velocity.X += ((int)1 * (int)1.5);
                               }
 
-                              if (_velocity.X >= 0)
+                              if (_velocity.X >= 0 && !shooting)
                               {
                                   _velocity.X = 0;
                               }
@@ -497,7 +497,7 @@ namespace PhysicsTest
                         if (shooting)
                         {
                            
-                            _velocity.X += 9;
+                            _velocity.X += 3;
                             _slideTime = 0;
 
                         }
