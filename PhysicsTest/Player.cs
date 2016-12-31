@@ -50,7 +50,7 @@ namespace PhysicsTest
 
         //Weapon Variables
         private int _ammoCounter;
-
+ 
         //end weapon vars
 
         //life vars
@@ -562,12 +562,27 @@ namespace PhysicsTest
             }else
                 if(block.isSpikeBlock)
                 {
-                if (_playerRect.Intersects(block.blockRect))
+                if (_playerRect.Intersects(block.blockRect) && !isTakingDamage)
                 {
+                    if (movingRight || idleRight)
+                    {
+                        _velocity.X -= 3;
+                      
+                    }
+                    if (movingLeft || idleLeft)
+                    {
+                        _velocity.X += 3;  
+                    }
+                    _velocity.Y -= 3;
+                    isJumping = false;
                     Console.WriteLine("do damage");
+                    isTakingDamage = true;
                 }
                 else
-                    Console.WriteLine("nothing");
+                    {
+                        Console.WriteLine("nothing");
+                        isTakingDamage = false;
+                    }
                 }
         }
 
