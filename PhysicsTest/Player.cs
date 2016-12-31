@@ -473,7 +473,7 @@ namespace PhysicsTest
                         if (shooting && !slideAndShoot)
                         {
                        
-                            _velocity.X -= 9;
+                            _velocity.X -= 12;
                             _slideTime = 0;
                             slideAndShoot = true;
                         }
@@ -506,7 +506,7 @@ namespace PhysicsTest
                             if (shooting && !slideAndShoot)
                             {
                            
-                                _velocity.X += 9;
+                                _velocity.X += 12;
                                 _slideTime = 0;
                                 slideAndShoot = true;
                             }

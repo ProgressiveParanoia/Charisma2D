@@ -68,6 +68,7 @@
     <Content Include="Content\enemyProjectile.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\icicleDown.png" />
     <Content Include="Content\skateBlocks.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
