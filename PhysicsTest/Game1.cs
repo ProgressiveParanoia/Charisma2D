@@ -411,12 +411,42 @@ namespace PhysicsTest
             }
 
             spaceEater = fileData;
+
             while ((fileData = sr.ReadLine()) != null)
             {
                 if (fileData == "")
                     break;
                 RegularBlockSize = int.Parse(fileData);
+            }
 
+            spaceEater = fileData;
+
+            while ((fileData = sr.ReadLine()) != null)
+            {
+                string[] PosData = fileData.Split(',');
+
+                if (fileData == "")
+                {
+                    break;
+                }
+
+                int posX = int.Parse(PosData[0]);
+                int posY = int.Parse(PosData[1]);
+
+
+
+                Blocks b = new Blocks(new Rectangle(posX, posY, 200, 50), skateBlockTex);
+                b.isSlipBlock = true;
+                SkateBlockList.Add(b);
+            }
+
+            spaceEater = fileData;
+
+            while ((fileData = sr.ReadLine()) != null)
+            {
+                if (fileData == "")
+                    break;
+                SlipBlockSize = int.Parse(fileData);
             }
             sr.Close();
         }
@@ -500,7 +530,6 @@ namespace PhysicsTest
                                     isRemovingBlock = true;
                                     break;
                                 }
-                            Console.WriteLine("HAHAHA");
                             }
                     }
 
@@ -557,7 +586,7 @@ namespace PhysicsTest
                                     isRemovingBlock = true;
                                     break;
                                 }
-                                Console.WriteLine("HAHAHA");
+                           
                             }
                         }
 
