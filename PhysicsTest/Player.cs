@@ -451,10 +451,10 @@ namespace PhysicsTest
                     {
                         if (slideRight)
                         {
-                            if (_velocity.X < 3 && _slideTime > 0)
-                            {
-                                _velocity.X += ((int)1 * (int)1.5);
 
+                        if (_velocity.X < 3 && _slideTime > 0)
+                            {
+                                    _velocity.X += ((int)1 * (int)1.5);
                             }
                             else
                                 if (_velocity.X > 0 && _slideTime <= 0)
@@ -467,6 +467,12 @@ namespace PhysicsTest
                                 _velocity.X = 0;
                             }
                         _slideTime -= 1 / 60f;
+
+                        if (shooting)
+                        {
+                            _velocity.X -= 9;
+                            _slideTime = 0;
+                        }
                     }
                     else
                         if (slideLeft)
@@ -488,7 +494,14 @@ namespace PhysicsTest
                               }
 
                               _slideTime -= 1 / 60f;
-                          }
+                        if (shooting)
+                        {
+                           
+                            _velocity.X += 9;
+                            _slideTime = 0;
+
+                        }
+                       }
                     }
                     else
                     {
