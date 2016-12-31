@@ -292,15 +292,17 @@ namespace PhysicsTest
                 {
                     spriteBatch.Draw(p.playerTexture,p.playerRect, new Rectangle(p.spriteSheetX, p.spriteSheetY, 192, 192), p.playerColor);
 
-                    spriteBatch.DrawString(sF, "X:" + p.playerRect.X + " Y:" + p.playerRect.Y, new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 0), Color.White);
-                    spriteBatch.DrawString(sF, "[F]Save [L]Load [T]Level Editor",new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 20),Color.White);
+                    spriteBatch.DrawString(sF, "Player X:" + p.playerRect.X + " Y:" + p.playerRect.Y, new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 0), Color.White);
+                    spriteBatch.DrawString(sF, "Editorblock X:" + LevelEditor_RegularBlock.blockRect.X + " Y:" + LevelEditor_RegularBlock.blockRect.Y, new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 20), Color.White);
+                    spriteBatch.DrawString(sF, "[F]Save [L]Load [T]Level Editor",new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 40),Color.White);
                     
 
                     if (devMode)
                     {
-                        spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 40), Color.White);
-                        spriteBatch.DrawString(sF, "[Space]Place Block [B]Remove Block", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 80), Color.White);
+                        spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 60), Color.White);
+                        spriteBatch.DrawString(sF, "[Space]Place Block [B]Remove Block", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 1000), Color.White);
                 }
+                    
                     //  new Rectangle(0, 0, Window.ClientBounds.Width / 4, Window.ClientBounds.Height),editorTex
                 }
                 foreach (Blocks b in RegularBlockList)
@@ -468,7 +470,7 @@ namespace PhysicsTest
                         //input place
                     if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isPlacingBlock)
                         {
-                            Blocks b = new Blocks(new Rectangle(LevelEditor_RegularBlock.blockRect.X, LevelEditor_RegularBlock.blockRect.Y, 200, 50), blockTex);
+                            Blocks b = new Blocks(new Rectangle(LevelEditor_RegularBlock.blockRect.Location.X, LevelEditor_RegularBlock.blockRect.Location.Y, 200, 50), blockTex);
                             RegularBlockList.Add(b);
 
                             isPlacingBlock = true;
@@ -482,16 +484,16 @@ namespace PhysicsTest
                     foreach (Blocks b in RegularBlockList)
                     {
                         
-                            if (playerList[0].playerRect.Intersects(b.blockRect))
+                            if (LevelEditor_RegularBlock.blockRect.Intersects(b.blockRect))
                             {
                                 if (Keyboard.GetState().IsKeyDown(Keys.B) && !isRemovingBlock)
                                 {
                                     RegularBlockList.Remove(b);
+                                    isRemovingBlock = true;
                                     break;
                                 }
+                            Console.WriteLine("HAHAHA");
                             }
-                            isRemovingBlock = true;
-                        
                     }
 
                     if (Keyboard.GetState().IsKeyUp(Keys.B))
