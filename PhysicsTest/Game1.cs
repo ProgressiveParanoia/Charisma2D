@@ -145,6 +145,8 @@ namespace PhysicsTest
                                 Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 0);
                                 Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, -1);
 
+                               // p1.lifeTime = 0.5f;
+
                                 projectiles.Add(p1);
                                 projectiles.Add(p2);
                                 projectiles.Add(p3);

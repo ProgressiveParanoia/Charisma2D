@@ -28,7 +28,7 @@ namespace PhysicsTest
             this.dirX = dirX;
             this.dirY = dirY;
 
-            Timer = 1.5f;
+            Timer = 0.250f;
         }
 
         public Rectangle projectileRect
@@ -45,6 +45,11 @@ namespace PhysicsTest
         {
             get { return _projectileColor; }
             set { _projectileColor = value; }
+        }
+        public float lifeTime
+        {
+            get { return Timer; }
+            set { Timer = value; }
         }
 
         public void shotgunShoot()
