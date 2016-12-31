@@ -331,8 +331,10 @@ namespace PhysicsTest
 
             //dev mode stuff
             if (devMode) {
-                spriteBatch.Draw(LevelEditor_RegularBlock.blockTexture, LevelEditor_RegularBlock.blockRect, Color.White);
-
+                if(levelEditor_IsRegBlock)
+                    spriteBatch.Draw(LevelEditor_RegularBlock.blockTexture, LevelEditor_RegularBlock.blockRect, Color.White);
+                if(levelEditor_IsSlipBlock)
+                    spriteBatch.Draw(LevelEditor_SlipBlock.blockTexture, LevelEditor_SlipBlock.blockRect, Color.White);
             }
             //end
               
@@ -519,8 +521,65 @@ namespace PhysicsTest
                         isRemovingBlock = false;
                     }
                 }//end reugular block
+                else 
+                    if (levelEditor_IsSlipBlock)
+                    {
+                        //movement
+                        if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                        {
+                            LevelEditor_SlipBlock.Move(LevelEditor_SlipBlock.blockRect.X - 3, LevelEditor_SlipBlock.blockRect.Y);
+                        }
+                        if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                        {
+                            LevelEditor_SlipBlock.Move(LevelEditor_SlipBlock.blockRect.X + 3, LevelEditor_SlipBlock.blockRect.Y);
+                        }
 
-                   
+                        if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                        {
+                            LevelEditor_SlipBlock.Move(LevelEditor_SlipBlock.blockRect.X, LevelEditor_SlipBlock.blockRect.Y - 3);
+                        }
+                        if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                        {
+                            LevelEditor_SlipBlock.Move(LevelEditor_SlipBlock.blockRect.X, LevelEditor_SlipBlock.blockRect.Y + 3);
+                        }
+                        //move end
+
+                        //input place
+                        if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isPlacingBlock)
+                        {
+                            Blocks b = new Blocks(new Rectangle(LevelEditor_SlipBlock.blockRect.Location.X, LevelEditor_SlipBlock.blockRect.Location.Y, 200, 50), skateBlockTex);
+                            b.isSlipBlock = true;
+                            SkateBlockList.Add(b);
+
+                            isPlacingBlock = true;
+                        }
+                        if (Keyboard.GetState().IsKeyUp(Keys.Space))
+                        {
+                            isPlacingBlock = false;
+                        }
+                        //input place done
+
+                        foreach (Blocks b in SkateBlockList)
+                        {
+
+                            if (LevelEditor_SlipBlock.blockRect.Intersects(b.blockRect))
+                            {
+                                if (Keyboard.GetState().IsKeyDown(Keys.B) && !isRemovingBlock)
+                                {
+                                    SkateBlockList.Remove(b);
+                                    isRemovingBlock = true;
+                                    break;
+                                }
+                                Console.WriteLine("HAHAHA");
+                            }
+                        }
+
+                        if (Keyboard.GetState().IsKeyUp(Keys.B))
+                        {
+                            isRemovingBlock = false;
+                        }
+                    }
+
 
                 IsMouseVisible = true;
 
