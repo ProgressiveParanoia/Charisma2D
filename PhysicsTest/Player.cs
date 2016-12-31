@@ -44,6 +44,8 @@ namespace PhysicsTest
         private bool movingRight;
         private bool idleRight;
         private bool idleLeft;
+
+        private bool slideAndShoot;
         //end animation variables
 
         //Weapon Variables
@@ -468,10 +470,17 @@ namespace PhysicsTest
                             }
                         _slideTime -= 1 / 60f;
 
-                        if (shooting)
+                        if (shooting && !slideAndShoot)
                         {
-                            _velocity.X -= 3;
+                       
+                            _velocity.X -= 9;
                             _slideTime = 0;
+                            slideAndShoot = true;
+                        }
+
+                        if (!shooting)
+                        {
+                            slideAndShoot = false;
                         }
                     }
                     else
@@ -494,14 +503,19 @@ namespace PhysicsTest
                               }
 
                               _slideTime -= 1 / 60f;
-                        if (shooting)
-                        {
+                            if (shooting && !slideAndShoot)
+                            {
                            
-                            _velocity.X += 3;
-                            _slideTime = 0;
+                                _velocity.X += 9;
+                                _slideTime = 0;
+                                slideAndShoot = true;
+                            }
 
+                            if (!shooting)
+                            {
+                                slideAndShoot = false;
+                            }
                         }
-                       }
                     }
                     else
                     {
@@ -547,6 +561,7 @@ namespace PhysicsTest
             {
                 if (jumpTime > 0)
                 {
+                   
                     jumpTime -= 1 / 60f;
                 }
                 else
