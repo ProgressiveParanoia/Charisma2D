@@ -27,12 +27,24 @@ namespace PhysicsTest
         private bool attackLeft;
         //end animation vars
 
+        //movement vars
+        private int MaxLocationX; //max point an enemy can go to
+        private int MinLocationX; // minimum point an enemy can go to
+
+        private int MaxLocationY;
+        private int MinLocationY;
+        //end movement vars
+
         public Enemy(Rectangle _enemyRect, Texture2D _enemyTexture)
         {
             this._enemyRect = _enemyRect;
             this._enemyTexture = _enemyTexture;
 
-            attackLeft = true;
+            movingRight = true;
+
+            MaxLocationX = _enemyRect.X + 50;
+            MinLocationX = _enemyRect.X - 50;
+   
         }
 
         public Rectangle enemyRect
@@ -149,6 +161,34 @@ namespace PhysicsTest
                 }
             _animationDelay++;
         }
+
+        public void snowmanMovement()
+        {
+            int posX = _enemyRect.X;
+            int posY = _enemyRect.Y;
+
+            if (movingRight)
+            {
+                posX += 1;
+                    if(_enemyRect.X >=MaxLocationX)
+                {
+                    movingRight = false;
+                    movingLeft = true;
+                }
+            }
+            if (movingLeft)
+            {
+                posX -= 1;
+                if (_enemyRect.X <= MinLocationX)
+                {
+                    movingRight = true;
+                    movingLeft = false;
+                }
+            }
+
+            _enemyRect.Location = new Point(posX,posY);
+        }
+
         public void penguinAnimation()
         {
 
