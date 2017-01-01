@@ -23,6 +23,8 @@ namespace PhysicsTest
 
         Blocks LevelEditor_spikeBlock;
 
+        Enemy LevelEditor_snowmen;
+
         //Blocks LevelEditor_
 
         int RegularBlockSize;
@@ -38,6 +40,9 @@ namespace PhysicsTest
 
         List<Player> playerList;
 
+        List<Enemy> snowmenList;
+        List<Enemy> penguinList;
+
         List<Projectile> projectiles;
 
         Texture2D shotgunPellet;
@@ -46,6 +51,8 @@ namespace PhysicsTest
         Texture2D blockTex;
         Texture2D skateBlockTex;
         Texture2D spikeBlockTex;
+
+        Texture2D snowmenTex;
 
         SpriteFont sF;
 
@@ -90,6 +97,8 @@ namespace PhysicsTest
 
             shotgunPellet = Content.Load<Texture2D>(@"shotgunPellet");
 
+            snowmenTex = Content.Load<Texture2D>(@"snowman_sheet");
+
             sF = Content.Load<SpriteFont>(@"spriteFont");
 
             _player = new Player(new Rectangle(0,0,64,64),playerTex,Color.White,new Point(Window.ClientBounds.Width,Window.ClientBounds.Height));
@@ -100,16 +109,19 @@ namespace PhysicsTest
 
             LevelEditor_spikeBlock = new Blocks(new Rectangle(0,0,16,16),spikeBlockTex);
 
+            LevelEditor_snowmen = new Enemy((new Rectangle(0,0,64,64)),snowmenTex);
+
             Texture2D editorTex = Content.Load<Texture2D>(@"editorBackdrop");
 
-            
             RegularBlockList = new List<Blocks>();
             SkateBlockList = new List<Blocks>();
             spikeBlockList = new List<Blocks>();
 
+            snowmenList = new List<Enemy>();
+            penguinList = new List<Enemy>();
+
             projectiles = new List<Projectile>();
             playerList = new List<Player>();
-
 
             playerList.Add(_player);
 
@@ -277,7 +289,8 @@ namespace PhysicsTest
             //end projectiles
 
 
-           
+            LevelEditor_snowmen.snowmanAnimation();
+
             //size tracker for level editor
             RegularBlockSize = RegularBlockList.Count - 1;
             SlipBlockSize = SkateBlockList.Count - 1;
@@ -305,7 +318,7 @@ namespace PhysicsTest
 
                     if (devMode)
                     {
-                        spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks [3] spikes [4] ammo", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 60), Color.White);
+                        spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks [3] spikes [4] ammo [5] snowmen [6] penguins", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 60), Color.White);
                         spriteBatch.DrawString(sF, "[Space]Place Block [B]Remove Block", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 1000), Color.White);
                 }
                     
@@ -341,6 +354,8 @@ namespace PhysicsTest
                     spriteBatch.Draw(LevelEditor_spikeBlock.blockTexture, LevelEditor_spikeBlock.blockRect, Color.White);
             }
             //end
+           // spriteBatch.Draw(p.playerTexture, p.playerRect, new Rectangle(p.spriteSheetX, p.spriteSheetY, 192, 192), p.playerColor);
+            spriteBatch.Draw(LevelEditor_snowmen.enemyTexture,LevelEditor_snowmen.enemyRect,new Rectangle(LevelEditor_snowmen.SpriteSheetX,LevelEditor_snowmen.SpriteSheetY,96,96),Color.White);
               
             spriteBatch.End();
 
@@ -516,8 +531,7 @@ namespace PhysicsTest
 
         void LevelEditor()
         {
-         
-            
+             
             if (devMode)
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.D1) && !swappingBlocks)
