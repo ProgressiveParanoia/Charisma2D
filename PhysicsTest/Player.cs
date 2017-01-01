@@ -564,23 +564,29 @@ namespace PhysicsTest
                 {
                 if (_playerRect.Intersects(block.blockRect) && !isTakingDamage)
                 {
-                    if (movingRight || idleRight)
-                    {
-                        _velocity.X -= 3;
-                      
-                    }
-                    if (movingLeft || idleLeft)
-                    {
-                        _velocity.X += 3;  
-                    }
+               
+                        if (movingRight || idleRight)
+                        {
+                            _velocity.X -= 3;
+
+                        }
+
+                //    if (playerRect.X - _playerRect.X / 2 < block.blockRect.X)
+                 //   {
+                        if (movingLeft || idleLeft)
+                        {
+                            _velocity.X += 3;
+                        }
+               //     }
+
                     _velocity.Y -= 3;
                     isJumping = false;
-                    Console.WriteLine("do damage");
+                  //  Console.WriteLine("do damage");
                     isTakingDamage = true;
                 }
                 else
                     {
-                        Console.WriteLine("nothing");
+                     //   Console.WriteLine("nothing");
                         isTakingDamage = false;
                     }
                 }

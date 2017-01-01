@@ -41,6 +41,7 @@
     <Compile Include="Blocks.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Collision.cs" />
+    <Compile Include="Enemy.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="LevelEditor.cs" />
     <Compile Include="Player.cs" />
