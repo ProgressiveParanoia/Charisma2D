@@ -88,7 +88,7 @@ namespace PhysicsTest
             skateBlockTex = Content.Load<Texture2D>(@"skateBlocks");
             spikeBlockTex = Content.Load<Texture2D>(@"icicleDown");
 
-            shotgunPellet = Content.Load<Texture2D>(@"enemyProjectile");
+            shotgunPellet = Content.Load<Texture2D>(@"shotgunPellet");
 
             sF = Content.Load<SpriteFont>(@"spriteFont");
 
