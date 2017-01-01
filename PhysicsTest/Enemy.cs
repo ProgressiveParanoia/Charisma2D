@@ -22,8 +22,9 @@ namespace PhysicsTest
 
         private bool movingLeft;
         private bool movingRight;
-        private bool idleRight;
-        private bool idleLeft;
+
+        private bool attackRight;
+        private bool attackLeft;
         //end animation vars
 
         public Enemy(Rectangle _enemyRect, Texture2D _enemyTexture)
@@ -31,7 +32,7 @@ namespace PhysicsTest
             this._enemyRect = _enemyRect;
             this._enemyTexture = _enemyTexture;
 
-            movingRight = true;
+            attackLeft = true;
         }
 
         public Rectangle enemyRect
@@ -80,7 +81,72 @@ namespace PhysicsTest
                     }
                     _animationDelay = 0;
                 }
-            }
+            }else
+                if (movingLeft)
+                {
+                    if(_animationDelay > 10)
+                    {
+                        if(_SpriteSheetX < 288)
+                        {
+                            _SpriteSheetX += 96;
+
+                            if (SpriteSheetY < 192)
+                            {
+                                _SpriteSheetY = 192;
+                            }
+                        }
+                        else
+                        {
+                            _SpriteSheetX = 0;
+                            
+                            if(_SpriteSheetY < 288)
+                            {
+                                _SpriteSheetY += 96;
+                            }else
+                            {
+                                _SpriteSheetX = 0;
+                                _SpriteSheetY = 192;
+                            }
+                        }
+                    _animationDelay = 0;
+                    }
+                }
+
+            if (attackRight)
+            {
+                if(_animationDelay > 10) //add additional variable to for attack delays
+                {
+                    if(_SpriteSheetX < 96)
+                    {
+                        _SpriteSheetX += 96;
+                        
+                    }else
+                    {
+                        _SpriteSheetX = 0;
+                    }
+                    _animationDelay = 0;
+                }
+                _SpriteSheetY = 384;
+            }else
+                if (attackLeft)
+                {
+                    if(SpriteSheetX < 192)
+                    {
+                        SpriteSheetX = 192;
+                    }
+                    if(_animationDelay > 10)
+                    {
+                        if(_SpriteSheetX < 288)
+                        {
+                            _SpriteSheetX += 96;
+                        }else
+                       {
+                            _SpriteSheetX = 0;
+                       }
+                        _animationDelay = 0;
+                    }
+                    _SpriteSheetY = 384;
+                }
             _animationDelay++;
         }
         public void penguinAnimation()
