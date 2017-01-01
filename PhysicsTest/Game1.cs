@@ -516,7 +516,7 @@ namespace PhysicsTest
 
         void LevelEditor()
         {
-          //  Console.WriteLine("Player Size:"+playerList.Count+"Regular blocks count:"+RegularBlockList.Count);
+         
             
             if (devMode)
             {
