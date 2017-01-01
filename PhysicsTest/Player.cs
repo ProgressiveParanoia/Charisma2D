@@ -435,6 +435,7 @@ namespace PhysicsTest
             }
 
             _playerRect.Location = new Point(_playerRect.X, _playerRect.Y);
+            Console.WriteLine(slideAndShoot);
         }
 
         public void Colliders(Blocks block)
@@ -562,34 +563,37 @@ namespace PhysicsTest
             }else
                 if(block.isSpikeBlock)
                 {
-                if (_playerRect.Intersects(block.blockRect) && !isTakingDamage)
-                {
-               
+                    if (_playerRect.Intersects(block.blockRect) && !isTakingDamage)
+                    {
+                        isJumping = false;
+                        _velocity.Y = 0;
+
                         if (movingRight || idleRight)
-                        {
-                            _velocity.X -= 3;
+                            {
+                                _velocity.X -= 3;
 
-                        }
+                            }
 
-                //    if (playerRect.X - _playerRect.X / 2 < block.blockRect.X)
-                 //   {
-                        if (movingLeft || idleLeft)
-                        {
-                            _velocity.X += 3;
-                        }
-               //     }
+                    //    if (playerRect.X - _playerRect.X / 2 < block.blockRect.X)
+                     //   {
+                            if (movingLeft || idleLeft)
+                            {
+                                _velocity.X += 3;
+                            }
+                   //     }
 
-                    _velocity.Y -= 3;
-                    isJumping = false;
-                  //  Console.WriteLine("do damage");
-                    isTakingDamage = true;
-                }
+                        _velocity.Y -= 3;
+                    
+                      //  Console.WriteLine("do damage");
+                        isTakingDamage = true;
+                    }
                 else
                     {
                      //   Console.WriteLine("nothing");
                         isTakingDamage = false;
                     }
                 }
+            
         }
 
         private void physicsTimers()
