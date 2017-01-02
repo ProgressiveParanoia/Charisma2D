@@ -33,6 +33,8 @@ namespace PhysicsTest
 
         private int MaxLocationY;
         private int MinLocationY;
+
+        private float attackDelay;
         //end movement vars
 
         public Enemy(Rectangle _enemyRect, Texture2D _enemyTexture)
@@ -66,6 +68,14 @@ namespace PhysicsTest
         {
             set { _SpriteSheetY = value; }
             get { return _SpriteSheetY; }
+        }
+        public bool AttackingRight
+        {
+            get { return attackRight; }
+        }
+        public bool AttackingLeft
+        {
+            get { return attackLeft; }
         }
 
         public void snowmanAnimation()
@@ -200,10 +210,23 @@ namespace PhysicsTest
                     movingRight = false;
                     movingLeft = false;
                 }
+
+                if (_enemyRect.X > target.X)
+                {
+                    attackRight = false;
+                    attackLeft = true;
+
+                    movingRight = false;
+                    movingLeft = false;
+                }
             }else
             {
-                attackRight = false;
-                attackLeft = true;
+                if(!movingLeft && !movingRight)
+                {
+                    movingLeft = true;
+                    attackRight = false;
+                    attackLeft = false;
+                }
             }
 
             _enemyRect.Location = new Point(posX,posY);
