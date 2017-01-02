@@ -362,6 +362,8 @@ namespace PhysicsTest
 
             snowmanSize = snowmenList.Count - 1;
             //end size tracker
+
+         
             base.Update(gameTime);
         }
 
@@ -503,6 +505,14 @@ namespace PhysicsTest
             if(RegularBlockSize!=0)
             RegularBlockList.Remove(RegularBlockList[0]);
 
+            for (int i = SlipBlockSize; i > 0; i--)
+            {
+                SkateBlockList.Remove(SkateBlockList[i]);
+            }
+
+            if (SlipBlockSize != 0)
+                SkateBlockList.Remove(SkateBlockList[0]);
+
             playerList.Remove(playerList[0]);            
 
             string fileData = "";
@@ -611,18 +621,23 @@ namespace PhysicsTest
 
             spaceEater = fileData;
 
-            //while ((fileData = sr.ReadLine()) != null)
-            //{
-            //    string[] PosData = fileData.Split(',');
+            while ((fileData = sr.ReadLine()) != null)
+            {
+                string[] PosData = fileData.Split(',');
 
-            //    if (fileData == "")
-            //    {
-            //        break;
-            //    }
-            //    snowm
-            //}
+                if (fileData == "")
+                {
+                    break;
+                }
 
-            //spaceEater = fileData;
+                int posX = int.Parse(PosData[0]);
+                int posY = int.Parse(PosData[1]);
+
+                Enemy e = new Enemy(new Rectangle(posX,posY,64,64),snowmenTex);
+                snowmenList.Add(e);
+            }
+
+            spaceEater = fileData;
 
             sr.Close();
         }
@@ -933,6 +948,9 @@ namespace PhysicsTest
                         }
                     }
 
+                LevelEditor_RegularBlock.blockPos = LevelEditor_snowmen.enemyPos;
+                LevelEditor_SlipBlock.blockPos = LevelEditor_snowmen.enemyPos;
+                LevelEditor_spikeBlock.blockPos = LevelEditor_snowmen.enemyPos;
 
                 IsMouseVisible = true;
 

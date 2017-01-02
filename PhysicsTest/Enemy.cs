@@ -250,7 +250,6 @@ namespace PhysicsTest
             }
 
             _enemyRect.Location = new Point(posX,posY);
-            Console.WriteLine(Math.Abs(target.Y - _enemyRect.Y));
         }
 
         public void penguinAnimation()
