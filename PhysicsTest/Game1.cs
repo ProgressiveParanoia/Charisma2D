@@ -220,6 +220,10 @@ namespace PhysicsTest
                     {
                         pl.Colliders(b);
                     }
+                    foreach(Blocks b in iceWallList)
+                    {
+                        pl.Colliders(b);
+                    }
 
                     foreach (Blocks sb in SkateBlockList)
                     {
@@ -440,6 +444,10 @@ namespace PhysicsTest
                     spriteBatch.Draw(sb.blockTexture, sb.blockRect, Color.White);
                 }
                 foreach (Blocks b in spikeBlockList)
+                {
+                    spriteBatch.Draw(b.blockTexture, b.blockRect, Color.White);
+                }
+                foreach (Blocks b in iceWallList)
                 {
                     spriteBatch.Draw(b.blockTexture, b.blockRect, Color.White);
                 }
