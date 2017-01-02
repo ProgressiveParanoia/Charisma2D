@@ -95,7 +95,7 @@ namespace PhysicsTest
                 {
                     SpriteSheetY = 0;
                 }
-                if(_animationDelay > 10)
+                if(_animationDelay > 20)
                 {
                     if (_SpriteSheetX < 288)
                     {
@@ -159,7 +159,6 @@ namespace PhysicsTest
                     }else
                     {
                         _SpriteSheetX = 0;
-
                         spawnSnowBall = false;
                     }
                     _animationDelay = 0;
@@ -173,14 +172,17 @@ namespace PhysicsTest
                     {
                         SpriteSheetX = 192;
                     }
-                    if(_animationDelay > 10)
+                    if(_animationDelay > 20)
                     {
                         if(_SpriteSheetX < 288)
                         {
                             _SpriteSheetX += 96;
-                        }else
+                            spawnSnowBall = true;
+                        }
+                        else
                        {
                             _SpriteSheetX = 0;
+                            spawnSnowBall = false;
                        }
                         _animationDelay = 0;
                     }

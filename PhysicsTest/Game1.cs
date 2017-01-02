@@ -319,7 +319,13 @@ namespace PhysicsTest
                     Projectile p = new Projectile(new Rectangle(LevelEditor_snowmen.enemyRect.X + LevelEditor_snowmen.enemyRect.Width, LevelEditor_snowmen.enemyRect.Y + 16,16,16),snowBallTex,Color.White,5,0, 1f);
                     snowBalls.Add(p);
                     LevelEditor_snowmen.spawnSnowBall = false;
-                    // Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, -1);
+                 
+                }
+                if (LevelEditor_snowmen.attackingLeft)
+                {
+                    Projectile p = new Projectile(new Rectangle(LevelEditor_snowmen.enemyRect.X, LevelEditor_snowmen.enemyRect.Y + 16, 16, 16), snowBallTex, Color.White, -5, 0, 1f);
+                    snowBalls.Add(p);
+                    LevelEditor_snowmen.spawnSnowBall = false;
                 }
             }
             //enemy end
