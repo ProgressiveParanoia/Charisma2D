@@ -78,6 +78,14 @@ namespace PhysicsTest
             set { spawnProjectile = value; }
             get { return spawnProjectile; }
         }
+        public bool attackingLeft
+        {
+            get { return attackLeft; }
+        }
+        public bool attackingRight
+        {
+            get { return attackRight; }
+        }
 
         public void snowmanAnimation()
         {
@@ -141,18 +149,18 @@ namespace PhysicsTest
 
             if (attackRight)
             {
-                if(_animationDelay > 30) //add additional variable to for attack delays
+                if(_animationDelay > 25) //add additional variable to for attack delays
                 {
                     if(_SpriteSheetX < 96)
                     {
                         _SpriteSheetX += 96;
-                        spawnSnowBall = false;
+                        spawnSnowBall = true;
                         
                     }else
                     {
                         _SpriteSheetX = 0;
 
-                        spawnSnowBall = true;
+                        spawnSnowBall = false;
                     }
                     _animationDelay = 0;
 

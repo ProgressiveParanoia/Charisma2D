@@ -19,7 +19,7 @@ namespace PhysicsTest
 
         private float Timer;
 
-        public Projectile(Rectangle _projectileRect, Texture2D _projectileTexture, Color _projectileColor, int dirX, int dirY)
+        public Projectile(Rectangle _projectileRect, Texture2D _projectileTexture, Color _projectileColor, int dirX, int dirY,float Timer)
         {
             this._projectileRect = _projectileRect;
             this._projectileTexture = _projectileTexture;
@@ -28,7 +28,7 @@ namespace PhysicsTest
             this.dirX = dirX;
             this.dirY = dirY;
 
-            Timer = 0.30f;
+            this.Timer = Timer;
         }
 
         public Rectangle projectileRect
@@ -55,6 +55,11 @@ namespace PhysicsTest
         public void Shoot()
         {
             _projectileRect.Location = new Point(_projectileRect.X + dirX,_projectileRect.Y+dirY);
+        }
+
+       public void setTargetLoc(Rectangle target)
+        {
+         
         }
 
         public bool isAlive()

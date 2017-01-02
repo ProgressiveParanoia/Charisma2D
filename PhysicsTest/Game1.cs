@@ -100,7 +100,7 @@ namespace PhysicsTest
             shotgunPellet = Content.Load<Texture2D>(@"shotgunPellet");
 
             snowmenTex = Content.Load<Texture2D>(@"snowman_sheet");
-            snowBallTex = Content.Load<Texture2D>(@"");
+            snowBallTex = Content.Load<Texture2D>(@"snowBall");
 
             sF = Content.Load<SpriteFont>(@"spriteFont");
 
@@ -122,6 +122,7 @@ namespace PhysicsTest
 
             snowmenList = new List<Enemy>();
             penguinList = new List<Enemy>();
+            snowBalls = new List<Projectile>();
 
             projectiles = new List<Projectile>();
             playerList = new List<Player>();
@@ -168,9 +169,9 @@ namespace PhysicsTest
                             if (pl.IdlingLeft || pl.MoveLeft)
                             {
                                 //if player has shotgun do this                               
-                                Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 1);
-                                Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 0);
-                                Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, -1);
+                                Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 1, 0.3f);
+                                Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 0, 0.3f);
+                                Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, -1, 0.3f);
 
                                // p1.lifeTime = 0.5f;
 
@@ -182,9 +183,9 @@ namespace PhysicsTest
                             if (pl.IdlingRight || pl.MoveRight)
                             {
                                 //if player has shotgun do this
-                                Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 1);
-                                Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 0);
-                                Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, -1);
+                                Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 1, 0.3f);
+                                Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 0, 0.3f);
+                                Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, -1, 0.3f);
 
                                 projectiles.Add(p1);
                                 projectiles.Add(p2);
@@ -271,28 +272,58 @@ namespace PhysicsTest
                 p.Shoot();
             }
 
-            foreach (Projectile p in projectiles)
+            foreach (Projectile p in snowBalls)
             {
-                if (!p.isAlive())
-                {
-                    projectiles.Remove(p);
-                    break;
-                }
-                foreach (Blocks b in RegularBlockList)
-                {
-                    if (p.projectileRect.Intersects(b.blockRect))
-                    {
-                        projectiles.Remove(p);
-                        goto here;
-                    }
-                }
+                p.Shoot();
             }
 
+                //projectile cleanup
+                foreach (Projectile p in projectiles)
+                {
+                    if (!p.isAlive())
+                    {
+                        projectiles.Remove(p);
+                        break;
+                    }
+                    foreach (Blocks b in RegularBlockList)
+                    {
+                        if (p.projectileRect.Intersects(b.blockRect))
+                        {
+                            projectiles.Remove(p);
+                            goto here;
+                        }
+                    }
+                }
             here:
+                foreach (Projectile p in snowBalls)
+                {
+                    if (!p.isAlive())
+                    {
+                        snowBalls.Remove(p);
+                        break;
+                    }
+                }
+
+                //end cleaning
             //end projectiles
 
+
+            //enemy related stuff
             LevelEditor_snowmen.snowmanMovement(playerList[0].playerRect);
             LevelEditor_snowmen.snowmanAnimation();
+
+            if (LevelEditor_snowmen.spawnSnowBall)
+            {
+                if (LevelEditor_snowmen.attackingRight)
+                {
+                    Projectile p = new Projectile(new Rectangle(LevelEditor_snowmen.enemyRect.X + LevelEditor_snowmen.enemyRect.Width, LevelEditor_snowmen.enemyRect.Y + 16,16,16),snowBallTex,Color.White,5,0, 1f);
+                    snowBalls.Add(p);
+                    LevelEditor_snowmen.spawnSnowBall = false;
+                    // Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, -1);
+                }
+            }
+            //enemy end
+
 
             //size tracker for level editor
             RegularBlockSize = RegularBlockList.Count - 1;
@@ -340,6 +371,10 @@ namespace PhysicsTest
                 foreach(Projectile p in projectiles)
                 {
                     spriteBatch.Draw(p.projectileTexture,p.projectileRect,p.projectileColor);
+                }
+                foreach (Projectile p in snowBalls)
+                {
+                    spriteBatch.Draw(p.projectileTexture, p.projectileRect, p.projectileColor);
                 }
 
                 foreach (Blocks b in spikeBlockList)
