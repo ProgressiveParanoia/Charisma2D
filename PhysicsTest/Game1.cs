@@ -67,7 +67,7 @@ namespace PhysicsTest
         bool levelEditor_IsSlipBlock;
 
         bool levelEditor_IsSpikeBlock;
-        bool levelEditor_IsJumpBlock;
+        bool levelEditor_snowman;
         //end blocktypes
 
 
@@ -358,9 +358,9 @@ namespace PhysicsTest
 
                     if (devMode)
                     {
-                        spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks [3] spikes [4] ammo [5] snowmen [6] penguins", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 60), Color.White);
+                        spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks [3] spikes [4] ammo [5] medkit [6] snowmen [7] penguins", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 60), Color.White);
                         spriteBatch.DrawString(sF, "[Space]Place Block [B]Remove Block", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 1000), Color.White);
-                }
+                    }
                     
                     //  new Rectangle(0, 0, Window.ClientBounds.Width / 4, Window.ClientBounds.Height),editorTex
                 }
@@ -584,34 +584,54 @@ namespace PhysicsTest
                     levelEditor_IsSlipBlock = false;
 
                     levelEditor_IsSpikeBlock = false;
-                    //levelEditor_IsSpikeBlock = false;
+
+                    levelEditor_snowman = false;
 
                     swappingBlocks = true;
                 }
 
-                if (Keyboard.GetState().IsKeyUp(Keys.D1)&& Keyboard.GetState().IsKeyUp(Keys.D2)|| Keyboard.GetState().IsKeyUp(Keys.D3))
-                {
-                    swappingBlocks = false;
-                }
-
-                if (Keyboard.GetState().IsKeyDown(Keys.D2))
+                if (Keyboard.GetState().IsKeyDown(Keys.D2) && !swappingBlocks)
                 {
                     levelEditor_IsRegBlock = false;
                     levelEditor_IsSlipBlock = true;
 
                     levelEditor_IsSpikeBlock = false;
+
+                    levelEditor_snowman = false;
+
+                    swappingBlocks = true;
                 }
 
-                if (Keyboard.GetState().IsKeyDown(Keys.D3))
+                if (Keyboard.GetState().IsKeyDown(Keys.D3) && !swappingBlocks)
                 {
                     levelEditor_IsRegBlock = false;
                     levelEditor_IsSlipBlock = false;
 
                     levelEditor_IsSpikeBlock = true;
+
+                    levelEditor_snowman = false;
+
+                    swappingBlocks = true;
                 }
 
+                if (Keyboard.GetState().IsKeyDown(Keys.D6) && !swappingBlocks)
+                {
+                    levelEditor_IsRegBlock = false;
+                    levelEditor_IsSlipBlock = false;
+
+                    levelEditor_IsSpikeBlock = true;
+
+                    levelEditor_snowman = false;
+
+                    swappingBlocks = true;
+                }
+
+                if (Keyboard.GetState().IsKeyUp(Keys.D1) && Keyboard.GetState().IsKeyUp(Keys.D2) || Keyboard.GetState().IsKeyUp(Keys.D3) || Keyboard.GetState().IsKeyUp(Keys.D4) && Keyboard.GetState().IsKeyUp(Keys.D5) || Keyboard.GetState().IsKeyUp(Keys.D6))
+                {
+                    swappingBlocks = false;
+                }
                 //regular block
-                    if (levelEditor_IsRegBlock)
+                if (levelEditor_IsRegBlock)
                     {
                         //movement
                         if (Keyboard.GetState().IsKeyDown(Keys.Left))
