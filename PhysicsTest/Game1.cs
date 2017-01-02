@@ -67,7 +67,7 @@ namespace PhysicsTest
         bool levelEditor_IsSlipBlock;
 
         bool levelEditor_IsSpikeBlock;
-        bool levelEditor_snowman;
+        bool levelEditor_Issnowman;
         //end blocktypes
 
 
@@ -309,25 +309,48 @@ namespace PhysicsTest
 
 
             //enemy related stuff
-            LevelEditor_snowmen.snowmanMovement(playerList[0].playerRect);
-            LevelEditor_snowmen.snowmanAnimation();
 
-            if (LevelEditor_snowmen.spawnSnowBall)
+            foreach(Enemy e in snowmenList)
             {
-                if (LevelEditor_snowmen.attackingRight)
+                e.snowmanMovement(playerList[0].playerRect);
+                e.snowmanAnimation();
+
+                if (e.spawnSnowBall)
                 {
-                    Projectile p = new Projectile(new Rectangle(LevelEditor_snowmen.enemyRect.X + LevelEditor_snowmen.enemyRect.Width, LevelEditor_snowmen.enemyRect.Y + 16,16,16),snowBallTex,Color.White,5,0, 1f);
-                    snowBalls.Add(p);
-                    LevelEditor_snowmen.spawnSnowBall = false;
-                 
-                }
-                if (LevelEditor_snowmen.attackingLeft)
-                {
-                    Projectile p = new Projectile(new Rectangle(LevelEditor_snowmen.enemyRect.X, LevelEditor_snowmen.enemyRect.Y + 16, 16, 16), snowBallTex, Color.White, -5, 0, 1f);
-                    snowBalls.Add(p);
-                    LevelEditor_snowmen.spawnSnowBall = false;
+                    if (e.attackingRight)
+                    {
+                        Projectile p = new Projectile(new Rectangle(e.enemyRect.X + e.enemyRect.Width, e.enemyRect.Y + 16, 16, 16), snowBallTex, Color.White, 5, 0, 1f);
+                        snowBalls.Add(p);
+                        e.spawnSnowBall = false;
+
+                    }
+                    if (e.attackingLeft)
+                    {
+                        Projectile p = new Projectile(new Rectangle(e.enemyRect.X, e.enemyRect.Y + 16, 16, 16), snowBallTex, Color.White, -5, 0, 1f);
+                        snowBalls.Add(p);
+                        e.spawnSnowBall = false;
+                    }
                 }
             }
+            //LevelEditor_snowmen.snowmanMovement(playerList[0].playerRect);
+            //LevelEditor_snowmen.snowmanAnimation();
+
+            //if (LevelEditor_snowmen.spawnSnowBall)
+            //{
+            //    if (LevelEditor_snowmen.attackingRight)
+            //    {
+            //        Projectile p = new Projectile(new Rectangle(LevelEditor_snowmen.enemyRect.X + LevelEditor_snowmen.enemyRect.Width, LevelEditor_snowmen.enemyRect.Y + 16, 16, 16), snowBallTex, Color.White, 5, 0, 1f);
+            //        snowBalls.Add(p);
+            //        LevelEditor_snowmen.spawnSnowBall = false;
+
+            //    }
+            //    if (LevelEditor_snowmen.attackingLeft)
+            //    {
+            //        Projectile p = new Projectile(new Rectangle(LevelEditor_snowmen.enemyRect.X, LevelEditor_snowmen.enemyRect.Y + 16, 16, 16), snowBallTex, Color.White, -5, 0, 1f);
+            //        snowBalls.Add(p);
+            //        LevelEditor_snowmen.spawnSnowBall = false;
+            //    }
+            //}
             //enemy end
 
 
@@ -373,8 +396,11 @@ namespace PhysicsTest
                 {
                     spriteBatch.Draw(sb.blockTexture, sb.blockRect, Color.White);
                 }
-
-                foreach(Projectile p in projectiles)
+                foreach (Blocks b in spikeBlockList)
+                {
+                    spriteBatch.Draw(b.blockTexture, b.blockRect, Color.White);
+                }
+                foreach (Projectile p in projectiles)
                 {
                     spriteBatch.Draw(p.projectileTexture,p.projectileRect,p.projectileColor);
                 }
@@ -383,9 +409,9 @@ namespace PhysicsTest
                     spriteBatch.Draw(p.projectileTexture, p.projectileRect, p.projectileColor);
                 }
 
-                foreach (Blocks b in spikeBlockList)
+                foreach (Enemy e in snowmenList)
                 {
-                    spriteBatch.Draw(b.blockTexture, b.blockRect, Color.White);
+                    spriteBatch.Draw(e.enemyTexture, e.enemyRect, new Rectangle(e.SpriteSheetX, e.SpriteSheetY, 96, 96), Color.White);
                 }
 
             //dev mode stuff
@@ -396,10 +422,12 @@ namespace PhysicsTest
                     spriteBatch.Draw(LevelEditor_SlipBlock.blockTexture, LevelEditor_SlipBlock.blockRect, Color.White);
                 if (levelEditor_IsSpikeBlock)
                     spriteBatch.Draw(LevelEditor_spikeBlock.blockTexture, LevelEditor_spikeBlock.blockRect, Color.White);
+                if (levelEditor_Issnowman)
+                    spriteBatch.Draw(LevelEditor_snowmen.enemyTexture, LevelEditor_snowmen.enemyRect,new Rectangle(0,0,96,96), Color.White);
             }
             //end
            // spriteBatch.Draw(p.playerTexture, p.playerRect, new Rectangle(p.spriteSheetX, p.spriteSheetY, 192, 192), p.playerColor);
-            spriteBatch.Draw(LevelEditor_snowmen.enemyTexture,LevelEditor_snowmen.enemyRect,new Rectangle(LevelEditor_snowmen.SpriteSheetX,LevelEditor_snowmen.SpriteSheetY,96,96),Color.White);
+           //spriteBatch.Draw(LevelEditor_snowmen.enemyTexture,LevelEditor_snowmen.enemyRect,new Rectangle(LevelEditor_snowmen.SpriteSheetX,LevelEditor_snowmen.SpriteSheetY,96,96),Color.White);
               
             spriteBatch.End();
 
@@ -585,7 +613,7 @@ namespace PhysicsTest
 
                     levelEditor_IsSpikeBlock = false;
 
-                    levelEditor_snowman = false;
+                    levelEditor_Issnowman = false;
 
                     swappingBlocks = true;
                 }
@@ -597,7 +625,7 @@ namespace PhysicsTest
 
                     levelEditor_IsSpikeBlock = false;
 
-                    levelEditor_snowman = false;
+                    levelEditor_Issnowman = false;
 
                     swappingBlocks = true;
                 }
@@ -609,7 +637,7 @@ namespace PhysicsTest
 
                     levelEditor_IsSpikeBlock = true;
 
-                    levelEditor_snowman = false;
+                    levelEditor_Issnowman = false;
 
                     swappingBlocks = true;
                 }
@@ -619,9 +647,9 @@ namespace PhysicsTest
                     levelEditor_IsRegBlock = false;
                     levelEditor_IsSlipBlock = false;
 
-                    levelEditor_IsSpikeBlock = true;
+                    levelEditor_IsSpikeBlock = false;
 
-                    levelEditor_snowman = false;
+                    levelEditor_Issnowman = true;
 
                     swappingBlocks = true;
                 }
@@ -688,6 +716,8 @@ namespace PhysicsTest
 
                     LevelEditor_SlipBlock.blockPos = LevelEditor_RegularBlock.blockPos;
                     LevelEditor_spikeBlock.blockPos = LevelEditor_RegularBlock.blockPos;
+
+                    LevelEditor_snowmen.enemyPos = LevelEditor_RegularBlock.blockPos;
                 }//end reugular block
                 else 
                     if (levelEditor_IsSlipBlock)
@@ -748,7 +778,10 @@ namespace PhysicsTest
 
                     LevelEditor_RegularBlock.blockPos = LevelEditor_SlipBlock.blockRect.Location;
                     LevelEditor_spikeBlock.blockPos = LevelEditor_RegularBlock.blockRect.Location;
-                }else
+
+                    LevelEditor_snowmen.enemyPos = LevelEditor_SlipBlock.blockRect.Location;
+                }
+                else
                     if (levelEditor_IsSpikeBlock)
                 {
 
@@ -801,7 +834,7 @@ namespace PhysicsTest
 
                         }
                     }
-
+                   
                     if (Keyboard.GetState().IsKeyUp(Keys.B))
                     {
                         isRemovingBlock = false;
@@ -809,7 +842,48 @@ namespace PhysicsTest
 
                     LevelEditor_RegularBlock.blockPos = LevelEditor_spikeBlock.blockPos;
                     LevelEditor_SlipBlock.blockPos = LevelEditor_spikeBlock.blockPos;
-                }
+
+                    LevelEditor_snowmen.enemyPos = LevelEditor_spikeBlock.blockPos;
+                }else
+                    if (levelEditor_Issnowman)
+                    {
+
+                        //movement
+                        if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                        {
+                            LevelEditor_snowmen.Move(LevelEditor_snowmen.enemyRect.X - 3, LevelEditor_snowmen.enemyRect.Y);
+
+                        }
+                        if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                        {
+                            LevelEditor_snowmen.Move(LevelEditor_snowmen.enemyRect.X + 3, LevelEditor_snowmen.enemyRect.Y);
+                        }
+
+                        if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                        {
+                            LevelEditor_snowmen.Move(LevelEditor_snowmen.enemyRect.X, LevelEditor_snowmen.enemyRect.Y - 3);
+                        }
+                        if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                        {
+                            LevelEditor_snowmen.Move(LevelEditor_snowmen.enemyRect.X, LevelEditor_snowmen.enemyRect.Y + 3);
+                        }
+                        //move end
+
+                        //input place
+                        if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isPlacingBlock)
+                        {
+                            // Blocks b = new Blocks(new Rectangle(LevelEditor_spikeBlock.blockRect.Location.X, LevelEditor_spikeBlock.blockRect.Location.Y, 16, 16), spikeBlockTex);
+                            Enemy e = new Enemy(new Rectangle(LevelEditor_snowmen.enemyPos.X, LevelEditor_snowmen.enemyPos.Y, 64, 64), snowmenTex);
+                            snowmenList.Add(e);
+
+                            isPlacingBlock = true;
+                        }
+                        if (Keyboard.GetState().IsKeyUp(Keys.Space))
+                        {
+                            isPlacingBlock = false;
+                        }
+                        //input place done
+                    }
 
 
                 IsMouseVisible = true;
@@ -819,11 +893,10 @@ namespace PhysicsTest
             {
                 foreach (Player p in playerList)
                 {
-                 
                         LevelEditor_RegularBlock.Move(p.playerRect.Location.X, p.playerRect.Location.Y);    
                         LevelEditor_SlipBlock.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
                         LevelEditor_spikeBlock.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
-                    
+                        LevelEditor_snowmen.Move(p.playerRect.Location.X, p.playerRect.Location.Y);   
                 }
              //   LevelEditor_RegularBlock.Move(Mouse.GetState().X - (LevelEditor_RegularBlock.blockRect.Width * 2 + LevelEditor_RegularBlock.blockRect.Width / 3), Mouse.GetState().Y - LevelEditor_RegularBlock.blockRect.Height / 2);
                 IsMouseVisible = false;

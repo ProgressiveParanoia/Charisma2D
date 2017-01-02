@@ -86,7 +86,11 @@ namespace PhysicsTest
         {
             get { return attackRight; }
         }
-
+        public Point enemyPos
+        {
+            get { return _enemyRect.Location; }
+            set { _enemyRect.Location = value; }
+        }
         public void snowmanAnimation()
         {
             if (movingRight)
@@ -252,6 +256,11 @@ namespace PhysicsTest
         public void penguinAnimation()
         {
 
+        }
+
+        public void Move(int x, int y)
+        {
+            _enemyRect.Location = new Point(x, y);
         }
     }
 }
