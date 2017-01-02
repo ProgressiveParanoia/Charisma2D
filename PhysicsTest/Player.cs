@@ -596,6 +596,24 @@ namespace PhysicsTest
             
         }
 
+        public void hitMove(Rectangle obj)
+        {
+            int posX = _playerRect.X;
+            int posY = _playerRect.Y;
+
+            if(obj.X < _playerRect.X)
+            {
+                posX += 6;
+            }else
+                if (obj.X > _playerRect.X)
+            {
+                posX -= 6;
+            }
+
+            posY -= 6;
+            _playerRect.Location = new Point(posX,posY);
+        }
+
         private void physicsTimers()
         {
             if (physicsTimer < 2f)

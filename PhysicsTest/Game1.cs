@@ -303,6 +303,7 @@ namespace PhysicsTest
                     }
                 }
             here:
+
                 foreach (Projectile p in snowBalls)
                 {
                     if (!p.isAlive())
@@ -310,8 +311,18 @@ namespace PhysicsTest
                         snowBalls.Remove(p);
                         break;
                     }
+
+                    foreach(Player pl in playerList)
+                    {
+                        if (p.projectileRect.Intersects(pl.playerRect))
+                        {
+                            pl.hitMove(p.projectileRect);
+                            goto there;
+                        }    
+                    }
                 }
 
+            there:
                 //end cleaning
             //end projectiles
 
