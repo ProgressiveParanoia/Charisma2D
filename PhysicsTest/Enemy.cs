@@ -149,7 +149,7 @@ namespace PhysicsTest
 
             if (attackRight)
             {
-                if(_animationDelay > 25) //add additional variable to for attack delays
+                if(_animationDelay > 20) //add additional variable to for attack delays
                 {
                     if(_SpriteSheetX < 96)
                     {
@@ -213,7 +213,7 @@ namespace PhysicsTest
                 }
             }
 
-            if (Math.Abs(target.X - _enemyRect.X) < 220 && Math.Abs(target.Y - _enemyRect.Y) < 10) //if the X distance of an enemy is greater than 20. similar to unity's vector3.distance
+            if (Math.Abs(target.X - _enemyRect.X) < 220 && Math.Abs(target.Y - _enemyRect.Y) < 120) //if the X distance of an enemy is greater than 20. similar to unity's vector3.distance
             {
                  if(_enemyRect.X < target.X)
                 {
@@ -244,7 +244,7 @@ namespace PhysicsTest
             }
 
             _enemyRect.Location = new Point(posX,posY);
-           // Console.WriteLine(attackDelay);
+            Console.WriteLine(Math.Abs(target.Y - _enemyRect.Y));
         }
 
         public void penguinAnimation()
