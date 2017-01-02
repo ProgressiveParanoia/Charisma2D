@@ -288,7 +288,7 @@ namespace PhysicsTest
             here:
             //end projectiles
 
-            LevelEditor_snowmen.snowmanMovement();
+            LevelEditor_snowmen.snowmanMovement(playerList[0].playerRect);
             LevelEditor_snowmen.snowmanAnimation();
 
             //size tracker for level editor

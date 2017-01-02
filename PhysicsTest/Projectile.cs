@@ -28,7 +28,7 @@ namespace PhysicsTest
             this.dirX = dirX;
             this.dirY = dirY;
 
-            Timer = 0.250f;
+            Timer = 0.30f;
         }
 
         public Rectangle projectileRect

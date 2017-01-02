@@ -72,6 +72,10 @@ namespace PhysicsTest
         {
             if (movingRight)
             {
+                if(SpriteSheetY>= 192)
+                {
+                    SpriteSheetY = 0;
+                }
                 if(_animationDelay > 10)
                 {
                     if (_SpriteSheetX < 288)
@@ -162,7 +166,7 @@ namespace PhysicsTest
             _animationDelay++;
         }
 
-        public void snowmanMovement()
+        public void snowmanMovement(Rectangle target)
         {
             int posX = _enemyRect.X;
             int posY = _enemyRect.Y;
@@ -186,7 +190,24 @@ namespace PhysicsTest
                 }
             }
 
+            if (Math.Abs(target.X - _enemyRect.X) < 200) //if the X distance of an enemy is greater than 20. similar to unity's vector3.distance
+            {
+                 if(_enemyRect.X < target.X)
+                {
+                    attackRight = true;
+                    attackLeft = false;
+
+                    movingRight = false;
+                    movingLeft = false;
+                }
+            }else
+            {
+                attackRight = false;
+                attackLeft = true;
+            }
+
             _enemyRect.Location = new Point(posX,posY);
+            Console.WriteLine(Math.Abs(target.X - _enemyRect.X));
         }
 
         public void penguinAnimation()
