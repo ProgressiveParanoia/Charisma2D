@@ -60,6 +60,8 @@ namespace PhysicsTest
         Texture2D snowmenTex;
         Texture2D snowBallTex;
 
+        Texture2D explosionTex;
+
         SpriteFont sF;
 
         bool playMode;
@@ -104,6 +106,8 @@ namespace PhysicsTest
 
             snowmenTex = Content.Load<Texture2D>(@"snowman_sheet");
             snowBallTex = Content.Load<Texture2D>(@"snowBall");
+
+            explosionTex = Content.Load<Texture2D>(@"IceExplosion");
 
             sF = Content.Load<SpriteFont>(@"spriteFont");
 
@@ -343,9 +347,12 @@ namespace PhysicsTest
                 {
                     if (e.enemyRect.Intersects(p.projectileRect))
                     {
+                        Explosion exp = new Explosion(new Rectangle(e.enemyRect.X,e.enemyRect.Y,100,100),explosionTex);
+
+                        explosion.Add(exp);
+
                         projectiles.Remove(p);
                         snowmenList.Remove(e);
-
 
                         goto outside;
                     }
@@ -354,6 +361,21 @@ namespace PhysicsTest
             outside:
             //enemy end
 
+
+            //explosion stuff
+
+            foreach (Explosion e in explosion)
+            {
+                e.Animation();
+
+                if (e.destroySprite)
+                {
+                    explosion.Remove(e);
+                    break;
+                }
+            }
+
+            //end boom boom
 
             //size tracker for level editor
             RegularBlockSize = RegularBlockList.Count - 1;
@@ -418,6 +440,10 @@ namespace PhysicsTest
                     spriteBatch.Draw(e.enemyTexture, e.enemyRect, new Rectangle(e.SpriteSheetX, e.SpriteSheetY, 96, 96), Color.White);
                 }
 
+                foreach (Explosion e in explosion)
+                {
+                    spriteBatch.Draw(e.explosionTexture, e.explosionRect, new Rectangle(e.SpriteSheetX, e.SpriteSheetY, 96, 96), Color.White);
+                }
             //dev mode stuff
             if (devMode) {
                 if(levelEditor_IsRegBlock)

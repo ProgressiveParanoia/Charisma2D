@@ -57,9 +57,9 @@ namespace PhysicsTest
             get { return _SpriteSheetY; }
         }
 
-        private void Animation()
+        public void Animation()
         {
-            if(_animationDelay > 10)
+            if(_animationDelay > 5)
             {
                 if (_SpriteSheetX < 192)
                 {
