@@ -107,6 +107,7 @@ namespace PhysicsTest
             blockTex = Content.Load<Texture2D>(@"BlockTest");
             skateBlockTex = Content.Load<Texture2D>(@"skateBlocks");
             spikeBlockTex = Content.Load<Texture2D>(@"icicleDown");
+            iceWall = Content.Load<Texture2D>(@"icewall");
 
             shotgunPellet = Content.Load<Texture2D>(@"shotgunPellet");
 
@@ -122,6 +123,7 @@ namespace PhysicsTest
 
             LevelEditor_RegularBlock = new Blocks(new Rectangle(0,0,200,50),blockTex);
             LevelEditor_SlipBlock = new Blocks(new Rectangle(0,0,200,50),skateBlockTex);
+            LevelEditor_iceWall = new Blocks(new Rectangle(0,0,50,100),iceWall);
 
             LevelEditor_spikeBlock = new Blocks(new Rectangle(0,0,16,16),spikeBlockTex);
 
@@ -132,6 +134,7 @@ namespace PhysicsTest
             RegularBlockList = new List<Blocks>();
             SkateBlockList = new List<Blocks>();
             spikeBlockList = new List<Blocks>();
+            iceWallList = new List<Blocks>();
 
             snowmenList = new List<Enemy>();
             penguinList = new List<Enemy>();
@@ -470,6 +473,8 @@ namespace PhysicsTest
                     spriteBatch.Draw(LevelEditor_SlipBlock.blockTexture, LevelEditor_SlipBlock.blockRect, Color.White);
                 if (levelEditor_IsSpikeBlock)
                     spriteBatch.Draw(LevelEditor_spikeBlock.blockTexture, LevelEditor_spikeBlock.blockRect, Color.White);
+                if (levelEditor_IsWall)
+                    spriteBatch.Draw(LevelEditor_iceWall.blockTexture,LevelEditor_iceWall.blockRect,Color.White);
                 if (levelEditor_Issnowman)
                     spriteBatch.Draw(LevelEditor_snowmen.enemyTexture, LevelEditor_snowmen.enemyRect,new Rectangle(0,0,96,96), Color.White);
             }
@@ -725,6 +730,7 @@ namespace PhysicsTest
                 {
                     levelEditor_IsRegBlock = true;
                     levelEditor_IsSlipBlock = false;
+                    levelEditor_IsWall = false;
 
                     levelEditor_IsSpikeBlock = false;
 
@@ -737,6 +743,7 @@ namespace PhysicsTest
                 {
                     levelEditor_IsRegBlock = false;
                     levelEditor_IsSlipBlock = true;
+                    levelEditor_IsWall = false;
 
                     levelEditor_IsSpikeBlock = false;
 
@@ -749,8 +756,22 @@ namespace PhysicsTest
                 {
                     levelEditor_IsRegBlock = false;
                     levelEditor_IsSlipBlock = false;
+                    levelEditor_IsWall = false;
 
                     levelEditor_IsSpikeBlock = true;
+
+                    levelEditor_Issnowman = false;
+
+                    swappingBlocks = true;
+                }
+
+                if(Keyboard.GetState().IsKeyDown(Keys.D0) && !swappingBlocks)
+                {
+                    levelEditor_IsRegBlock = false;
+                    levelEditor_IsSlipBlock = false;
+                    levelEditor_IsWall = true;
+
+                    levelEditor_IsSpikeBlock = false;
 
                     levelEditor_Issnowman = false;
 
@@ -761,6 +782,7 @@ namespace PhysicsTest
                 {
                     levelEditor_IsRegBlock = false;
                     levelEditor_IsSlipBlock = false;
+                    levelEditor_IsWall = false;
 
                     levelEditor_IsSpikeBlock = false;
 
@@ -960,6 +982,67 @@ namespace PhysicsTest
 
                     LevelEditor_snowmen.enemyPos = LevelEditor_spikeBlock.blockPos;
                 }else
+                    if (levelEditor_IsWall)
+                    {
+                        //movement
+                        if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                        {
+                            LevelEditor_iceWall.Move(LevelEditor_iceWall.blockRect.X - 3, LevelEditor_iceWall.blockRect.Y);
+                        }
+                        if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                        {
+                            LevelEditor_iceWall.Move(LevelEditor_iceWall.blockRect.X + 3, LevelEditor_iceWall.blockRect.Y);
+                        }
+
+                        if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                        {
+                            LevelEditor_iceWall.Move(LevelEditor_iceWall.blockRect.X, LevelEditor_iceWall.blockRect.Y - 3);
+                        }
+                        if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                        {
+                            LevelEditor_iceWall.Move(LevelEditor_iceWall.blockRect.X, LevelEditor_iceWall.blockRect.Y + 3);
+                        }
+                    //move end
+
+                    //input place
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isPlacingBlock)
+                    {
+                        // Blocks b = new Blocks(new Rectangle(LevelEditor_spikeBlock.blockRect.Location.X, LevelEditor_spikeBlock.blockRect.Location.Y, 16, 16), spikeBlockTex);
+                        Blocks e = new Blocks(new Rectangle(LevelEditor_iceWall.blockRect.X, LevelEditor_iceWall.blockRect.Y, 50, 100),iceWall);
+                        iceWallList.Add(e);
+
+                        isPlacingBlock = true;
+                    }
+                    if (Keyboard.GetState().IsKeyUp(Keys.Space))
+                    {
+                        isPlacingBlock = false;
+                    }
+                    //input place done
+
+                    foreach (Blocks b in iceWallList)
+                    {
+                        if (LevelEditor_iceWall.blockRect.Intersects(b.blockRect))
+                        {
+                            if (Keyboard.GetState().IsKeyDown(Keys.B) && !isRemovingBlock)
+                            {
+                                iceWallList.Remove(b);
+                                isRemovingBlock = true;
+                                break;
+                            }
+
+                        }
+                    }
+
+                    if (Keyboard.GetState().IsKeyUp(Keys.B))
+                    {
+                        isRemovingBlock = false;
+                    }
+                LevelEditor_RegularBlock.blockPos = LevelEditor_iceWall.blockPos;
+                LevelEditor_SlipBlock.blockPos = LevelEditor_iceWall.blockPos;
+                LevelEditor_spikeBlock.blockPos = LevelEditor_iceWall.blockPos;
+                LevelEditor_snowmen.enemyPos = LevelEditor_iceWall.blockPos;
+                }
+                else
                     if (levelEditor_Issnowman)
                     {
 
@@ -1022,6 +1105,7 @@ namespace PhysicsTest
                 LevelEditor_RegularBlock.blockPos = LevelEditor_snowmen.enemyPos;
                 LevelEditor_SlipBlock.blockPos = LevelEditor_snowmen.enemyPos;
                 LevelEditor_spikeBlock.blockPos = LevelEditor_snowmen.enemyPos;
+                LevelEditor_iceWall.blockPos = LevelEditor_snowmen.enemyPos;
 
                 IsMouseVisible = true;
 
