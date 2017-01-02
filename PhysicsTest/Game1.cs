@@ -31,7 +31,7 @@ namespace PhysicsTest
         int RegularBlockSize;
         int SlipBlockSize;
         int SpikeBlockSize;
- 
+        int IceWallSize;
 
         int snowmanSize;
 
@@ -310,7 +310,23 @@ namespace PhysicsTest
                             goto here;
                         }
                     }
+                foreach (Blocks b in iceWallList)
+                {
+                    if (p.projectileRect.Intersects(b.blockRect))
+                    {
+                        projectiles.Remove(p);
+                        goto here;
+                    }
                 }
+                foreach (Blocks b in SkateBlockList)
+                {
+                    if (p.projectileRect.Intersects(b.blockRect))
+                    {
+                        projectiles.Remove(p);
+                        goto here;
+                    }
+                }
+            }
             here:
 
                 foreach (Projectile p in snowBalls)
@@ -402,6 +418,7 @@ namespace PhysicsTest
             RegularBlockSize = RegularBlockList.Count - 1;
             SlipBlockSize = SkateBlockList.Count - 1;
             SpikeBlockSize = spikeBlockList.Count - 1;
+          
 
             snowmanSize = snowmenList.Count - 1;
             //end size tracker
@@ -537,7 +554,17 @@ namespace PhysicsTest
             sw.WriteLine(snowmanSize);
             sw.WriteLine("");
 
+            foreach (Blocks b in iceWallList)
+            {
+                sw.WriteLine(b.blockRect.X + "," + b.blockRect.Y);
+            }
+
+            sw.WriteLine("");
+            sw.WriteLine(IceWallSize);
+            sw.WriteLine("");
+
             sw.Close();
+
         }
 
         void savePlayer()
@@ -583,6 +610,14 @@ namespace PhysicsTest
 
             if (snowmanSize != 0)
                 snowmenList.Remove(snowmenList[0]);
+
+            for(int i = IceWallSize; i>0; i--)
+            {
+                iceWallList.Remove(iceWallList[i]);
+            }
+
+            if (IceWallSize != 0)
+                iceWallList.Remove(iceWallList[0]);
 
             playerList.Remove(playerList[0]);            
 
@@ -719,6 +754,32 @@ namespace PhysicsTest
                 snowmanSize = int.Parse(fileData);
             }
 
+            spaceEater = fileData;
+
+            while ((fileData = sr.ReadLine()) != null)
+            {
+                string[] PosData = fileData.Split(',');
+
+                if (fileData == "")
+                {
+                    break;
+                }
+
+                int posX = int.Parse(PosData[0]);
+                int posY = int.Parse(PosData[1]);
+
+                Blocks b = new Blocks(new Rectangle(posX, posY, 50, 100), iceWall);
+                iceWallList.Add(b);
+            }
+
+            spaceEater = fileData;
+
+            while ((fileData = sr.ReadLine()) != null)
+            {
+                if (fileData == "")
+                    break;
+                IceWallSize = int.Parse(fileData);
+            }
             sr.Close();
         }
         //save and load finish
