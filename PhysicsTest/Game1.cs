@@ -20,9 +20,9 @@ namespace PhysicsTest
 
         Blocks LevelEditor_RegularBlock;
         Blocks LevelEditor_SlipBlock;
+        Blocks LevelEditor_iceWall;
 
         Blocks LevelEditor_spikeBlock;
-        Blocks LevelEditor_iceWall;
 
         Enemy LevelEditor_snowmen;
 
@@ -31,17 +31,15 @@ namespace PhysicsTest
         int RegularBlockSize;
         int SlipBlockSize;
         int SpikeBlockSize;
-        int iceWallSize;
+ 
 
         int snowmanSize;
-        int penguinSize;
 
         LevelEditor editor;
 
         List<Blocks> RegularBlockList;
         List<Blocks> SkateBlockList;
         List<Blocks> iceWallList;
-
         List<Blocks> spikeBlockList;
 
         List<Player> playerList;
@@ -59,9 +57,8 @@ namespace PhysicsTest
         Texture2D playerTex;
         Texture2D blockTex;
         Texture2D skateBlockTex;
-        Texture2D iceWall;
         Texture2D spikeBlockTex;
-
+        Texture2D iceWall;
         Texture2D snowmenTex;
         Texture2D snowBallTex;
 
@@ -75,10 +72,9 @@ namespace PhysicsTest
         //blocks player has
         bool levelEditor_IsRegBlock;
         bool levelEditor_IsSlipBlock;
-
+        bool levelEditor_IsWall;
         bool levelEditor_IsSpikeBlock;
         bool levelEditor_Issnowman;
-        bool levelEditor_IsWall;
         //end blocktypes
 
 
