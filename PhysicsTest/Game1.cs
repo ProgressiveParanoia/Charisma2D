@@ -67,7 +67,7 @@ namespace PhysicsTest
         Texture2D explosionTex;
 
         Texture2D checkPointTexture;
-
+        Texture2D exitTexture;
 
         SpriteFont sF;
 
@@ -80,6 +80,9 @@ namespace PhysicsTest
         bool levelEditor_IsWall;
         bool levelEditor_IsSpikeBlock;
         bool levelEditor_Issnowman;
+
+        bool levelEditor_IsCheckPoint;
+        bool levelEditor_IsExit;
         //end blocktypes
 
 
@@ -119,6 +122,9 @@ namespace PhysicsTest
             snowmenTex = Content.Load<Texture2D>(@"snowman_sheet");
             snowBallTex = Content.Load<Texture2D>(@"snowBall");
 
+            exitTexture = Content.Load<Texture2D>(@"exitTex");
+            checkPointTexture = Content.Load<Texture2D>(@"CheckPointSheet");
+
             explosionTex = Content.Load<Texture2D>(@"IceExplosion");
 
             sF = Content.Load<SpriteFont>(@"spriteFont");
@@ -129,6 +135,9 @@ namespace PhysicsTest
             LevelEditor_RegularBlock = new Blocks(new Rectangle(0,0,200,50),blockTex);
             LevelEditor_SlipBlock = new Blocks(new Rectangle(0,0,200,50),skateBlockTex);
             LevelEditor_iceWall = new Blocks(new Rectangle(0,0,50,100),iceWall);
+
+            LevelEditor_checkPoint = new Blocks(new Rectangle(0,0,96,96),checkPointTexture);
+            LevelEditor_exit = new Blocks(new Rectangle(0,0,70,100),exitTexture);
 
             LevelEditor_spikeBlock = new Blocks(new Rectangle(0,0,16,16),spikeBlockTex);
 
@@ -247,6 +256,7 @@ namespace PhysicsTest
                     {
                         pl.Colliders(sb);
                     }
+
                 }
                 pl.Animation();
 
@@ -464,7 +474,7 @@ namespace PhysicsTest
 
                     if (devMode)
                     {
-                        spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks [3] spikes [4] ammo [5] medkit [6] snowmen [7] penguins", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 60), Color.White);
+                        spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks [3] spikes [4] ammo [5] medkit [6] snowmen [7] penguins [8] check point [9] exit", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 60), Color.White);
                         spriteBatch.DrawString(sF, "[Space]Place Block [B]Remove Block", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 1000), Color.White);
                     }
                     
@@ -487,6 +497,10 @@ namespace PhysicsTest
                 {
                     spriteBatch.Draw(b.blockTexture, b.blockRect, Color.White);
                 }
+                foreach (Blocks b in checkPointList)
+                {
+                    spriteBatch.Draw(b.blockTexture, b.blockRect, Color.White);
+                }
                 foreach (Projectile p in projectiles)
                 {
                     spriteBatch.Draw(p.projectileTexture,p.projectileRect,p.projectileColor);
@@ -505,6 +519,7 @@ namespace PhysicsTest
                 {
                     spriteBatch.Draw(e.explosionTexture, e.explosionRect, new Rectangle(e.SpriteSheetX, e.SpriteSheetY, 96, 96), Color.White);
                 }
+
             //dev mode stuff
             if (devMode) {
                 if(levelEditor_IsRegBlock)
@@ -517,6 +532,11 @@ namespace PhysicsTest
                     spriteBatch.Draw(LevelEditor_iceWall.blockTexture,LevelEditor_iceWall.blockRect,Color.White);
                 if (levelEditor_Issnowman)
                     spriteBatch.Draw(LevelEditor_snowmen.enemyTexture, LevelEditor_snowmen.enemyRect,new Rectangle(0,0,96,96), Color.White);
+
+                if (levelEditor_IsCheckPoint)
+                    spriteBatch.Draw(LevelEditor_checkPoint.blockTexture, LevelEditor_checkPoint.blockRect, new Rectangle(0,0,96,96), Color.White);
+                if (levelEditor_IsExit)
+                    spriteBatch.Draw(LevelEditor_exit.blockTexture,LevelEditor_exit.blockRect,new Rectangle(0,0,70,100),Color.White);
             }
             //end
            // spriteBatch.Draw(p.playerTexture, p.playerRect, new Rectangle(p.spriteSheetX, p.spriteSheetY, 192, 192), p.playerColor);
@@ -820,6 +840,9 @@ namespace PhysicsTest
 
                     levelEditor_Issnowman = false;
 
+                    levelEditor_IsCheckPoint = false;
+                    levelEditor_IsExit = false;
+
                     swappingBlocks = true;
                 }
 
@@ -832,6 +855,9 @@ namespace PhysicsTest
                     levelEditor_IsSpikeBlock = false;
 
                     levelEditor_Issnowman = false;
+
+                    levelEditor_IsCheckPoint = false;
+                    levelEditor_IsExit = false;
 
                     swappingBlocks = true;
                 }
@@ -846,6 +872,9 @@ namespace PhysicsTest
 
                     levelEditor_Issnowman = false;
 
+                    levelEditor_IsCheckPoint = false;
+                    levelEditor_IsExit = false;
+
                     swappingBlocks = true;
                 }
 
@@ -859,6 +888,9 @@ namespace PhysicsTest
 
                     levelEditor_Issnowman = false;
 
+                    levelEditor_IsCheckPoint = false;
+                    levelEditor_IsExit = false;
+
                     swappingBlocks = true;
                 }
 
@@ -871,6 +903,41 @@ namespace PhysicsTest
                     levelEditor_IsSpikeBlock = false;
 
                     levelEditor_Issnowman = true;
+
+                    levelEditor_IsCheckPoint = false;
+                    levelEditor_IsExit = false;
+
+                    swappingBlocks = true;
+                }
+
+                if(Keyboard.GetState().IsKeyDown(Keys.D8) && !swappingBlocks) //check point
+                {
+                    levelEditor_IsRegBlock = false;
+                    levelEditor_IsSlipBlock = false;
+                    levelEditor_IsWall = false;
+
+                    levelEditor_IsSpikeBlock = false;
+
+                    levelEditor_Issnowman = false;
+
+                    levelEditor_IsCheckPoint = true;
+                    levelEditor_IsExit = false;
+
+                    swappingBlocks = true;
+                }
+
+                if(Keyboard.GetState().IsKeyDown(Keys.D9) && !swappingBlocks) //exit
+                {
+                    levelEditor_IsRegBlock = false;
+                    levelEditor_IsSlipBlock = false;
+                    levelEditor_IsWall = false;
+
+                    levelEditor_IsSpikeBlock = false;
+
+                    levelEditor_Issnowman = false;
+
+                    levelEditor_IsCheckPoint = false;
+                    levelEditor_IsExit = true;
 
                     swappingBlocks = true;
                 }
@@ -1184,15 +1251,71 @@ namespace PhysicsTest
                         {
                             isRemovingBlock = false;
                         }
+                    LevelEditor_RegularBlock.blockPos = LevelEditor_snowmen.enemyPos;
+                    LevelEditor_SlipBlock.blockPos = LevelEditor_snowmen.enemyPos;
+                    LevelEditor_spikeBlock.blockPos = LevelEditor_snowmen.enemyPos;
+                    LevelEditor_iceWall.blockPos = LevelEditor_snowmen.enemyPos;
+
+                    IsMouseVisible = true;
+
+                }else
+                    if (levelEditor_IsCheckPoint)
+                    {
+                        //movement
+                        if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                        {
+                            LevelEditor_checkPoint.Move(LevelEditor_checkPoint.blockRect.X - 3, LevelEditor_checkPoint.blockRect.Y);
+
+                        }
+                        if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                        {
+                            LevelEditor_checkPoint.Move(LevelEditor_checkPoint.blockRect.X + 3, LevelEditor_checkPoint.blockRect.Y);
+                        }
+
+                        if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                        {
+                            LevelEditor_checkPoint.Move(LevelEditor_checkPoint.blockRect.X, LevelEditor_checkPoint.blockRect.Y - 3);
+                        }
+                        if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                        {
+                            LevelEditor_checkPoint.Move(LevelEditor_checkPoint.blockRect.X, LevelEditor_checkPoint.blockRect.Y + 3);
+                        }
+                    //move end
+
+                        //input place
+                        if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isPlacingBlock)
+                        {
+                            // Blocks b = new Blocks(new Rectangle(LevelEditor_spikeBlock.blockRect.Location.X, LevelEditor_spikeBlock.blockRect.Location.Y, 16, 16), spikeBlockTex);
+                            Blocks e = new Blocks(new Rectangle(LevelEditor_checkPoint.blockRect.X, LevelEditor_checkPoint.blockRect.Y, 96, 96), checkPointTexture);
+                            checkPointList.Add(e);
+
+                            isPlacingBlock = true;
+                        }
+                        if (Keyboard.GetState().IsKeyUp(Keys.Space))
+                        {
+                            isPlacingBlock = false;
+                        }
+
+                    foreach (Blocks e in checkPointList)
+                    {
+                        if (LevelEditor_checkPoint.blockRect.Intersects(e.blockRect))
+                        {
+                            if (Keyboard.GetState().IsKeyDown(Keys.B) && !isRemovingBlock)
+                            {
+                                checkPointList.Remove(e);
+                                isRemovingBlock = true;
+                                break;
+                            }
+
+                        }
                     }
 
-                LevelEditor_RegularBlock.blockPos = LevelEditor_snowmen.enemyPos;
-                LevelEditor_SlipBlock.blockPos = LevelEditor_snowmen.enemyPos;
-                LevelEditor_spikeBlock.blockPos = LevelEditor_snowmen.enemyPos;
-                LevelEditor_iceWall.blockPos = LevelEditor_snowmen.enemyPos;
-
-                IsMouseVisible = true;
-
+                    if (Keyboard.GetState().IsKeyUp(Keys.B))
+                    {
+                        isRemovingBlock = false;
+                    }
+                    //input place done
+                }
             }
             else
             {
@@ -1203,6 +1326,9 @@ namespace PhysicsTest
                         LevelEditor_spikeBlock.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
                         LevelEditor_snowmen.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
                         LevelEditor_iceWall.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
+
+                        LevelEditor_checkPoint.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
+                        LevelEditor_exit.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
                 }
              //   LevelEditor_RegularBlock.Move(Mouse.GetState().X - (LevelEditor_RegularBlock.blockRect.Width * 2 + LevelEditor_RegularBlock.blockRect.Width / 3), Mouse.GetState().Y - LevelEditor_RegularBlock.blockRect.Height / 2);
                 IsMouseVisible = false;
