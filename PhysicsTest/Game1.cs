@@ -44,6 +44,7 @@ namespace PhysicsTest
         List<Enemy> penguinList;
 
         List<Projectile> projectiles;
+        List<Projectile> snowBalls;
 
         Texture2D shotgunPellet;
             
@@ -53,6 +54,7 @@ namespace PhysicsTest
         Texture2D spikeBlockTex;
 
         Texture2D snowmenTex;
+        Texture2D snowBallTex;
 
         SpriteFont sF;
 
@@ -98,6 +100,7 @@ namespace PhysicsTest
             shotgunPellet = Content.Load<Texture2D>(@"shotgunPellet");
 
             snowmenTex = Content.Load<Texture2D>(@"snowman_sheet");
+            snowBallTex = Content.Load<Texture2D>(@"");
 
             sF = Content.Load<SpriteFont>(@"spriteFont");
 
@@ -265,7 +268,7 @@ namespace PhysicsTest
 
             foreach (Projectile p in projectiles)
             {
-                p.shotgunShoot();
+                p.Shoot();
             }
 
             foreach (Projectile p in projectiles)

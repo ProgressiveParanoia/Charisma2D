@@ -25,6 +25,8 @@ namespace PhysicsTest
 
         private bool attackRight;
         private bool attackLeft;
+
+        private bool spawnProjectile;
         //end animation vars
 
         //movement vars
@@ -46,6 +48,8 @@ namespace PhysicsTest
 
             MaxLocationX = _enemyRect.X + 50;
             MinLocationX = _enemyRect.X - 50;
+
+            attackDelay = 0.5f;
    
         }
 
@@ -69,13 +73,10 @@ namespace PhysicsTest
             set { _SpriteSheetY = value; }
             get { return _SpriteSheetY; }
         }
-        public bool AttackingRight
+        public bool spawnSnowBall
         {
-            get { return attackRight; }
-        }
-        public bool AttackingLeft
-        {
-            get { return attackLeft; }
+            set { spawnProjectile = value; }
+            get { return spawnProjectile; }
         }
 
         public void snowmanAnimation()
@@ -140,17 +141,21 @@ namespace PhysicsTest
 
             if (attackRight)
             {
-                if(_animationDelay > 10) //add additional variable to for attack delays
+                if(_animationDelay > 30) //add additional variable to for attack delays
                 {
                     if(_SpriteSheetX < 96)
                     {
                         _SpriteSheetX += 96;
+                        spawnSnowBall = false;
                         
                     }else
                     {
                         _SpriteSheetX = 0;
+
+                        spawnSnowBall = true;
                     }
                     _animationDelay = 0;
+
                 }
                 _SpriteSheetY = 384;
             }else
@@ -219,6 +224,7 @@ namespace PhysicsTest
                     movingRight = false;
                     movingLeft = false;
                 }
+
             }else
             {
                 if(!movingLeft && !movingRight)
@@ -230,7 +236,7 @@ namespace PhysicsTest
             }
 
             _enemyRect.Location = new Point(posX,posY);
-            Console.WriteLine(Math.Abs(target.X - _enemyRect.X));
+            Console.WriteLine(attackDelay);
         }
 
         public void penguinAnimation()

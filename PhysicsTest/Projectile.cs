@@ -52,7 +52,7 @@ namespace PhysicsTest
             set { Timer = value; }
         }
 
-        public void shotgunShoot()
+        public void Shoot()
         {
             _projectileRect.Location = new Point(_projectileRect.X + dirX,_projectileRect.Y+dirY);
         }
