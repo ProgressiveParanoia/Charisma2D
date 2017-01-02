@@ -363,7 +363,7 @@ namespace PhysicsTest
             snowmanSize = snowmenList.Count - 1;
             //end size tracker
 
-         
+            Console.WriteLine("spikes:"+SpikeBlockSize+" snowmen:"+snowmanSize);
             base.Update(gameTime);
         }
 
@@ -498,10 +498,13 @@ namespace PhysicsTest
             StreamReader sr = new StreamReader("Stage1.SWAG");
             string spaceEater;
 
+
+            //clean previous level
             for(int i = RegularBlockSize; i >0; i--)
             {
                 RegularBlockList.Remove(RegularBlockList[i]);
             }
+
             if(RegularBlockSize!=0)
             RegularBlockList.Remove(RegularBlockList[0]);
 
@@ -513,8 +516,26 @@ namespace PhysicsTest
             if (SlipBlockSize != 0)
                 SkateBlockList.Remove(SkateBlockList[0]);
 
+            for(int i = SpikeBlockSize; i > 0; i--)
+            {
+                spikeBlockList.Remove(spikeBlockList[i]);
+            }
+
+            if (SpikeBlockSize != 0)
+                spikeBlockList.Remove(spikeBlockList[0]);
+
+            for(int i = snowmanSize; i > 0; i--)
+            {
+                snowmenList.Remove(snowmenList[i]);
+            }
+
+            if (snowmanSize != 0)
+                snowmenList.Remove(snowmenList[0]);
+
             playerList.Remove(playerList[0]);            
 
+
+            //cleaning finish
             string fileData = "";
 
             while ((fileData=sr.ReadLine())!=null)
@@ -638,6 +659,13 @@ namespace PhysicsTest
             }
 
             spaceEater = fileData;
+
+            while ((fileData = sr.ReadLine()) != null)
+            {
+                if (fileData == "")
+                    break;
+                snowmanSize = int.Parse(fileData);
+            }
 
             sr.Close();
         }
