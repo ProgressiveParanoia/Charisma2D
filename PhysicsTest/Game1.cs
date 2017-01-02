@@ -31,6 +31,8 @@ namespace PhysicsTest
         int SlipBlockSize;
         int SpikeBlockSize;
 
+        int snowmanSize;
+
         LevelEditor editor;
 
         List<Blocks> RegularBlockList;
@@ -60,7 +62,6 @@ namespace PhysicsTest
 
         bool playMode;
         bool devMode;
-
 
         //blocks player has
         bool levelEditor_IsRegBlock;
@@ -358,6 +359,8 @@ namespace PhysicsTest
             RegularBlockSize = RegularBlockList.Count - 1;
             SlipBlockSize = SkateBlockList.Count - 1;
             SpikeBlockSize = spikeBlockList.Count - 1;
+
+            snowmanSize = snowmenList.Count - 1;
             //end size tracker
             base.Update(gameTime);
         }
@@ -470,6 +473,16 @@ namespace PhysicsTest
             sw.WriteLine("");
             sw.WriteLine(SpikeBlockSize);
             sw.WriteLine("");
+
+            foreach(Enemy e in snowmenList)
+            {
+                sw.WriteLine(e.enemyRect.X+","+e.enemyRect.Y);
+            }
+
+            sw.WriteLine("");
+            sw.WriteLine(snowmanSize);
+            sw.WriteLine("");
+
             sw.Close();
         }
 
@@ -595,6 +608,22 @@ namespace PhysicsTest
                     break;
                 SpikeBlockSize = int.Parse(fileData);
             }
+
+            spaceEater = fileData;
+
+            //while ((fileData = sr.ReadLine()) != null)
+            //{
+            //    string[] PosData = fileData.Split(',');
+
+            //    if (fileData == "")
+            //    {
+            //        break;
+            //    }
+            //    snowm
+            //}
+
+            //spaceEater = fileData;
+
             sr.Close();
         }
         //save and load finish
@@ -883,6 +912,25 @@ namespace PhysicsTest
                             isPlacingBlock = false;
                         }
                         //input place done
+
+                        foreach (Enemy e in snowmenList)
+                        {
+                            if (LevelEditor_snowmen.enemyRect.Intersects(e.enemyRect))
+                            {
+                                if (Keyboard.GetState().IsKeyDown(Keys.B) && !isRemovingBlock)
+                                {
+                                    snowmenList.Remove(e);
+                                    isRemovingBlock = true;
+                                    break;
+                                }
+
+                            }
+                        }
+
+                        if (Keyboard.GetState().IsKeyUp(Keys.B))
+                        {
+                            isRemovingBlock = false;
+                        }
                     }
 
 
