@@ -48,6 +48,8 @@ namespace PhysicsTest
         List<Projectile> projectiles;
         List<Projectile> snowBalls;
 
+        List<Explosion> explosion;
+
         Texture2D shotgunPellet;
             
         Texture2D playerTex;
@@ -128,8 +130,9 @@ namespace PhysicsTest
             projectiles = new List<Projectile>();
             playerList = new List<Player>();
 
-            playerList.Add(_player);
+            explosion = new List<Explosion>();
 
+            playerList.Add(_player);
 
             loadPlayer();
             base.Initialize();
@@ -333,25 +336,22 @@ namespace PhysicsTest
                     }
                 }
             }
-            //LevelEditor_snowmen.snowmanMovement(playerList[0].playerRect);
-            //LevelEditor_snowmen.snowmanAnimation();
 
-            //if (LevelEditor_snowmen.spawnSnowBall)
-            //{
-            //    if (LevelEditor_snowmen.attackingRight)
-            //    {
-            //        Projectile p = new Projectile(new Rectangle(LevelEditor_snowmen.enemyRect.X + LevelEditor_snowmen.enemyRect.Width, LevelEditor_snowmen.enemyRect.Y + 16, 16, 16), snowBallTex, Color.White, 5, 0, 1f);
-            //        snowBalls.Add(p);
-            //        LevelEditor_snowmen.spawnSnowBall = false;
+            foreach(Enemy e in snowmenList)
+            {
+                foreach(Projectile p in projectiles)
+                {
+                    if (e.enemyRect.Intersects(p.projectileRect))
+                    {
+                        projectiles.Remove(p);
+                        snowmenList.Remove(e);
 
-            //    }
-            //    if (LevelEditor_snowmen.attackingLeft)
-            //    {
-            //        Projectile p = new Projectile(new Rectangle(LevelEditor_snowmen.enemyRect.X, LevelEditor_snowmen.enemyRect.Y + 16, 16, 16), snowBallTex, Color.White, -5, 0, 1f);
-            //        snowBalls.Add(p);
-            //        LevelEditor_snowmen.spawnSnowBall = false;
-            //    }
-            //}
+
+                        goto outside;
+                    }
+                }
+            }
+            outside:
             //enemy end
 
 
@@ -363,7 +363,6 @@ namespace PhysicsTest
             snowmanSize = snowmenList.Count - 1;
             //end size tracker
 
-            Console.WriteLine("spikes:"+SpikeBlockSize+" snowmen:"+snowmanSize);
             base.Update(gameTime);
         }
 

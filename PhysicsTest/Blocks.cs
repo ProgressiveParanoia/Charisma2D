@@ -63,9 +63,11 @@ namespace PhysicsTest
             get { return isPointy; }
             set { isPointy = value; }
         }
+
         public void Move(int x, int y)
         {
             _blockRect.Location = new Point(x,y);
         }
+
     }
 }
