@@ -603,14 +603,15 @@ namespace PhysicsTest
 
             if(obj.X < _playerRect.X)
             {
-                posX += 6;
+                _velocity.X += 3;
             }else
                 if (obj.X > _playerRect.X)
             {
-                posX -= 6;
+                _velocity.X -= 3;
             }
 
-            posY -= 6;
+            _velocity.Y -= 2;
+            isJumping = false;
             _playerRect.Location = new Point(posX,posY);
         }
 

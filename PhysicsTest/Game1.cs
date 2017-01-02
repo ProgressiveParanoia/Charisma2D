@@ -317,6 +317,7 @@ namespace PhysicsTest
                         if (p.projectileRect.Intersects(pl.playerRect))
                         {
                             pl.hitMove(p.projectileRect);
+                            snowBalls.Remove(p);
                             goto there;
                         }    
                     }
