@@ -24,6 +24,8 @@ namespace PhysicsTest
 
         Blocks LevelEditor_spikeBlock;
 
+        Blocks LevelEditor_checkPoint;
+
         Enemy LevelEditor_snowmen;
 
         //Blocks LevelEditor_
@@ -418,8 +420,8 @@ namespace PhysicsTest
             RegularBlockSize = RegularBlockList.Count - 1;
             SlipBlockSize = SkateBlockList.Count - 1;
             SpikeBlockSize = spikeBlockList.Count - 1;
-          
 
+            IceWallSize = iceWallList.Count - 1;
             snowmanSize = snowmenList.Count - 1;
             //end size tracker
 
@@ -1182,7 +1184,8 @@ namespace PhysicsTest
                         LevelEditor_RegularBlock.Move(p.playerRect.Location.X, p.playerRect.Location.Y);    
                         LevelEditor_SlipBlock.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
                         LevelEditor_spikeBlock.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
-                        LevelEditor_snowmen.Move(p.playerRect.Location.X, p.playerRect.Location.Y);   
+                        LevelEditor_snowmen.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
+                        LevelEditor_iceWall.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
                 }
              //   LevelEditor_RegularBlock.Move(Mouse.GetState().X - (LevelEditor_RegularBlock.blockRect.Width * 2 + LevelEditor_RegularBlock.blockRect.Width / 3), Mouse.GetState().Y - LevelEditor_RegularBlock.blockRect.Height / 2);
                 IsMouseVisible = false;
