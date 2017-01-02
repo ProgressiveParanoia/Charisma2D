@@ -110,6 +110,12 @@ namespace PhysicsTest
             }
         }
 
+        public Point playerPos
+        {
+            get { return _playerRect.Location; }
+            set { _playerRect.Location = value; }
+        }
+
         public float physicsTimer
         {
             set
@@ -429,10 +435,7 @@ namespace PhysicsTest
             {
                     _velocity.Y += (int)1 * (int)1.5;
             }
-            if (_playerRect.Y > _bounds.Y - 50)
-            {
-                _playerRect.Location = new Point(50, 0);
-            }
+         
 
             _playerRect.Location = new Point(_playerRect.X, _playerRect.Y);
             Console.WriteLine(slideAndShoot);
@@ -580,7 +583,7 @@ namespace PhysicsTest
                             {
                                 _velocity.X += 3;
                             }
-                   //     }
+                   
 
                         _velocity.Y -= 3;
                     

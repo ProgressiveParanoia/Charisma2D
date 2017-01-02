@@ -25,10 +25,9 @@ namespace PhysicsTest
         Blocks LevelEditor_spikeBlock;
 
         Blocks LevelEditor_checkPoint;
+        Blocks LevelEditor_exit;
 
         Enemy LevelEditor_snowmen;
-
-        //Blocks LevelEditor_
 
         int RegularBlockSize;
         int SlipBlockSize;
@@ -37,12 +36,13 @@ namespace PhysicsTest
 
         int snowmanSize;
 
-        LevelEditor editor;
-
         List<Blocks> RegularBlockList;
         List<Blocks> SkateBlockList;
         List<Blocks> iceWallList;
         List<Blocks> spikeBlockList;
+
+        List<Blocks> checkPointList;
+        List<Blocks> exitList;
 
         List<Player> playerList;
 
@@ -65,6 +65,9 @@ namespace PhysicsTest
         Texture2D snowBallTex;
 
         Texture2D explosionTex;
+
+        Texture2D checkPointTexture;
+
 
         SpriteFont sF;
 
@@ -89,6 +92,10 @@ namespace PhysicsTest
 
         bool isLoading;
         //Input end
+
+        //key points in the map
+        Point spawnPoint;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -127,12 +134,13 @@ namespace PhysicsTest
 
             LevelEditor_snowmen = new Enemy((new Rectangle(0,0,64,64)),snowmenTex);
 
-            Texture2D editorTex = Content.Load<Texture2D>(@"editorBackdrop");
-
             RegularBlockList = new List<Blocks>();
             SkateBlockList = new List<Blocks>();
             spikeBlockList = new List<Blocks>();
             iceWallList = new List<Blocks>();
+
+            checkPointList = new List<Blocks>();
+            exitList = new List<Blocks>();
 
             snowmenList = new List<Enemy>();
             penguinList = new List<Enemy>();
@@ -146,6 +154,9 @@ namespace PhysicsTest
             playerList.Add(_player);
 
             loadPlayer();
+
+            spawnPoint = playerList[0].playerRect.Location;
+
             base.Initialize();
         }
 
@@ -238,6 +249,12 @@ namespace PhysicsTest
                     }
                 }
                 pl.Animation();
+
+                if(pl.playerPos.Y > Window.ClientBounds.Height)
+                {
+                    pl.velocity = new Point(0,0);
+                    pl.playerPos = spawnPoint;
+                }
 
                 //camera stuff
                 cam.setToCenter(pl.playerRect, new Point(Window.ClientBounds.Width, Window.ClientBounds.Height));
