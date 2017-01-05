@@ -378,35 +378,37 @@ namespace PhysicsTest
                 }
 
             there:
-                //end cleaning
+            //end cleaning
             //end projectiles
 
 
             //enemy related stuff
 
-            foreach(Enemy e in snowmenList)
+            if (!devMode)
             {
-                e.snowmanMovement(playerList[0].playerRect);
-                e.snowmanAnimation();
-
-                if (e.spawnSnowBall)
+                foreach (Enemy e in snowmenList)
                 {
-                    if (e.attackingRight)
-                    {
-                        Projectile p = new Projectile(new Rectangle(e.enemyRect.X + e.enemyRect.Width, e.enemyRect.Y + 16, 16, 16), snowBallTex, Color.White, 5, 0, 1f);
-                        snowBalls.Add(p);
-                        e.spawnSnowBall = false;
+                    e.snowmanMovement(playerList[0].playerRect);
+                    e.snowmanAnimation();
 
-                    }
-                    if (e.attackingLeft)
+                    if (e.spawnSnowBall)
                     {
-                        Projectile p = new Projectile(new Rectangle(e.enemyRect.X, e.enemyRect.Y + 16, 16, 16), snowBallTex, Color.White, -5, 0, 1f);
-                        snowBalls.Add(p);
-                        e.spawnSnowBall = false;
+                        if (e.attackingRight)
+                        {
+                            Projectile p = new Projectile(new Rectangle(e.enemyRect.X + e.enemyRect.Width, e.enemyRect.Y + 16, 16, 16), snowBallTex, Color.White, 5, 0, 1f);
+                            snowBalls.Add(p);
+                            e.spawnSnowBall = false;
+
+                        }
+                        if (e.attackingLeft)
+                        {
+                            Projectile p = new Projectile(new Rectangle(e.enemyRect.X, e.enemyRect.Y + 16, 16, 16), snowBallTex, Color.White, -5, 0, 1f);
+                            snowBalls.Add(p);
+                            e.spawnSnowBall = false;
+                        }
                     }
                 }
             }
-
             foreach(Enemy e in snowmenList)
             {
                 foreach(Projectile p in projectiles)

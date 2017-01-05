@@ -326,8 +326,10 @@ namespace PhysicsTest
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
-                posX += 3;
-                
+                if (!devMode)
+                    posX += 3;
+                else
+                    posX += 9;
                 if (!movingRight)
                 {
                     _SpriteSheetX = 384;
@@ -357,8 +359,10 @@ namespace PhysicsTest
 
             if (Keyboard.GetState().IsKeyDown(Keys.A))
             {
-                posX -= 3;
-
+                if (!devMode)
+                    posX -= 3;
+                else
+                    posX -= 9;
                
                 if (!movingLeft)
                 {
@@ -391,11 +395,11 @@ namespace PhysicsTest
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.W))
                 {
-                    posY -= 3;
+                    posY -= 9;
                 }
                 if (Keyboard.GetState().IsKeyDown(Keys.S))
                 {
-                    posY += 3;
+                    posY += 9;
                 }
                
             }
