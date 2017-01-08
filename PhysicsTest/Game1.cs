@@ -47,6 +47,9 @@ namespace PhysicsTest
         List<Blocks> checkPointList;
         List<Blocks> exitList;
 
+        List<Blocks> playerHP;
+        List<Blocks> playerLife;
+
         List<Player> playerList;
 
         List<Enemy> snowmenList;
@@ -68,6 +71,9 @@ namespace PhysicsTest
         Texture2D snowBallTex;
 
         Texture2D explosionTex;
+
+        Texture2D LifeTex;
+        Texture2D HPTex;
 
         Texture2D checkPointTexture;
         Texture2D exitTexture;
@@ -128,6 +134,9 @@ namespace PhysicsTest
             exitTexture = Content.Load<Texture2D>(@"exitTex");
             checkPointTexture = Content.Load<Texture2D>(@"spawnPoint");
 
+            LifeTex = Content.Load<Texture2D>(@"LIFE");
+            HPTex = Content.Load<Texture2D>(@"HP");
+
             explosionTex = Content.Load<Texture2D>(@"IceExplosion");
 
             sF = Content.Load<SpriteFont>(@"spriteFont");
@@ -158,16 +167,28 @@ namespace PhysicsTest
             penguinList = new List<Enemy>();
             snowBalls = new List<Projectile>();
 
+            playerLife = new List<Blocks>();
+            playerHP = new List<Blocks>();
+
             projectiles = new List<Projectile>();
             playerList = new List<Player>();
 
             explosion = new List<Explosion>();
 
-            playerList.Add(_player);
+            Blocks _playerHP = new Blocks((new Rectangle(0,0, 64, 64)),HPTex);
+            Blocks _playerLife = new Blocks(new Rectangle(0,0,64,64),LifeTex);
 
             loadPlayer();
 
+            for (int i = 0; i < playerList[0].PlayerLifeHP; i++)
+            {
+                playerHP.Add(_playerHP);
+                playerLife.Add(_playerLife);
+
+            }
             spawnPoint = new Point(checkPointList[0].blockPos.X, checkPointList[0].blockPos.Y);
+
+
 
             base.Initialize();
         }
@@ -457,6 +478,8 @@ namespace PhysicsTest
             snowmanSize = snowmenList.Count - 1;
             //end size tracker
 
+            Console.WriteLine("HP Elements:"+playerHP.Count+" life elements:"+playerLife.Count+ "player size"+playerList.Count);
+
             base.Update(gameTime);
         }
 
@@ -472,19 +495,17 @@ namespace PhysicsTest
                 {
                     spriteBatch.Draw(p.playerTexture,p.playerRect, new Rectangle(p.spriteSheetX, p.spriteSheetY, 192, 192), p.playerColor);
 
-                    spriteBatch.DrawString(sF, "Player X:" + p.playerRect.X + " Y:" + p.playerRect.Y, new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 0), Color.White);
-                    spriteBatch.DrawString(sF, "Editorblock X:" + LevelEditor_RegularBlock.blockRect.X + " Y:" + LevelEditor_RegularBlock.blockRect.Y, new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 20), Color.White);
-                    spriteBatch.DrawString(sF, "[F]Save [L]Load [T]Level Editor",new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 40),Color.White);
-                    
-
                     if (devMode)
                     {
-                        spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks [3] spikes [4] ammo [5] medkit [6] snowmen [7] penguins [8] check point [9] exit", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 60), Color.White);
-                        spriteBatch.DrawString(sF, "[Space]Place Block [B]Remove Block", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 1000), Color.White);
-                    }
+                        spriteBatch.DrawString(sF, "Player X:" + p.playerRect.X + " Y:" + p.playerRect.Y, new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 0), Color.White);
+                        spriteBatch.DrawString(sF, "Editorblock X:" + LevelEditor_RegularBlock.blockRect.X + " Y:" + LevelEditor_RegularBlock.blockRect.Y, new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 20), Color.White);
+                        spriteBatch.DrawString(sF, "[F]Save [L]Load [T]Level Editor",new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 40),Color.White);
                     
-                    //  new Rectangle(0, 0, Window.ClientBounds.Width / 4, Window.ClientBounds.Height),editorTex
-                }
+                        spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks [3] spikes [4] ammo [5] medkit [6] snowmen [7] penguins [8] check point [9] exit", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 60), Color.White);
+                        spriteBatch.DrawString(sF, "[Space]Place Block [B]Remove Block", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 100), Color.White);
+                     }
+                //  new Rectangle(0, 0, Window.ClientBounds.Width / 4, Window.ClientBounds.Height),editorTex
+            }
                 foreach (Blocks b in RegularBlockList)
                 {
                     spriteBatch.Draw(b.blockTexture,b.blockRect,Color.White);
@@ -527,6 +548,14 @@ namespace PhysicsTest
                 foreach (Explosion e in explosion)
                 {
                     spriteBatch.Draw(e.explosionTexture, e.explosionRect, new Rectangle(e.SpriteSheetX, e.SpriteSheetY, 96, 96), Color.White);
+                }
+
+                foreach(Player p in playerList)
+                {
+                    foreach (Blocks b in playerLife)
+                    {
+                        spriteBatch.Draw(b.blockTexture, new Rectangle(p.playerRect.X - (cam.myView.Bounds.Right / 2 - b.blockRect.Width / 2), 0, b.blockRect.Width, b.blockRect.Height), Color.White);
+                    }
                 }
 
             //dev mode stuff
@@ -673,6 +702,7 @@ namespace PhysicsTest
             if (IceWallSize != 0)
                 iceWallList.Remove(iceWallList[0]);
 
+            if(playerList.Count!=0)
             playerList.Remove(playerList[0]);
 
             //exitList.Remove(exitList[0]);

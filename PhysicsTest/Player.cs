@@ -446,7 +446,6 @@ namespace PhysicsTest
          
 
             _playerRect.Location = new Point(_playerRect.X, _playerRect.Y);
-            Console.WriteLine(slideAndShoot);
         }
 
         public void Colliders(Blocks block)
