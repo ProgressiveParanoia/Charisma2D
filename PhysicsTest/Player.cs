@@ -55,6 +55,7 @@ namespace PhysicsTest
 
         //life vars
         private int playerHP;
+        private int playerLife;
         private bool isTakingDamage;
             //end life  
               
@@ -73,6 +74,9 @@ namespace PhysicsTest
             _slideTime = 1f;
 
             _ammoCounter = 8;
+
+            playerLife = 3;
+            playerHP = 3;
 
             idleRight = true;
         }
@@ -140,7 +144,7 @@ namespace PhysicsTest
             set { _ammoCounter = value; }
         }
 
-        public int playerLife
+        public int PlayerLifeHP
         {
             get { return playerHP; }
             set { playerHP = value; }

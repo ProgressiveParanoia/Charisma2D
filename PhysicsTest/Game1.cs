@@ -36,6 +36,9 @@ namespace PhysicsTest
 
         int snowmanSize;
 
+        int spawnPointSize;
+        int exitPointSize;
+
         List<Blocks> RegularBlockList;
         List<Blocks> SkateBlockList;
         List<Blocks> iceWallList;
@@ -123,7 +126,7 @@ namespace PhysicsTest
             snowBallTex = Content.Load<Texture2D>(@"snowBall");
 
             exitTexture = Content.Load<Texture2D>(@"exitTex");
-            checkPointTexture = Content.Load<Texture2D>(@"CheckPointSheet");
+            checkPointTexture = Content.Load<Texture2D>(@"spawnPoint");
 
             explosionTex = Content.Load<Texture2D>(@"IceExplosion");
 
@@ -137,7 +140,7 @@ namespace PhysicsTest
             LevelEditor_iceWall = new Blocks(new Rectangle(0,0,50,100),iceWall);
 
             LevelEditor_checkPoint = new Blocks(new Rectangle(0,0,96,96),checkPointTexture);
-            LevelEditor_exit = new Blocks(new Rectangle(0,0,70,100),exitTexture);
+            LevelEditor_exit = new Blocks(new Rectangle(0,0,96,96),exitTexture);
 
             LevelEditor_spikeBlock = new Blocks(new Rectangle(0,0,16,16),spikeBlockTex);
 
@@ -164,7 +167,7 @@ namespace PhysicsTest
 
             loadPlayer();
 
-            spawnPoint = playerList[0].playerRect.Location;
+            spawnPoint = new Point(checkPointList[0].blockPos.X, checkPointList[0].blockPos.Y);
 
             base.Initialize();
         }
@@ -503,6 +506,10 @@ namespace PhysicsTest
                 {
                     spriteBatch.Draw(b.blockTexture, b.blockRect, Color.White);
                 }
+                foreach(Blocks b in exitList)
+                {
+                    spriteBatch.Draw(b.blockTexture, b.blockRect, Color.White);
+                }
                 foreach (Projectile p in projectiles)
                 {
                     spriteBatch.Draw(p.projectileTexture,p.projectileRect,p.projectileColor);
@@ -604,6 +611,12 @@ namespace PhysicsTest
             sw.WriteLine(IceWallSize);
             sw.WriteLine("");
 
+            sw.WriteLine(checkPointList[0].blockRect.X+","+checkPointList[0].blockRect.Y);
+            sw.WriteLine("");
+
+            sw.WriteLine(exitList[0].blockRect.X + "," + exitList[0].blockRect.Y);
+            sw.WriteLine("");
+
             sw.Close();
 
         }
@@ -660,7 +673,10 @@ namespace PhysicsTest
             if (IceWallSize != 0)
                 iceWallList.Remove(iceWallList[0]);
 
-            playerList.Remove(playerList[0]);            
+            playerList.Remove(playerList[0]);
+
+            //exitList.Remove(exitList[0]);
+            //checkPointList.Remove(checkPointList[0]);
 
 
             //cleaning finish
@@ -821,6 +837,40 @@ namespace PhysicsTest
                     break;
                 IceWallSize = int.Parse(fileData);
             }
+
+            spaceEater = fileData;
+
+            while((fileData = sr.ReadLine()) != null)
+            {
+                string[] PosData = fileData.Split(',');
+
+                if (fileData == "")
+                    break;
+
+                int posX = int.Parse(PosData[0]);
+                int posY = int.Parse(PosData[1]);
+
+                Blocks b = new Blocks(new Rectangle(posX,posY,96,96),checkPointTexture);
+                checkPointList.Add(b);
+            }
+
+            spaceEater = fileData;
+
+            while ((fileData = sr.ReadLine()) != null)
+            {
+                string[] PosData = fileData.Split(',');
+
+                if (fileData == "")
+                    break;
+
+                int posX = int.Parse(PosData[0]);
+                int posY = int.Parse(PosData[1]);
+
+                Blocks b = new Blocks(new Rectangle(posX, posY, 96, 96), exitTexture);
+                exitList.Add(b);
+            }
+
+
             sr.Close();
         }
         //save and load finish
@@ -1317,6 +1367,62 @@ namespace PhysicsTest
                         isRemovingBlock = false;
                     }
                     //input place done
+                }else
+                    if (levelEditor_IsExit)
+                {
+                    //movement
+                    if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                    {
+                        LevelEditor_exit.Move( LevelEditor_exit.blockRect.X - 3,  LevelEditor_exit.blockRect.Y);
+
+                    }
+                    if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                    {
+                         LevelEditor_exit.Move( LevelEditor_exit.blockRect.X + 3,  LevelEditor_exit.blockRect.Y);
+                    }
+
+                    if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                    {
+                         LevelEditor_exit.Move( LevelEditor_exit.blockRect.X,  LevelEditor_exit.blockRect.Y - 3);
+                    }
+                    if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                    {
+                         LevelEditor_exit.Move( LevelEditor_exit.blockRect.X,  LevelEditor_exit.blockRect.Y + 3);
+                    }
+                    //move end
+
+                    //input place
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isPlacingBlock)
+                    {
+                        // Blocks b = new Blocks(new Rectangle(LevelEditor_spikeBlock.blockRect.Location.X, LevelEditor_spikeBlock.blockRect.Location.Y, 16, 16), spikeBlockTex);
+                        Blocks e = new Blocks(new Rectangle( LevelEditor_exit.blockRect.X,  LevelEditor_exit.blockRect.Y, 96, 96),exitTexture);
+                        exitList.Add(e);
+
+                        isPlacingBlock = true;
+                    }
+
+                    foreach (Blocks e in exitList)
+                    {
+                        if (LevelEditor_exit.blockRect.Intersects(e.blockRect))
+                        {
+                            if (Keyboard.GetState().IsKeyDown(Keys.B) && !isRemovingBlock)
+                            {
+                                exitList.Remove(e);
+                                isRemovingBlock = true;
+                                break;
+                            }
+
+                        }
+                    }
+
+                    if (Keyboard.GetState().IsKeyUp(Keys.B))
+                    {
+                        isRemovingBlock = false;
+                    }
+                }
+                if (Keyboard.GetState().IsKeyUp(Keys.Space))
+                {
+                    isPlacingBlock = false;
                 }
             }
             else
