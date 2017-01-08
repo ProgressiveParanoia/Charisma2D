@@ -36,9 +36,6 @@ namespace PhysicsTest
 
         int snowmanSize;
 
-        int spawnPointSize;
-        int exitPointSize;
-
         List<Blocks> RegularBlockList;
         List<Blocks> SkateBlockList;
         List<Blocks> iceWallList;
@@ -47,8 +44,7 @@ namespace PhysicsTest
         List<Blocks> checkPointList;
         List<Blocks> exitList;
 
-        List<Blocks> playerHP;
-        List<Blocks> playerLife;
+        Blocks[] playerHP;
 
         List<Player> playerList;
 
@@ -118,6 +114,7 @@ namespace PhysicsTest
 
             levelEditor_IsRegBlock = true;
         }
+
         protected override void Initialize()
         {
             playerTex = Content.Load<Texture2D>(@"Elf_shotty_sheet");
@@ -167,28 +164,25 @@ namespace PhysicsTest
             penguinList = new List<Enemy>();
             snowBalls = new List<Projectile>();
 
-            playerLife = new List<Blocks>();
-            playerHP = new List<Blocks>();
+            playerHP = new Blocks[3];
 
             projectiles = new List<Projectile>();
             playerList = new List<Player>();
 
             explosion = new List<Explosion>();
 
-            Blocks _playerHP = new Blocks((new Rectangle(0,0, 64, 64)),HPTex);
-            Blocks _playerLife = new Blocks(new Rectangle(0,0,64,64),LifeTex);
+            Blocks _playerHP = new Blocks((new Rectangle(0,0, 48, 48)),HPTex);
+            Blocks _playerLife = new Blocks(new Rectangle(0,0,48,64),LifeTex);
 
             loadPlayer();
 
-            for (int i = 0; i < playerList[0].PlayerLifeHP; i++)
+            for (int i = 0; i < 3; i++)
             {
-                playerHP.Add(_playerHP);
-                playerLife.Add(_playerLife);
+                playerHP[i]=(_playerHP);
 
             }
+
             spawnPoint = new Point(checkPointList[0].blockPos.X, checkPointList[0].blockPos.Y);
-
-
 
             base.Initialize();
         }
@@ -478,7 +472,7 @@ namespace PhysicsTest
             snowmanSize = snowmenList.Count - 1;
             //end size tracker
 
-            Console.WriteLine("HP Elements:"+playerHP.Count+" life elements:"+playerLife.Count+ "player size"+playerList.Count);
+            Console.WriteLine("HP Elements:"+playerHP.Length+ "player size"+playerList.Count);
 
             base.Update(gameTime);
         }
@@ -552,11 +546,40 @@ namespace PhysicsTest
 
                 foreach(Player p in playerList)
                 {
-                    foreach (Blocks b in playerLife)
+
+                    for (int i = 0; i < p.PlayerHP; i++)
                     {
-                        spriteBatch.Draw(b.blockTexture, new Rectangle(p.playerRect.X - (cam.myView.Bounds.Right / 2 - b.blockRect.Width / 2), 0, b.blockRect.Width, b.blockRect.Height), Color.White);
-                    }
+                        if (i == p.PlayerHP - 1)
+                        {
+                            if (p.PlayerLife == 3)
+                            {
+                                spriteBatch.Draw(playerHP[i].blockTexture, new Rectangle(p.playerRect.X - (cam.myView.Bounds.Right / 2 - playerHP[i].blockRect.Width) + (playerHP[i].blockRect.Width * i), 0, playerHP[i].blockRect.Width, playerHP[i].blockRect.Height), Color.White);
+                            }
+                            if (p.PlayerLife == 2)
+                            {
+                                spriteBatch.Draw(playerHP[i].blockTexture, new Rectangle(p.playerRect.X - (cam.myView.Bounds.Right / 2 - playerHP[i].blockRect.Width) + (playerHP[i].blockRect.Width * i), 0, playerHP[i].blockRect.Width, playerHP[i].blockRect.Height), Color.Red);
+                            }
+                            if (p.PlayerLife == 1)
+                            {
+                                spriteBatch.Draw(playerHP[i].blockTexture, new Rectangle(p.playerRect.X - (cam.myView.Bounds.Right / 2 - playerHP[i].blockRect.Width) + (playerHP[i].blockRect.Width * i), 0, playerHP[i].blockRect.Width, playerHP[i].blockRect.Height), Color.Blue);
+                            }
+                            else
+                            if (p.PlayerLife == 0)
+                            {
+                               
+                                p.playerPos = new Point(0,0);
+                                p.PlayerLife = 3;
+                                p.PlayerHP--;
+                                break;
+                               
+                            }
+                        }else
+                        if(i != (p.PlayerHP - 1))
+                        {
+                            spriteBatch.Draw(playerHP[i].blockTexture, new Rectangle(p.playerRect.X - (cam.myView.Bounds.Right / 2 - playerHP[i].blockRect.Width) + (playerHP[i].blockRect.Width * i), 0, playerHP[i].blockRect.Width, playerHP[i].blockRect.Height), Color.White);
+                        }
                 }
+            }
 
             //dev mode stuff
             if (devMode) {

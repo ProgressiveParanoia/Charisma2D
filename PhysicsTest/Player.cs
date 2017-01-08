@@ -144,10 +144,16 @@ namespace PhysicsTest
             set { _ammoCounter = value; }
         }
 
-        public int PlayerLifeHP
+        public int PlayerHP
         {
             get { return playerHP; }
             set { playerHP = value; }
+        }
+
+        public int PlayerLife
+        {
+            get { return playerLife; }
+            set { playerLife = value; }
         }
 
         public float jumpTime
@@ -575,26 +581,25 @@ namespace PhysicsTest
                 {
                     if (_playerRect.Intersects(block.blockRect) && !isTakingDamage)
                     {
-                        isJumping = false;
-                        _velocity.Y = 0;
 
-                        if (movingRight || idleRight)
-                            {
-                                _velocity.X -= 3;
+                            playerLife = 0;
+                    //    if (movingRight || idleRight)
+                    //        {
+                    //            _velocity.X -= 3;
 
-                            }
+                    //        }
 
-                    //    if (playerRect.X - _playerRect.X / 2 < block.blockRect.X)
-                     //   {
-                            if (movingLeft || idleLeft)
-                            {
-                                _velocity.X += 3;
-                            }
+                    ////    if (playerRect.X - _playerRect.X / 2 < block.blockRect.X)
+                    // //   {
+                    //        if (movingLeft || idleLeft)
+                    //        {
+                    //            _velocity.X += 3;
+                    //        }
                    
 
-                        _velocity.Y -= 3;
+                    //    _velocity.Y -= 3;
                     
-                      //  Console.WriteLine("do damage");
+                    //  //  Console.WriteLine("do damage");
                         isTakingDamage = true;
                     }
                 else
