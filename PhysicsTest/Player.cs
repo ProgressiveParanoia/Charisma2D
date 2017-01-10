@@ -14,6 +14,7 @@ namespace PhysicsTest
         private Color _playerColor;
         private Point _bounds;
 
+        private Point _spawnPoint;
 
         private bool isJumping;
         private bool isGrounded;
@@ -132,6 +133,13 @@ namespace PhysicsTest
             }
 
         }
+
+        public Point spawnPoint
+        {
+            get { return _spawnPoint; }
+            set { _spawnPoint = value; }
+        }
+
         public Point velocity
         {
             get { return _velocity; }
@@ -226,6 +234,10 @@ namespace PhysicsTest
             get { return idleRight; }
         }
 
+        public bool TakingDamage
+        {
+            get { return isTakingDamage; }
+        }
         public void Animation()
         {
             if (idleRight)
@@ -583,28 +595,11 @@ namespace PhysicsTest
                     {
 
                             playerLife = 0;
-                    //    if (movingRight || idleRight)
-                    //        {
-                    //            _velocity.X -= 3;
-
-                    //        }
-
-                    ////    if (playerRect.X - _playerRect.X / 2 < block.blockRect.X)
-                    // //   {
-                    //        if (movingLeft || idleLeft)
-                    //        {
-                    //            _velocity.X += 3;
-                    //        }
-                   
-
-                    //    _velocity.Y -= 3;
-                    
-                    //  //  Console.WriteLine("do damage");
-                        isTakingDamage = true;
+                            
+                            isTakingDamage = true;
                     }
                 else
                     {
-                     //   Console.WriteLine("nothing");
                         isTakingDamage = false;
                     }
                 }

@@ -13,6 +13,7 @@ namespace PhysicsTest
     {
         private Rectangle _explosionRect;
         private Texture2D _explosionTexture;
+        private Color _explosionColor;
 
         //Animation variables
 
@@ -24,10 +25,11 @@ namespace PhysicsTest
         private bool _destroySprite;
 
         //end animation vars
-        public Explosion(Rectangle _explosionRect, Texture2D _explosionTexture)
+        public Explosion(Rectangle _explosionRect, Texture2D _explosionTexture, Color _explosionColor)
         {
             this._explosionRect = _explosionRect;
             this._explosionTexture = _explosionTexture;
+            this._explosionColor = _explosionColor;
         }
 
         public Rectangle explosionRect
@@ -40,6 +42,12 @@ namespace PhysicsTest
         {
             get { return _explosionTexture; }
             set { _explosionTexture = value; }
+        }
+
+        public Color explosionColor
+        {
+            get { return _explosionColor; }
+            set { _explosionColor = value; }
         }
 
         public bool destroySprite

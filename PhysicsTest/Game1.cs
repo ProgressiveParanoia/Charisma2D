@@ -7,9 +7,7 @@ using System.IO;
 
 namespace PhysicsTest
 {
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
+
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
@@ -56,6 +54,9 @@ namespace PhysicsTest
 
         List<Explosion> explosion;
 
+        List<PickUp> healthPickUp;
+        List<PickUp> ammoPickUp;
+
         Texture2D shotgunPellet;
             
         Texture2D playerTex;
@@ -74,6 +75,9 @@ namespace PhysicsTest
         Texture2D checkPointTexture;
         Texture2D exitTexture;
 
+        Texture2D ammoTexture;
+        Texture2D healthTexture;
+
         SpriteFont sF;
 
         bool playMode;
@@ -89,7 +93,6 @@ namespace PhysicsTest
         bool levelEditor_IsCheckPoint;
         bool levelEditor_IsExit;
         //end blocktypes
-
 
         //key inputs
         bool swappingModes;
@@ -134,6 +137,9 @@ namespace PhysicsTest
             LifeTex = Content.Load<Texture2D>(@"LIFE");
             HPTex = Content.Load<Texture2D>(@"HP");
 
+            ammoTexture = Content.Load<Texture2D>(@"AmmoPickup");
+            healthTexture = Content.Load<Texture2D>(@"HealthPickup");
+
             explosionTex = Content.Load<Texture2D>(@"IceExplosion");
 
             sF = Content.Load<SpriteFont>(@"spriteFont");
@@ -174,7 +180,7 @@ namespace PhysicsTest
             Blocks _playerHP = new Blocks((new Rectangle(0,0, 48, 48)),HPTex);
             Blocks _playerLife = new Blocks(new Rectangle(0,0,48,64),LifeTex);
 
-            loadPlayer();
+            loadPlayer("Stage1.SWAG");
 
             for (int i = 0; i < 3; i++)
             {
@@ -204,7 +210,6 @@ namespace PhysicsTest
         protected override void Update(GameTime gameTime)
         {
             LevelEditor();
-
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -281,6 +286,8 @@ namespace PhysicsTest
                 if(pl.playerPos.Y > Window.ClientBounds.Height)
                 {
                     pl.velocity = new Point(0,0);
+                    pl.PlayerHP--;
+                    pl.PlayerLife = 3;
                     pl.playerPos = spawnPoint;
                 }
 
@@ -295,7 +302,7 @@ namespace PhysicsTest
 
                 if (Keyboard.GetState().IsKeyDown(Keys.L) && !isLoading)
                 {
-                    loadPlayer();
+                    loadPlayer("Stage1.SWAG");
                     isLoading = true;
                 }
 
@@ -365,6 +372,7 @@ namespace PhysicsTest
                         goto here;
                     }
                 }
+
                 foreach (Blocks b in SkateBlockList)
                 {
                     if (p.projectileRect.Intersects(b.blockRect))
@@ -389,7 +397,9 @@ namespace PhysicsTest
                         if (p.projectileRect.Intersects(pl.playerRect))
                         {
                             pl.hitMove(p.projectileRect);
+
                             snowBalls.Remove(p);
+                            pl.PlayerLife--;
                             goto there;
                         }    
                     }
@@ -416,7 +426,6 @@ namespace PhysicsTest
                             Projectile p = new Projectile(new Rectangle(e.enemyRect.X + e.enemyRect.Width, e.enemyRect.Y + 16, 16, 16), snowBallTex, Color.White, 5, 0, 1f);
                             snowBalls.Add(p);
                             e.spawnSnowBall = false;
-
                         }
                         if (e.attackingLeft)
                         {
@@ -427,14 +436,14 @@ namespace PhysicsTest
                     }
                 }
             }
+
             foreach(Enemy e in snowmenList)
             {
                 foreach(Projectile p in projectiles)
                 {
                     if (e.enemyRect.Intersects(p.projectileRect))
                     {
-                        Explosion exp = new Explosion(new Rectangle(e.enemyRect.X,e.enemyRect.Y,100,100),explosionTex);
-
+                        Explosion exp = new Explosion(new Rectangle(e.enemyRect.X,e.enemyRect.Y,100,100),explosionTex,Color.White);
                         explosion.Add(exp);
 
                         projectiles.Remove(p);
@@ -446,7 +455,6 @@ namespace PhysicsTest
             }
             outside:
             //enemy end
-
 
             //explosion stuff
 
@@ -462,7 +470,6 @@ namespace PhysicsTest
             }
 
             //end boom boom
-
             //size tracker for level editor
             RegularBlockSize = RegularBlockList.Count - 1;
             SlipBlockSize = SkateBlockList.Count - 1;
@@ -472,7 +479,7 @@ namespace PhysicsTest
             snowmanSize = snowmenList.Count - 1;
             //end size tracker
 
-            Console.WriteLine("HP Elements:"+playerHP.Length+ "player size"+playerList.Count);
+            Console.WriteLine("HP Elements:"+playerList[0].PlayerHP+ "player size"+playerList.Count);
 
             base.Update(gameTime);
         }
@@ -498,8 +505,9 @@ namespace PhysicsTest
                         spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks [3] spikes [4] ammo [5] medkit [6] snowmen [7] penguins [8] check point [9] exit", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 60), Color.White);
                         spriteBatch.DrawString(sF, "[Space]Place Block [B]Remove Block", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 100), Color.White);
                      }
-                //  new Rectangle(0, 0, Window.ClientBounds.Width / 4, Window.ClientBounds.Height),editorTex
-            }
+      
+                }
+
                 foreach (Blocks b in RegularBlockList)
                 {
                     spriteBatch.Draw(b.blockTexture,b.blockRect,Color.White);
@@ -541,7 +549,7 @@ namespace PhysicsTest
 
                 foreach (Explosion e in explosion)
                 {
-                    spriteBatch.Draw(e.explosionTexture, e.explosionRect, new Rectangle(e.SpriteSheetX, e.SpriteSheetY, 96, 96), Color.White);
+                    spriteBatch.Draw(e.explosionTexture, e.explosionRect, new Rectangle(e.SpriteSheetX, e.SpriteSheetY, 96, 96), e.explosionColor);
                 }
 
                 foreach(Player p in playerList)
@@ -566,18 +574,17 @@ namespace PhysicsTest
                             else
                             if (p.PlayerLife == 0)
                             {
-                               
-                                p.playerPos = new Point(0,0);
+                                p.playerPos = spawnPoint;
                                 p.PlayerLife = 3;
                                 p.PlayerHP--;
-                                break;
-                               
+
+                                break;                  
                             }
                         }else
-                        if(i != (p.PlayerHP - 1))
-                        {
-                            spriteBatch.Draw(playerHP[i].blockTexture, new Rectangle(p.playerRect.X - (cam.myView.Bounds.Right / 2 - playerHP[i].blockRect.Width) + (playerHP[i].blockRect.Width * i), 0, playerHP[i].blockRect.Width, playerHP[i].blockRect.Height), Color.White);
-                        }
+                            if(i != (p.PlayerHP - 1))
+                            {
+                                spriteBatch.Draw(playerHP[i].blockTexture, new Rectangle(p.playerRect.X - (cam.myView.Bounds.Right / 2 - playerHP[i].blockRect.Width) + (playerHP[i].blockRect.Width * i), 0, playerHP[i].blockRect.Width, playerHP[i].blockRect.Height), Color.White);
+                            }
                 }
             }
 
@@ -678,9 +685,9 @@ namespace PhysicsTest
             LevelSave();
         }
 
-        void loadPlayer()
+        void loadPlayer(String fileName)
         {
-            StreamReader sr = new StreamReader("Stage1.SWAG");
+            StreamReader sr = new StreamReader("Stage2.SWAG");
             string spaceEater;
 
 
