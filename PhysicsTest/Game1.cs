@@ -692,6 +692,7 @@ namespace PhysicsTest
                                     p.PlayerLife = 3;
                                     p.PlayerHP--;
 
+                                    p.spawnDelay = 0;
                                     break;
                                 }
                             }

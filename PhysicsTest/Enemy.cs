@@ -201,24 +201,24 @@ namespace PhysicsTest
             int posX = _enemyRect.X;
             int posY = _enemyRect.Y;
 
-            if (movingRight)
-            {
-                posX += 1;
-                    if(_enemyRect.X >=MaxLocationX)
+                if (movingRight)
                 {
-                    movingRight = false;
-                    movingLeft = true;
+                    posX += 1;
+                    if (_enemyRect.X >= MaxLocationX)
+                    {
+                        movingRight = false;
+                        movingLeft = true;
+                    }
                 }
-            }
-            if (movingLeft)
-            {
-                posX -= 1;
-                if (_enemyRect.X <= MinLocationX)
+                if (movingLeft)
                 {
-                    movingRight = true;
-                    movingLeft = false;
+                    posX -= 1;
+                    if (_enemyRect.X <= MinLocationX)
+                    {
+                        movingRight = true;
+                        movingLeft = false;
+                    }
                 }
-            }
 
             if (target.PlayerLife != 0)
             {
@@ -252,6 +252,13 @@ namespace PhysicsTest
                         attackLeft = false;
                     }
                 }
+            }
+            else
+            {
+                attackLeft = false;
+                attackRight = false;
+
+                movingLeft = true;
             }
 
             _enemyRect.Location = new Point(posX,posY);
