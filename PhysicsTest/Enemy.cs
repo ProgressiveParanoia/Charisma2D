@@ -11,6 +11,7 @@ namespace PhysicsTest
 {
     class Enemy
     {
+
         private Rectangle _enemyRect;
         private Texture2D _enemyTexture;
 
@@ -195,7 +196,7 @@ namespace PhysicsTest
             _animationDelay++;
         }
 
-        public void snowmanMovement(Rectangle target)
+        public void snowmanMovement(Player target)
         {
             int posX = _enemyRect.X;
             int posY = _enemyRect.Y;
@@ -219,33 +220,37 @@ namespace PhysicsTest
                 }
             }
 
-            if (Math.Abs(target.X - _enemyRect.X) < 220 && Math.Abs(target.Y - _enemyRect.Y) < 120) //if the X distance of an enemy is greater than 20. similar to unity's vector3.distance
+            if (target.PlayerLife != 0)
             {
-                 if(_enemyRect.X < target.X)
+                if (Math.Abs(target.playerRect.X - _enemyRect.X) < 220 && Math.Abs(target.playerRect.Y - _enemyRect.Y) < 120) //if the X distance of an enemy is greater than 20. similar to unity's vector3.distance
                 {
-                    attackRight = true;
-                    attackLeft = false;
+                    if (_enemyRect.X < target.playerRect.X)
+                    {
+                        attackRight = true;
+                        attackLeft = false;
 
-                    movingRight = false;
-                    movingLeft = false;
+                        movingRight = false;
+                        movingLeft = false;
+                    }
+
+                    if (_enemyRect.X > target.playerRect.X)
+                    {
+                        attackRight = false;
+                        attackLeft = true;
+
+                        movingRight = false;
+                        movingLeft = false;
+                    }
+
                 }
-
-                if (_enemyRect.X > target.X)
+                else
                 {
-                    attackRight = false;
-                    attackLeft = true;
-
-                    movingRight = false;
-                    movingLeft = false;
-                }
-
-            }else
-            {
-                if(!movingLeft && !movingRight)
-                {
-                    movingLeft = true;
-                    attackRight = false;
-                    attackLeft = false;
+                    if (!movingLeft && !movingRight)
+                    {
+                        movingLeft = true;
+                        attackRight = false;
+                        attackLeft = false;
+                    }
                 }
             }
 

@@ -270,97 +270,101 @@ namespace PhysicsTest
                 Exit();
 
             //player related methods
-           
-            foreach (Player pl in playerList) {
-                
-                if(Keyboard.GetState().IsKeyDown(Keys.W) && !pl.pressingJump)
-                {
-                    JumpControl = JumpSound.CreateInstance();
-                    JumpControl.Volume = 0.2f;
-                    JumpControl.Play();
-                }
-                pl.move(devMode);
 
-                if (!devMode)
+            foreach (Player pl in playerList)
+            {
+                if (pl.PlayerLife != 0)
                 {
-                    if (Keyboard.GetState().IsKeyDown(Keys.Space) && !pl.shooting)
+                    if (Keyboard.GetState().IsKeyDown(Keys.W) && !pl.pressingJump)
                     {
-                        if (pl.ammoCounter > 0)
+                        JumpControl = JumpSound.CreateInstance();
+                        JumpControl.Volume = 0.2f;
+                        JumpControl.Play();
+                    }
+                    pl.move(devMode);
+
+                    if (!devMode)
+                    {
+                        if (Keyboard.GetState().IsKeyDown(Keys.Space) && !pl.shooting)
                         {
-                            if (pl.IdlingLeft || pl.MoveLeft)
+                            if (pl.ammoCounter > 0)
                             {
-                                //if player has shotgun do this                               
-                                Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 1, 0.3f);
-                                Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 0, 0.3f);
-                                Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, -1, 0.3f);
+                                if (pl.IdlingLeft || pl.MoveLeft)
+                                {
+                                    //if player has shotgun do this                               
+                                    Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 1, 0.3f);
+                                    Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 0, 0.3f);
+                                    Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, -1, 0.3f);
 
-                               // p1.lifeTime = 0.5f;
+                                    // p1.lifeTime = 0.5f;
 
-                                projectiles.Add(p1);
-                                projectiles.Add(p2);
-                                projectiles.Add(p3);
-                                //end shotgun condition
+                                    projectiles.Add(p1);
+                                    projectiles.Add(p2);
+                                    projectiles.Add(p3);
+                                    //end shotgun condition
+                                }
+                                if (pl.IdlingRight || pl.MoveRight)
+                                {
+                                    //if player has shotgun do this
+                                    Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 1, 0.3f);
+                                    Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 0, 0.3f);
+                                    Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, -1, 0.3f);
+
+                                    projectiles.Add(p1);
+                                    projectiles.Add(p2);
+                                    projectiles.Add(p3);
+                                    //end shotgun condition
+                                }
+                                pl.shooting = true;
+
+                                ShootControl = ShootSound.CreateInstance();
+                                ShootControl.Volume = 0.3f;
+                                ShootControl.Play();
+
+                                pl.ammoCounter--;
                             }
-                            if (pl.IdlingRight || pl.MoveRight)
-                            {
-                                //if player has shotgun do this
-                                Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 1, 0.3f);
-                                Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 0, 0.3f);
-                                Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, -1, 0.3f);
-
-                                projectiles.Add(p1);
-                                projectiles.Add(p2);
-                                projectiles.Add(p3);
-                                //end shotgun condition
-                            }
-                            pl.shooting = true;
-
-                            ShootControl = ShootSound.CreateInstance();
-                            ShootControl.Volume = 0.3f;
-                            ShootControl.Play();
-
-                            pl.ammoCounter--;
                         }
-                    }
-                    else
-                        if (Keyboard.GetState().IsKeyUp(Keys.Space))
-                    {
-                        pl.shooting = false;
+                        else
+                            if (Keyboard.GetState().IsKeyUp(Keys.Space))
+                        {
+                            pl.shooting = false;
+                        }
+
+                        pl.DoPhysics();
+
+                        foreach (Blocks b in RegularBlockList)
+                        {
+                            pl.Colliders(b);
+                        }
+                        foreach (Blocks b in iceWallList)
+                        {
+                            pl.Colliders(b);
+                        }
+
+                        foreach (Blocks sb in SkateBlockList)
+                        {
+                            pl.Colliders(sb);
+                        }
+
+                        foreach (Blocks sb in spikeBlockList)
+                        {
+                            pl.Colliders(sb);
+                        }
+
                     }
 
-                    pl.DoPhysics();
+                    pl.Animation();
 
-                    foreach (Blocks b in RegularBlockList)
+                    if (pl.playerPos.Y > Window.ClientBounds.Height)
                     {
-                        pl.Colliders(b);
+                        pl.velocity = new Point(0, 0);
+                        pl.PlayerHP--;
+                        pl.PlayerLife = 3;
+                        pl.playerPos = spawnPoint;
                     }
-                    foreach(Blocks b in iceWallList)
-                    {
-                        pl.Colliders(b);
-                    }
-
-                    foreach (Blocks sb in SkateBlockList)
-                    {
-                        pl.Colliders(sb);
-                    }
-
-                    foreach(Blocks sb in spikeBlockList)
-                    {
-                        pl.Colliders(sb);
-                    }
-
+                    //camera stuff
+                    cam.setToCenter(pl.playerRect, new Point(Window.ClientBounds.Width, Window.ClientBounds.Height));
                 }
-                pl.Animation();
-                if(pl.playerPos.Y > Window.ClientBounds.Height)
-                {
-                    pl.velocity = new Point(0,0);
-                    pl.PlayerHP--;
-                    pl.PlayerLife = 3;
-                    pl.playerPos = spawnPoint;
-                }
-                //camera stuff
-                cam.setToCenter(pl.playerRect, new Point(Window.ClientBounds.Width, Window.ClientBounds.Height));
-            }
                 //save and load inputs
                 if (Keyboard.GetState().IsKeyDown(Keys.F))
                 {
@@ -369,7 +373,7 @@ namespace PhysicsTest
 
                 if (Keyboard.GetState().IsKeyDown(Keys.L) && !isLoading)
                 {
-                    loadPlayer("Stage1.SWAG",3,3);
+                    loadPlayer("Stage1.SWAG", 3, 3);
                     isLoading = true;
                 }
 
@@ -378,42 +382,42 @@ namespace PhysicsTest
                     isLoading = false;
                 }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.T) && !swappingModes)
-            {
-                if (playMode)
+                if (Keyboard.GetState().IsKeyDown(Keys.T) && !swappingModes)
                 {
-                    playMode = false;
-                    devMode = true;
+                    if (playMode)
+                    {
+                        playMode = false;
+                        devMode = true;
+                    }
+                    else
+                        if (devMode)
+                    {
+                        devMode = false;
+                        playMode = true;
+                    }
+                    swappingModes = true;
                 }
-                else
-                    if (devMode)
+
+                if (Keyboard.GetState().IsKeyUp(Keys.T))
                 {
-                    devMode = false;
-                    playMode = true;
+                    swappingModes = false;
                 }
-                swappingModes = true;
             }
+                //end save and load
 
-            if (Keyboard.GetState().IsKeyUp(Keys.T))
-            {
-                swappingModes = false;
-            }
+                //end player methods
 
-            //end save and load
+                //projectile stuff
 
-            //end player methods
+                foreach (Projectile p in projectiles)
+                {
+                    p.Shoot();
+                }
 
-            //projectile stuff
-
-            foreach (Projectile p in projectiles)
-            {
-                p.Shoot();
-            }
-
-            foreach (Projectile p in snowBalls)
-            {
-                p.Shoot();
-            }
+                foreach (Projectile p in snowBalls)
+                {
+                    p.Shoot();
+                }
 
                 //projectile cleanup
                 foreach (Projectile p in projectiles)
@@ -431,25 +435,25 @@ namespace PhysicsTest
                             goto here;
                         }
                     }
-                foreach (Blocks b in iceWallList)
-                {
-                    if (p.projectileRect.Intersects(b.blockRect))
+                    foreach (Blocks b in iceWallList)
                     {
-                        projectiles.Remove(p);
-                        goto here;
+                        if (p.projectileRect.Intersects(b.blockRect))
+                        {
+                            projectiles.Remove(p);
+                            goto here;
+                        }
                     }
-                }
 
-                foreach (Blocks b in SkateBlockList)
-                {
-                    if (p.projectileRect.Intersects(b.blockRect))
+                    foreach (Blocks b in SkateBlockList)
                     {
-                        projectiles.Remove(p);
-                        goto here;
+                        if (p.projectileRect.Intersects(b.blockRect))
+                        {
+                            projectiles.Remove(p);
+                            goto here;
+                        }
                     }
                 }
-            }
-            here:
+                here:
 
                 foreach (Projectile p in snowBalls)
                 {
@@ -459,31 +463,32 @@ namespace PhysicsTest
                         break;
                     }
 
-                    foreach(Player pl in playerList)
+                    foreach (Player pl in playerList)
                     {
-                        if (p.projectileRect.Intersects(pl.playerRect))
+                        if (p.projectileRect.Intersects(pl.playerRect) && pl.PlayerLife != 0)
                         {
                             pl.hitMove(p.projectileRect);
 
                             snowBalls.Remove(p);
                             pl.PlayerLife--;
                             goto there;
-                        }    
+                        }
                     }
                 }
 
-            there:
+                there:
             //end cleaning
             //end projectiles
 
-
+            
             //enemy related stuff
 
             if (!devMode)
             {
                 foreach (Enemy e in snowmenList)
                 {
-                    e.snowmanMovement(playerList[0].playerRect);
+                    
+                    e.snowmanMovement(playerList[0]);
                     e.snowmanAnimation();
 
                     if (e.spawnSnowBall)
@@ -576,7 +581,10 @@ namespace PhysicsTest
             }
                 foreach (Player p in playerList)
                 {
-                    spriteBatch.Draw(p.playerTexture,p.playerRect, new Rectangle(p.spriteSheetX, p.spriteSheetY, 192, 192), p.playerColor); 
+                    if (p.PlayerLife != 0)
+                    {
+                        spriteBatch.Draw(p.playerTexture, p.playerRect, new Rectangle(p.spriteSheetX, p.spriteSheetY, 192, 192), p.playerColor);
+                    }
                     if (devMode)
                     {
                         spriteBatch.DrawString(sF, "Player X:" + p.playerRect.X + " Y:" + p.playerRect.Y, new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 0), Color.White);
@@ -670,11 +678,22 @@ namespace PhysicsTest
                             else
                             if (p.PlayerLife == 0)
                             {
-                                p.playerPos = spawnPoint;
-                                p.PlayerLife = 3;
-                                p.PlayerHP--;
+                                if (p.spawnDelay == 0)
+                                {
+                                    Explosion e = new Explosion(new Rectangle(p.playerRect.X, p.playerRect.Y, 100, 100), explosionTex, Color.Red);
+                                    explosion.Add(e);
+                                }
 
-                                break;                  
+                                p.spawnDelay++;
+
+                                if (p.spawnDelay >= 120)
+                                {
+                                    p.playerPos = spawnPoint;
+                                    p.PlayerLife = 3;
+                                    p.PlayerHP--;
+
+                                    break;
+                                }
                             }
                         }else
                             if(i != (p.PlayerHP - 1))

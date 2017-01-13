@@ -41,6 +41,7 @@ namespace PhysicsTest
         private int _SpriteSheetY;
 
         private int _animationDelay;
+        private int _spawnDelay;
 
         private bool movingLeft;
         private bool movingRight;
@@ -136,7 +137,7 @@ namespace PhysicsTest
                 return _physicsTimer;
             }
 
-        }
+        } 
 
         public Point spawnPoint
         {
@@ -166,6 +167,12 @@ namespace PhysicsTest
         {
             get { return playerLife; }
             set { playerLife = value; }
+        }
+
+        public int spawnDelay
+        {
+            get { return _spawnDelay; }
+            set { _spawnDelay = value; }
         }
 
         public float jumpTime
