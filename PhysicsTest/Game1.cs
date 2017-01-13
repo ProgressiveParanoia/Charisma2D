@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -25,12 +26,20 @@ namespace PhysicsTest
         Blocks LevelEditor_checkPoint;
         Blocks LevelEditor_exit;
 
+        Blocks LevelEditor_Tree;
+
+        PickUp LevelEditor_Ammo;
+        PickUp LevelEditor_Health;
+        PickUp LevelEditor_Key;
+
         Enemy LevelEditor_snowmen;
 
         int RegularBlockSize;
         int SlipBlockSize;
         int SpikeBlockSize;
         int IceWallSize;
+
+        int treeSize;
 
         int snowmanSize;
 
@@ -56,6 +65,9 @@ namespace PhysicsTest
 
         List<PickUp> healthPickUp;
         List<PickUp> ammoPickUp;
+        List<PickUp> KeyList;
+
+        List<Blocks> TreeList;
 
         Texture2D shotgunPellet;
             
@@ -66,6 +78,7 @@ namespace PhysicsTest
         Texture2D iceWall;
         Texture2D snowmenTex;
         Texture2D snowBallTex;
+        Texture2D TreeTex;
 
         Texture2D explosionTex;
 
@@ -77,11 +90,15 @@ namespace PhysicsTest
 
         Texture2D ammoTexture;
         Texture2D healthTexture;
+        Texture2D KeyTexture;
 
         SpriteFont sF;
 
         bool playMode;
         bool devMode;
+
+        bool isStage1;
+        bool isStage2;
 
         //blocks player has
         bool levelEditor_IsRegBlock;
@@ -89,6 +106,12 @@ namespace PhysicsTest
         bool levelEditor_IsWall;
         bool levelEditor_IsSpikeBlock;
         bool levelEditor_Issnowman;
+
+        bool levelEditor_IsKey;
+        bool levelEditor_IsAmmo;
+        bool levelEditor_IsHealth;
+
+        bool levelEditor_IsTree;
 
         bool levelEditor_IsCheckPoint;
         bool levelEditor_IsExit;
@@ -104,6 +127,14 @@ namespace PhysicsTest
         bool isLoading;
         //Input end
 
+        SoundEffect mainMenuTheme;
+        SoundEffect Stage1Sound;
+        SoundEffect JumpSound;
+        SoundEffect DeathSound;
+        SoundEffect ShootSound;
+
+        SoundEffectInstance JumpControl;
+        SoundEffectInstance ShootControl;
         //key points in the map
         Point spawnPoint;
 
@@ -139,8 +170,19 @@ namespace PhysicsTest
 
             ammoTexture = Content.Load<Texture2D>(@"AmmoPickup");
             healthTexture = Content.Load<Texture2D>(@"HealthPickup");
+            KeyTexture = Content.Load<Texture2D>(@"Key");
+
+            TreeTex = Content.Load<Texture2D>(@"tree");
 
             explosionTex = Content.Load<Texture2D>(@"IceExplosion");
+
+            mainMenuTheme = Content.Load<SoundEffect>(@"MainMenuSound");
+
+            JumpSound = Content.Load<SoundEffect>(@"Jump");
+            ShootSound = Content.Load<SoundEffect>(@"Shoot");
+
+            ShootControl = ShootSound.CreateInstance();
+            JumpControl = JumpSound.CreateInstance();
 
             sF = Content.Load<SpriteFont>(@"spriteFont");
 
@@ -154,6 +196,12 @@ namespace PhysicsTest
             LevelEditor_checkPoint = new Blocks(new Rectangle(0,0,96,96),checkPointTexture);
             LevelEditor_exit = new Blocks(new Rectangle(0,0,96,96),exitTexture);
 
+            LevelEditor_Ammo = new PickUp(new Rectangle(0,0,64,48),ammoTexture);
+            LevelEditor_Health = new PickUp(new Rectangle(0,0,64,48),healthTexture);
+            LevelEditor_Key = new PickUp(new Rectangle(0, 0, 48, 64), KeyTexture);
+
+            LevelEditor_Tree = new Blocks(new Rectangle(0,0,96,96),TreeTex);
+
             LevelEditor_spikeBlock = new Blocks(new Rectangle(0,0,16,16),spikeBlockTex);
 
             LevelEditor_snowmen = new Enemy((new Rectangle(0,0,64,64)),snowmenTex);
@@ -162,6 +210,8 @@ namespace PhysicsTest
             SkateBlockList = new List<Blocks>();
             spikeBlockList = new List<Blocks>();
             iceWallList = new List<Blocks>();
+
+            TreeList = new List<Blocks>();
 
             checkPointList = new List<Blocks>();
             exitList = new List<Blocks>();
@@ -175,18 +225,24 @@ namespace PhysicsTest
             projectiles = new List<Projectile>();
             playerList = new List<Player>();
 
+            KeyList = new List<PickUp>();
+            ammoPickUp = new List<PickUp>();
+            healthPickUp = new List<PickUp>();
+
             explosion = new List<Explosion>();
 
             Blocks _playerHP = new Blocks((new Rectangle(0,0, 48, 48)),HPTex);
             Blocks _playerLife = new Blocks(new Rectangle(0,0,48,64),LifeTex);
 
-            loadPlayer("Stage1.SWAG");
+            loadPlayer("Stage1.SWAG",3,3);
 
             for (int i = 0; i < 3; i++)
             {
                 playerHP[i]=(_playerHP);
 
             }
+
+            isStage1 = true;
 
             spawnPoint = new Point(checkPointList[0].blockPos.X, checkPointList[0].blockPos.Y);
 
@@ -216,6 +272,13 @@ namespace PhysicsTest
             //player related methods
            
             foreach (Player pl in playerList) {
+                
+                if(Keyboard.GetState().IsKeyDown(Keys.W) && !pl.pressingJump)
+                {
+                    JumpControl = JumpSound.CreateInstance();
+                    JumpControl.Volume = 0.2f;
+                    JumpControl.Play();
+                }
                 pl.move(devMode);
 
                 if (!devMode)
@@ -251,6 +314,12 @@ namespace PhysicsTest
                                 //end shotgun condition
                             }
                             pl.shooting = true;
+
+                            ShootControl = ShootSound.CreateInstance();
+                            ShootControl.Volume = 0.3f;
+                            ShootControl.Play();
+
+                            pl.ammoCounter--;
                         }
                     }
                     else
@@ -282,7 +351,6 @@ namespace PhysicsTest
 
                 }
                 pl.Animation();
-
                 if(pl.playerPos.Y > Window.ClientBounds.Height)
                 {
                     pl.velocity = new Point(0,0);
@@ -290,7 +358,6 @@ namespace PhysicsTest
                     pl.PlayerLife = 3;
                     pl.playerPos = spawnPoint;
                 }
-
                 //camera stuff
                 cam.setToCenter(pl.playerRect, new Point(Window.ClientBounds.Width, Window.ClientBounds.Height));
             }
@@ -302,7 +369,7 @@ namespace PhysicsTest
 
                 if (Keyboard.GetState().IsKeyDown(Keys.L) && !isLoading)
                 {
-                    loadPlayer("Stage1.SWAG");
+                    loadPlayer("Stage1.SWAG",3,3);
                     isLoading = true;
                 }
 
@@ -477,7 +544,19 @@ namespace PhysicsTest
 
             IceWallSize = iceWallList.Count - 1;
             snowmanSize = snowmenList.Count - 1;
+            treeSize = TreeList.Count - 1;
             //end size tracker
+
+            if (playerList[0].playerRect.Intersects(exitList[0].blockRect))
+            {
+                if (isStage1)
+                {
+                    isStage1 = false;
+                    isStage2 = true;
+
+                    loadPlayer("Stage2.SWAG", playerList[0].PlayerLife, playerList[0].PlayerHP);
+                }
+            }
 
             Console.WriteLine("HP Elements:"+playerList[0].PlayerHP+ "player size"+playerList.Count);
 
@@ -491,18 +570,20 @@ namespace PhysicsTest
             spriteBatch.Begin(SpriteSortMode.Deferred,BlendState.AlphaBlend,null,null,null,null,cam.Transform);
             //spriteBatch.Draw(_player.playerTexture, _player.playerRect, new Rectangle(_player.spriteSheetX, _player.spriteSheetY, 192, 192), _player.playerColor);
 
-
+            foreach (Blocks b in TreeList)
+            {
+                spriteBatch.Draw(b.blockTexture, b.blockRect, Color.White);
+            }
                 foreach (Player p in playerList)
                 {
-                    spriteBatch.Draw(p.playerTexture,p.playerRect, new Rectangle(p.spriteSheetX, p.spriteSheetY, 192, 192), p.playerColor);
-
+                    spriteBatch.Draw(p.playerTexture,p.playerRect, new Rectangle(p.spriteSheetX, p.spriteSheetY, 192, 192), p.playerColor); 
                     if (devMode)
                     {
                         spriteBatch.DrawString(sF, "Player X:" + p.playerRect.X + " Y:" + p.playerRect.Y, new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 0), Color.White);
                         spriteBatch.DrawString(sF, "Editorblock X:" + LevelEditor_RegularBlock.blockRect.X + " Y:" + LevelEditor_RegularBlock.blockRect.Y, new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 20), Color.White);
                         spriteBatch.DrawString(sF, "[F]Save [L]Load [T]Level Editor",new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 40),Color.White);
                     
-                        spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks [3] spikes [4] ammo [5] medkit [6] snowmen [7] penguins [8] check point [9] exit", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 60), Color.White);
+                        spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks [3] spikes [4] ammo [5] medkit [6] snowmen [7] keys [8] check point [9] exit", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 60), Color.White);
                         spriteBatch.DrawString(sF, "[Space]Place Block [B]Remove Block", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 100), Color.White);
                      }
       
@@ -552,7 +633,22 @@ namespace PhysicsTest
                     spriteBatch.Draw(e.explosionTexture, e.explosionRect, new Rectangle(e.SpriteSheetX, e.SpriteSheetY, 96, 96), e.explosionColor);
                 }
 
-                foreach(Player p in playerList)
+                foreach(PickUp e in ammoPickUp)
+                {
+                    spriteBatch.Draw(e.pickUpTexture,e.pickUpRect,Color.White);
+                }
+
+                foreach (PickUp e in healthPickUp)
+                {
+                    spriteBatch.Draw(e.pickUpTexture, e.pickUpRect, Color.White);
+                }
+
+                foreach (PickUp e in KeyList)
+                {
+                    spriteBatch.Draw(e.pickUpTexture, e.pickUpRect, Color.White);
+                }
+
+            foreach (Player p in playerList)
                 {
 
                     for (int i = 0; i < p.PlayerHP; i++)
@@ -586,6 +682,8 @@ namespace PhysicsTest
                                 spriteBatch.Draw(playerHP[i].blockTexture, new Rectangle(p.playerRect.X - (cam.myView.Bounds.Right / 2 - playerHP[i].blockRect.Width) + (playerHP[i].blockRect.Width * i), 0, playerHP[i].blockRect.Width, playerHP[i].blockRect.Height), Color.White);
                             }
                 }
+                spriteBatch.Draw(ammoTexture, new Rectangle(p.playerRect.X - (cam.myView.Bounds.Right / 2 - 48), 64, 64, 48), Color.White);
+                spriteBatch.DrawString(sF, playerList[0].ammoCounter.ToString(), new Vector2(p.playerRect.X - ((cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2) - 96), 86), Color.White);
             }
 
             //dev mode stuff
@@ -601,10 +699,29 @@ namespace PhysicsTest
                 if (levelEditor_Issnowman)
                     spriteBatch.Draw(LevelEditor_snowmen.enemyTexture, LevelEditor_snowmen.enemyRect,new Rectangle(0,0,96,96), Color.White);
 
+                if (levelEditor_IsAmmo)
+                {
+                    spriteBatch.Draw(LevelEditor_Ammo.pickUpTexture, LevelEditor_Ammo.pickUpRect, new Rectangle(0,0,96,75),Color.White);
+                }
+
+                if (levelEditor_IsHealth)
+                {
+                    spriteBatch.Draw(LevelEditor_Health.pickUpTexture, LevelEditor_Health.pickUpRect, new Rectangle(0, 0, 96, 75), Color.White);
+                }
+
+                if (levelEditor_IsKey)
+                {
+                    spriteBatch.Draw(LevelEditor_Key.pickUpTexture, LevelEditor_Key.pickUpRect, new Rectangle(0,0,78,75), Color.White);
+                }
+
+                if (levelEditor_IsTree)
+                    spriteBatch.Draw(LevelEditor_Tree.blockTexture, LevelEditor_Tree.blockRect, new Rectangle(0,0,96,96), Color.White);
+
                 if (levelEditor_IsCheckPoint)
                     spriteBatch.Draw(LevelEditor_checkPoint.blockTexture, LevelEditor_checkPoint.blockRect, new Rectangle(0,0,96,96), Color.White);
                 if (levelEditor_IsExit)
                     spriteBatch.Draw(LevelEditor_exit.blockTexture,LevelEditor_exit.blockRect,new Rectangle(0,0,70,100),Color.White);
+                
             }
             //end
            // spriteBatch.Draw(p.playerTexture, p.playerRect, new Rectangle(p.spriteSheetX, p.spriteSheetY, 192, 192), p.playerColor);
@@ -676,6 +793,22 @@ namespace PhysicsTest
             sw.WriteLine(exitList[0].blockRect.X + "," + exitList[0].blockRect.Y);
             sw.WriteLine("");
 
+            sw.WriteLine(ammoPickUp[0].pickUpRect.X+","+ammoPickUp[0].pickUpRect.Y);
+            sw.WriteLine("");
+
+            sw.WriteLine(healthPickUp[0].pickUpRect.X+","+healthPickUp[0].pickUpRect.Y);
+            sw.WriteLine("");
+
+            sw.WriteLine(KeyList[0].pickUpRect.X+","+KeyList[0].pickUpRect.Y);
+            sw.WriteLine("");
+
+            foreach (Blocks b in TreeList)
+            {
+                sw.WriteLine(b.blockRect.X + "," + b.blockRect.Y);
+            }
+
+            sw.WriteLine("");
+            sw.WriteLine(treeSize);
             sw.Close();
 
         }
@@ -685,9 +818,9 @@ namespace PhysicsTest
             LevelSave();
         }
 
-        void loadPlayer(String fileName)
+        void loadPlayer(String fileName, int Life, int HP)
         {
-            StreamReader sr = new StreamReader("Stage2.SWAG");
+            StreamReader sr = new StreamReader(fileName);
             string spaceEater;
 
 
@@ -721,6 +854,11 @@ namespace PhysicsTest
                 snowmenList.Remove(snowmenList[i]);
             }
 
+            for(int i = treeSize; i > 0; i--)
+            {
+                TreeList.Remove(TreeList[i]);
+            }
+
             if (snowmanSize != 0)
                 snowmenList.Remove(snowmenList[0]);
 
@@ -735,9 +873,15 @@ namespace PhysicsTest
             if(playerList.Count!=0)
             playerList.Remove(playerList[0]);
 
-            //exitList.Remove(exitList[0]);
-            //checkPointList.Remove(checkPointList[0]);
+            if (exitList.Count != 0)
+            {
+                exitList.Remove(exitList[0]);
+                checkPointList.Remove(checkPointList[0]);
 
+                ammoPickUp.Remove(ammoPickUp[0]);
+                healthPickUp.Remove(healthPickUp[0]);
+                KeyList.Remove(KeyList[0]);
+            }
 
             //cleaning finish
             string fileData = "";
@@ -930,8 +1074,85 @@ namespace PhysicsTest
                 exitList.Add(b);
             }
 
+            spaceEater = fileData;
 
+            while ((fileData = sr.ReadLine()) != null)
+            {
+                string[] PosData = fileData.Split(',');
+
+                if (fileData == "")
+                    break;
+
+                int posX = int.Parse(PosData[0]);
+                int posY = int.Parse(PosData[1]);
+
+                PickUp b = new PickUp(new Rectangle(posX,posY,64,48),ammoTexture);
+                ammoPickUp.Add(b);
+            }
+
+            spaceEater = fileData;
+
+            while ((fileData = sr.ReadLine()) != null)
+            {
+                string[] PosData = fileData.Split(',');
+
+                if (fileData == "")
+                    break;
+
+                int posX = int.Parse(PosData[0]);
+                int posY = int.Parse(PosData[1]);
+
+                PickUp b = new PickUp(new Rectangle(posX, posY, 64, 48), healthTexture);
+                healthPickUp.Add(b);
+            }
+
+            spaceEater = fileData;
+
+            while ((fileData = sr.ReadLine()) != null)
+            {
+                string[] PosData = fileData.Split(',');
+
+                if (fileData == "")
+                    break;
+
+                int posX = int.Parse(PosData[0]);
+                int posY = int.Parse(PosData[1]);
+
+                PickUp b = new PickUp(new Rectangle(posX, posY, 48, 64), KeyTexture);
+                KeyList.Add(b);
+            }
+
+            spaceEater = fileData;
+
+
+            while ((fileData = sr.ReadLine()) != null)
+            {
+                string[] PosData = fileData.Split(',');
+
+                if (fileData == "")
+                    break;
+
+                int posX = int.Parse(PosData[0]);
+                int posY = int.Parse(PosData[1]);
+
+                Blocks b = new Blocks(new Rectangle(posX,posY,96,96),TreeTex);
+                TreeList.Add(b);
+            }
+
+            spaceEater = fileData;
+
+            while ((fileData = sr.ReadLine()) != null)
+            {
+                if (fileData == "")
+                    break;
+                treeSize = int.Parse(fileData);
+            }
+
+            //key pickup
             sr.Close();
+
+            playerList[0].PlayerLife = Life;
+            playerList[0].PlayerHP = HP;
         }
         //save and load finish
 
@@ -942,8 +1163,30 @@ namespace PhysicsTest
              
             if (devMode)
             {
+                if(Keyboard.GetState().IsKeyDown(Keys.F) && !swappingBlocks)
+                {
+                    levelEditor_IsRegBlock = false;
+                    levelEditor_IsSlipBlock = false;
+                    levelEditor_IsWall = false;
+
+                    levelEditor_IsSpikeBlock = false;
+
+                    levelEditor_Issnowman = false;
+
+                    levelEditor_IsAmmo = false;
+                    levelEditor_IsHealth = false;
+                    levelEditor_IsKey = false;
+
+                    levelEditor_IsCheckPoint = false;
+                    levelEditor_IsExit = false;
+
+                    levelEditor_IsTree = true;
+
+                    swappingBlocks = true;
+                }
                 if (Keyboard.GetState().IsKeyDown(Keys.D1) && !swappingBlocks)
                 {
+
                     levelEditor_IsRegBlock = true;
                     levelEditor_IsSlipBlock = false;
                     levelEditor_IsWall = false;
@@ -952,8 +1195,14 @@ namespace PhysicsTest
 
                     levelEditor_Issnowman = false;
 
+                    levelEditor_IsAmmo = false;
+                    levelEditor_IsHealth = false;
+                    levelEditor_IsKey = false;
+
                     levelEditor_IsCheckPoint = false;
                     levelEditor_IsExit = false;
+
+                    levelEditor_IsTree = false;
 
                     swappingBlocks = true;
                 }
@@ -968,8 +1217,14 @@ namespace PhysicsTest
 
                     levelEditor_Issnowman = false;
 
+                    levelEditor_IsAmmo = false;
+                    levelEditor_IsHealth = false;
+                    levelEditor_IsKey = false;
+
                     levelEditor_IsCheckPoint = false;
                     levelEditor_IsExit = false;
+
+                    levelEditor_IsTree = false;
 
                     swappingBlocks = true;
                 }
@@ -984,13 +1239,61 @@ namespace PhysicsTest
 
                     levelEditor_Issnowman = false;
 
+                    levelEditor_IsAmmo = false;
+                    levelEditor_IsHealth = false;
+                    levelEditor_IsKey = false;
+
                     levelEditor_IsCheckPoint = false;
                     levelEditor_IsExit = false;
+
+                    levelEditor_IsTree = false;
+
+                    swappingBlocks = true;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.D4) && !swappingBlocks)
+                {
+                    levelEditor_IsRegBlock = false;
+                    levelEditor_IsSlipBlock = false;
+                    levelEditor_IsWall = false;
+
+                    levelEditor_IsSpikeBlock = false;
+
+                    levelEditor_Issnowman = false;
+
+                    levelEditor_IsAmmo = true;
+                    levelEditor_IsHealth = false;
+                    levelEditor_IsKey = false;
+
+                    levelEditor_IsCheckPoint = false;
+                    levelEditor_IsExit = false;
+
+                    levelEditor_IsTree = false;
+
+                    swappingBlocks = true;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.D5) && !swappingBlocks)
+                {
+                    levelEditor_IsRegBlock = false;
+                    levelEditor_IsSlipBlock = false;
+                    levelEditor_IsWall = false;
+
+                    levelEditor_IsSpikeBlock = false;
+
+                    levelEditor_Issnowman = false;
+
+                    levelEditor_IsAmmo = false;
+                    levelEditor_IsHealth = true;
+                    levelEditor_IsKey = false;
+
+                    levelEditor_IsCheckPoint = false;
+                    levelEditor_IsExit = false;
+
+                    levelEditor_IsTree = false;
 
                     swappingBlocks = true;
                 }
 
-                if(Keyboard.GetState().IsKeyDown(Keys.D0) && !swappingBlocks)
+                if (Keyboard.GetState().IsKeyDown(Keys.D0) && !swappingBlocks)
                 {
                     levelEditor_IsRegBlock = false;
                     levelEditor_IsSlipBlock = false;
@@ -1000,8 +1303,14 @@ namespace PhysicsTest
 
                     levelEditor_Issnowman = false;
 
+                    levelEditor_IsAmmo = false;
+                    levelEditor_IsHealth = false;
+                    levelEditor_IsKey = false;
+
                     levelEditor_IsCheckPoint = false;
                     levelEditor_IsExit = false;
+
+                    levelEditor_IsTree = false;
 
                     swappingBlocks = true;
                 }
@@ -1016,13 +1325,18 @@ namespace PhysicsTest
 
                     levelEditor_Issnowman = true;
 
+                    levelEditor_IsAmmo = false;
+                    levelEditor_IsHealth = false;
+                    levelEditor_IsKey = false;
+
                     levelEditor_IsCheckPoint = false;
                     levelEditor_IsExit = false;
 
+                    levelEditor_IsTree = false;
+
                     swappingBlocks = true;
                 }
-
-                if(Keyboard.GetState().IsKeyDown(Keys.D8) && !swappingBlocks) //check point
+                if (Keyboard.GetState().IsKeyDown(Keys.D7) && !swappingBlocks)
                 {
                     levelEditor_IsRegBlock = false;
                     levelEditor_IsSlipBlock = false;
@@ -1032,8 +1346,58 @@ namespace PhysicsTest
 
                     levelEditor_Issnowman = false;
 
+                    levelEditor_IsAmmo = false;
+                    levelEditor_IsHealth = false;
+                    levelEditor_IsKey = true;
+
+                    levelEditor_IsCheckPoint = false;
+                    levelEditor_IsExit = false;
+
+                    levelEditor_IsTree = false;
+
+                    swappingBlocks = true;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.D1) && !swappingBlocks)
+                {
+                    levelEditor_IsRegBlock = false;
+                    levelEditor_IsSlipBlock = false;
+                    levelEditor_IsWall = false;
+
+                    levelEditor_IsSpikeBlock = false;
+
+                    levelEditor_Issnowman = false;
+
+                    levelEditor_IsAmmo = false;
+                    levelEditor_IsHealth = false;
+                    levelEditor_IsKey = false;
+
+                    levelEditor_IsCheckPoint = false;
+                    levelEditor_IsExit = false;
+
+                    levelEditor_IsTree = false;
+
+                    swappingBlocks = true;
+                }
+
+
+                if (Keyboard.GetState().IsKeyDown(Keys.D8) && !swappingBlocks) //check point
+                {
+                    levelEditor_IsRegBlock = false;
+                    levelEditor_IsSlipBlock = false;
+                    levelEditor_IsWall = false;
+
+                    levelEditor_IsSpikeBlock = false;
+
+                    levelEditor_Issnowman = false;
+
+                    levelEditor_IsAmmo = false;
+                    levelEditor_IsHealth = false;
+                    levelEditor_IsKey = false;
+
                     levelEditor_IsCheckPoint = true;
                     levelEditor_IsExit = false;
+
+                    levelEditor_IsTree = false;
 
                     swappingBlocks = true;
                 }
@@ -1048,8 +1412,14 @@ namespace PhysicsTest
 
                     levelEditor_Issnowman = false;
 
+                    levelEditor_IsAmmo = false;
+                    levelEditor_IsHealth = false;
+                    levelEditor_IsKey = false;
+
                     levelEditor_IsCheckPoint = false;
                     levelEditor_IsExit = true;
+
+                    levelEditor_IsTree = false;
 
                     swappingBlocks = true;
                 }
@@ -1368,6 +1738,8 @@ namespace PhysicsTest
                     LevelEditor_spikeBlock.blockPos = LevelEditor_snowmen.enemyPos;
                     LevelEditor_iceWall.blockPos = LevelEditor_snowmen.enemyPos;
 
+                    
+
                     IsMouseVisible = true;
 
                 }else
@@ -1474,12 +1846,212 @@ namespace PhysicsTest
 
                         }
                     }
-
                     if (Keyboard.GetState().IsKeyUp(Keys.B))
                     {
                         isRemovingBlock = false;
                     }
                 }
+                else
+                    if (levelEditor_IsAmmo)
+                {
+                    
+                    //movement
+                    if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                    {
+                        LevelEditor_Ammo.Move(LevelEditor_Ammo.pickUpRect.X - 3, LevelEditor_Ammo.pickUpRect.Y);
+
+                    }
+                    if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                    {
+                        LevelEditor_Ammo.Move(LevelEditor_Ammo.pickUpRect.X + 3, LevelEditor_Ammo.pickUpRect.Y);
+                    }
+
+                    if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                    {
+                        LevelEditor_Ammo.Move(LevelEditor_Ammo.pickUpRect.X, LevelEditor_Ammo.pickUpRect.Y - 3);
+                    }
+                    if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                    {
+                        LevelEditor_Ammo.Move(LevelEditor_Ammo.pickUpRect.X, LevelEditor_Ammo.pickUpRect.Y + 3);
+                    }
+                    //move end
+
+                    //input place
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isPlacingBlock)
+                    {
+                        // Blocks b = new Blocks(new Rectangle(LevelEditor_spikeBlock.blockRect.Location.X, LevelEditor_spikeBlock.blockRect.Location.Y, 16, 16), spikeBlockTex);
+                        PickUp e = new PickUp(new Rectangle(LevelEditor_Ammo.pickUpRect.X, LevelEditor_Ammo.pickUpRect.Y, 64, 48), ammoTexture);
+                        ammoPickUp.Add(e);
+
+                        isPlacingBlock = true;
+                    }
+
+                    foreach (PickUp e in ammoPickUp)
+                    {
+                        if (LevelEditor_Ammo.pickUpRect.Intersects(e.pickUpRect))
+                        {
+                            if (Keyboard.GetState().IsKeyDown(Keys.B) && !isRemovingBlock)
+                            {
+                                ammoPickUp.Remove(e);
+                                isRemovingBlock = true;
+                                break;
+                            }
+
+                        }
+                    }
+                    if (Keyboard.GetState().IsKeyUp(Keys.B))
+                    {
+                        isRemovingBlock = false;
+                    }
+                }
+                else
+                    if (levelEditor_IsHealth)
+                    {
+                        if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                        {
+                        
+                            LevelEditor_Health.Move(LevelEditor_Health.pickUpRect.X - 3, LevelEditor_Health.pickUpRect.Y);
+
+                        }
+                        if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                        {
+                            LevelEditor_Health.Move(LevelEditor_Health.pickUpRect.X + 3, LevelEditor_Health.pickUpRect.Y);
+                        }
+
+                        if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                        {
+                            LevelEditor_Health.Move(LevelEditor_Health.pickUpRect.X, LevelEditor_Health.pickUpRect.Y - 3);
+                        }
+                        if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                        {
+                            LevelEditor_Health.Move(LevelEditor_Health.pickUpRect.X, LevelEditor_Health.pickUpRect.Y + 3);
+                        }
+                        //input place
+                        if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isPlacingBlock)
+                        {
+                            // Blocks b = new Blocks(new Rectangle(LevelEditor_spikeBlock.blockRect.Location.X, LevelEditor_spikeBlock.blockRect.Location.Y, 16, 16), spikeBlockTex);
+                            PickUp e = new PickUp(new Rectangle( LevelEditor_Health.pickUpRect.X,  LevelEditor_Health.pickUpRect.Y, 64, 48),healthTexture);
+                            healthPickUp.Add(e);
+
+                            isPlacingBlock = true;
+                        }
+
+                        foreach (PickUp e in healthPickUp)
+                        {
+                            if ( LevelEditor_Health.pickUpRect.Intersects(e.pickUpRect))
+                            {
+                                if (Keyboard.GetState().IsKeyDown(Keys.B) && !isRemovingBlock)
+                                {
+                                    healthPickUp.Remove(e);
+                                    isRemovingBlock = true;
+                                    break;
+                                }
+
+                            }
+                        }
+                        if (Keyboard.GetState().IsKeyUp(Keys.B))
+                        {
+                            isRemovingBlock = false;
+                        }
+                    }else
+                        if (levelEditor_IsKey)
+                    {
+                        if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                        {
+
+                            LevelEditor_Key.Move(LevelEditor_Key.pickUpRect.X - 3, LevelEditor_Key.pickUpRect.Y);
+
+                        }
+                        if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                        {
+                            LevelEditor_Key.Move(LevelEditor_Key.pickUpRect.X + 3, LevelEditor_Key.pickUpRect.Y);
+                        }
+
+                        if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                        {
+                            LevelEditor_Key.Move(LevelEditor_Key.pickUpRect.X, LevelEditor_Key.pickUpRect.Y - 3);
+                        }
+                        if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                        {
+                            LevelEditor_Key.Move(LevelEditor_Key.pickUpRect.X, LevelEditor_Key.pickUpRect.Y + 3);
+                        }
+                        //input place
+                        if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isPlacingBlock)
+                        {
+                            // Blocks b = new Blocks(new Rectangle(LevelEditor_spikeBlock.blockRect.Location.X, LevelEditor_spikeBlock.blockRect.Location.Y, 16, 16), spikeBlockTex);
+                            PickUp e = new PickUp(new Rectangle(LevelEditor_Key.pickUpRect.X, LevelEditor_Key.pickUpRect.Y, 48, 64), KeyTexture);
+                            KeyList.Add(e);
+
+                            isPlacingBlock = true;
+                        }
+
+                        foreach (PickUp e in KeyList)
+                        {
+                            if (LevelEditor_Key.pickUpRect.Intersects(e.pickUpRect))
+                            {
+                                if (Keyboard.GetState().IsKeyDown(Keys.B) && !isRemovingBlock)
+                                {
+                                    KeyList.Remove(e);
+                                    isRemovingBlock = true;
+                                    break;
+                                }
+
+                            }
+                        }
+                        if (Keyboard.GetState().IsKeyUp(Keys.B))
+                        {
+                            isRemovingBlock = false;
+                        }
+                }else
+                    if (levelEditor_IsTree)
+                {
+                    if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                    {
+                        LevelEditor_Tree.Move(LevelEditor_Tree.blockRect.X - 3, LevelEditor_Tree.blockRect.Y);
+
+                    }
+                    if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                    {
+                        LevelEditor_Tree.Move(LevelEditor_Tree.blockRect.X + 3, LevelEditor_Tree.blockRect.Y);
+                    }
+
+                    if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                    {
+                        LevelEditor_Tree.Move(LevelEditor_Tree.blockRect.X, LevelEditor_Tree.blockRect.Y - 3);
+                    }
+                    if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                    {
+                        LevelEditor_Tree.Move(LevelEditor_Tree.blockRect.X, LevelEditor_Tree.blockRect.Y + 3);
+                    }
+                    //input place
+                    if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isPlacingBlock)
+                    {
+                        // Blocks b = new Blocks(new Rectangle(LevelEditor_spikeBlock.blockRect.Location.X, LevelEditor_spikeBlock.blockRect.Location.Y, 16, 16), spikeBlockTex);
+                        Blocks e = new Blocks(new Rectangle(LevelEditor_Tree.blockRect.X, LevelEditor_Tree.blockRect.Y, 96, 96), TreeTex);
+                        TreeList.Add(e);
+
+                        isPlacingBlock = true;
+                    }
+
+                    foreach (Blocks e in TreeList)
+                    {
+                        if (LevelEditor_Tree.blockRect.Intersects(e.blockRect))
+                        {
+                            if (Keyboard.GetState().IsKeyDown(Keys.B) && !isRemovingBlock)
+                            {
+                                TreeList.Remove(e);
+                                isRemovingBlock = true;
+                                break;
+                            }
+
+                        }
+                    }
+                    if (Keyboard.GetState().IsKeyUp(Keys.B))
+                    {
+                        isRemovingBlock = false;
+                    }
+                }
+
                 if (Keyboard.GetState().IsKeyUp(Keys.Space))
                 {
                     isPlacingBlock = false;
@@ -1497,6 +2069,11 @@ namespace PhysicsTest
 
                         LevelEditor_checkPoint.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
                         LevelEditor_exit.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
+
+                    LevelEditor_Ammo.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
+                    LevelEditor_Health.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
+                    LevelEditor_Key.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
+                    LevelEditor_Tree.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
                 }
              //   LevelEditor_RegularBlock.Move(Mouse.GetState().X - (LevelEditor_RegularBlock.blockRect.Width * 2 + LevelEditor_RegularBlock.blockRect.Width / 3), Mouse.GetState().Y - LevelEditor_RegularBlock.blockRect.Height / 2);
                 IsMouseVisible = false;

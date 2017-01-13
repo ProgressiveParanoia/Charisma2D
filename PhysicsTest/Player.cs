@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -57,7 +58,10 @@ namespace PhysicsTest
         //life vars
         private int playerHP;
         private int playerLife;
+
         private bool isTakingDamage;
+        private bool _hasKey;
+
             //end life  
               
         public Player(Rectangle _playerRect, Texture2D _playerTexture, Color _playerColor, Point _bounds)
@@ -193,6 +197,12 @@ namespace PhysicsTest
             get{ return isGrounded; }
         }
 
+        public bool hasKey
+        {
+            get { return _hasKey; }
+            set { _hasKey = value; }
+        }
+
         public bool swappingMode
         {
             get { return isSwappingModes; }
@@ -237,6 +247,11 @@ namespace PhysicsTest
         public bool TakingDamage
         {
             get { return isTakingDamage; }
+        }
+
+        public bool pressingJump
+        {
+            get { return isPressingJump; }
         }
         public void Animation()
         {

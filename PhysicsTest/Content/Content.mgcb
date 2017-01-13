@@ -19,3 +19,51 @@
 /processorParam:TextureFormat=Compressed
 /build:spriteFont.spritefont
 
+#begin DeathSound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:DeathSound.wav
+
+#begin GameOver.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:GameOver.wav
+
+#begin Jump.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Jump.wav
+
+#begin MainMenuSound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:MainMenuSound.wav
+
+#begin Shoot.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Shoot.wav
+
+#begin ShootingSound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:ShootingSound.wav
+
+#begin Stage1Music.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Stage1Music.wav
+
+#begin Stage2Music.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Stage2Music.wav
+
