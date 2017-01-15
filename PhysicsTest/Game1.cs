@@ -351,6 +351,16 @@ namespace PhysicsTest
                             pl.Colliders(sb);
                         }
 
+                        foreach(PickUp p in KeyList)
+                        {
+                            if (pl.playerRect.Intersects(p.pickUpRect))
+                            {
+                                pl.hasKey = true;
+                                KeyList.Remove(p);
+
+                                break;
+                            }
+                        } 
                     }
 
                     pl.Animation();
@@ -375,6 +385,7 @@ namespace PhysicsTest
                 {
                     loadPlayer("Stage1.SWAG", 3, 3);
                     isLoading = true;
+                    break;
                 }
 
                 if (Keyboard.GetState().IsKeyUp(Keys.L))
@@ -552,17 +563,25 @@ namespace PhysicsTest
             treeSize = TreeList.Count - 1;
             //end size tracker
 
+            //stage swapping and key-related functions
             if (playerList[0].playerRect.Intersects(exitList[0].blockRect))
             {
-                if (isStage1)
+                if (playerList[0].hasKey)
                 {
-                    isStage1 = false;
-                    isStage2 = true;
+                    if (isStage1)
+                    {
+                        isStage1 = false;
+                        isStage2 = true;
 
-                    loadPlayer("Stage2.SWAG", playerList[0].PlayerLife, playerList[0].PlayerHP);
+                        loadPlayer("Stage2.SWAG", playerList[0].PlayerLife, playerList[0].PlayerHP);
+                    }
+
+                    playerList[0].hasKey = false;
                 }
             }
 
+
+            //end keys
             Console.WriteLine("HP Elements:"+playerList[0].PlayerHP+ "player size"+playerList.Count);
 
             base.Update(gameTime);
@@ -594,6 +613,14 @@ namespace PhysicsTest
                         spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks [3] spikes [4] ammo [5] medkit [6] snowmen [7] keys [8] check point [9] exit", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 60), Color.White);
                         spriteBatch.DrawString(sF, "[Space]Place Block [B]Remove Block", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 100), Color.White);
                      }
+
+                    if (p.playerRect.Intersects(exitList[0].blockRect))
+                    {
+                        if (!p.hasKey)
+                        {
+                            spriteBatch.DrawString(sF, "You must have a key to move on!", new Vector2(p.playerRect.X - 150, 100), Color.White);
+                        }
+                    }
       
                 }
 
@@ -897,9 +924,20 @@ namespace PhysicsTest
             {
                 exitList.Remove(exitList[0]);
                 checkPointList.Remove(checkPointList[0]);
+            }
 
+            if (ammoPickUp.Count != 0)
+            {
                 ammoPickUp.Remove(ammoPickUp[0]);
+            }
+
+            if(healthPickUp.Count != 0)
+            {
                 healthPickUp.Remove(healthPickUp[0]);
+            }
+
+            if (KeyList.Count != 0)
+            {
                 KeyList.Remove(KeyList[0]);
             }
 
