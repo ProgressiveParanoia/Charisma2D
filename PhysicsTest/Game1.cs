@@ -43,6 +43,9 @@ namespace PhysicsTest
 
         int snowmanSize;
 
+        int MouseX;
+        int MouseY;
+
         List<Blocks> RegularBlockList;
         List<Blocks> SkateBlockList;
         List<Blocks> iceWallList;
@@ -52,6 +55,7 @@ namespace PhysicsTest
         List<Blocks> exitList;
 
         Blocks[] playerHP;
+        Blocks[] Buttons;
 
         List<Player> playerList;
 
@@ -68,6 +72,8 @@ namespace PhysicsTest
         List<PickUp> KeyList;
 
         List<Blocks> TreeList;
+
+        Texture2D ingameBackground;
 
         Texture2D shotgunPellet;
             
@@ -92,13 +98,37 @@ namespace PhysicsTest
         Texture2D healthTexture;
         Texture2D KeyTexture;
 
+        Texture2D titleCard;
+
+        Texture2D StartBtn;
+        Texture2D OptionsBtn;
+        Texture2D ExitBtn;
+
+        Texture2D Instructibles;
+
+        Rectangle StartRect;
+        Rectangle OptionRect;
+        Rectangle ExitRect;
+
+        Rectangle mouse;
+
         SpriteFont sF;
 
         bool playMode;
         bool devMode;
 
+        bool gameFinished;
+
+        bool isPlaying;
+
+        bool isMenu;
+        bool isOption;
+
         bool isStage1;
         bool isStage2;
+        bool isStage3;
+
+        bool Win;
 
         //blocks player has
         bool levelEditor_IsRegBlock;
@@ -129,12 +159,30 @@ namespace PhysicsTest
 
         SoundEffect mainMenuTheme;
         SoundEffect Stage1Sound;
+        SoundEffect Stage2Sound;
         SoundEffect JumpSound;
         SoundEffect DeathSound;
         SoundEffect ShootSound;
+        SoundEffect enemyShootSound;
+
+        SoundEffect pickUpItem;
+
+        SoundEffect gameOver;
 
         SoundEffectInstance JumpControl;
         SoundEffectInstance ShootControl;
+        SoundEffectInstance DeathSoundControl;
+
+        SoundEffectInstance enemyShootControl;
+
+        SoundEffectInstance Stage1SoundControl;
+        SoundEffectInstance Stage2SoundControl;
+        SoundEffectInstance MainMenuSoundControl;
+
+        SoundEffectInstance gameOverControl;
+
+        SoundEffectInstance pickUpItemControl;
+
         //key points in the map
         Point spawnPoint;
 
@@ -151,6 +199,8 @@ namespace PhysicsTest
 
         protected override void Initialize()
         {
+            ingameBackground = Content.Load<Texture2D>(@"GameBackground");
+
             playerTex = Content.Load<Texture2D>(@"Elf_shotty_sheet");
             blockTex = Content.Load<Texture2D>(@"BlockTest");
             skateBlockTex = Content.Load<Texture2D>(@"skateBlocks");
@@ -168,6 +218,14 @@ namespace PhysicsTest
             LifeTex = Content.Load<Texture2D>(@"LIFE");
             HPTex = Content.Load<Texture2D>(@"HP");
 
+            titleCard = Content.Load<Texture2D>(@"TitleCard");
+
+            StartBtn = Content.Load<Texture2D>(@"StartBtn");
+            OptionsBtn = Content.Load<Texture2D>(@"OptionsBtn");
+            ExitBtn = Content.Load<Texture2D>(@"ExitBtn");
+
+            Instructibles = Content.Load<Texture2D>(@"Instructibles");
+
             ammoTexture = Content.Load<Texture2D>(@"AmmoPickup");
             healthTexture = Content.Load<Texture2D>(@"HealthPickup");
             KeyTexture = Content.Load<Texture2D>(@"Key");
@@ -177,12 +235,36 @@ namespace PhysicsTest
             explosionTex = Content.Load<Texture2D>(@"IceExplosion");
 
             mainMenuTheme = Content.Load<SoundEffect>(@"MainMenuSound");
+            Stage1Sound = Content.Load<SoundEffect>(@"Stage1Music");
+            Stage2Sound = Content.Load<SoundEffect>(@"Stage2Music");
+
+            pickUpItem = Content.Load<SoundEffect>(@"PickUpPower");
+
+            gameOver = Content.Load<SoundEffect>(@"GameOver");
 
             JumpSound = Content.Load<SoundEffect>(@"Jump");
             ShootSound = Content.Load<SoundEffect>(@"Shoot");
+            enemyShootSound = Content.Load<SoundEffect>(@"ShootingSound");
+
+            DeathSound = Content.Load<SoundEffect>(@"DeathSound");
 
             ShootControl = ShootSound.CreateInstance();
+            enemyShootControl = enemyShootSound.CreateInstance();
             JumpControl = JumpSound.CreateInstance();
+
+            DeathSoundControl = DeathSound.CreateInstance();
+
+            pickUpItemControl = pickUpItem.CreateInstance();
+    
+            MainMenuSoundControl = mainMenuTheme.CreateInstance();
+            Stage1SoundControl = Stage1Sound.CreateInstance();
+            Stage2SoundControl = Stage2Sound.CreateInstance();
+
+            gameOverControl = gameOver.CreateInstance();
+
+            MainMenuSoundControl.IsLooped = true;
+            Stage1SoundControl.IsLooped = true;
+            Stage2SoundControl.IsLooped = true;
 
             sF = Content.Load<SpriteFont>(@"spriteFont");
 
@@ -221,6 +303,7 @@ namespace PhysicsTest
             snowBalls = new List<Projectile>();
 
             playerHP = new Blocks[3];
+            Buttons = new Blocks[3];
 
             projectiles = new List<Projectile>();
             playerList = new List<Player>();
@@ -234,7 +317,8 @@ namespace PhysicsTest
             Blocks _playerHP = new Blocks((new Rectangle(0,0, 48, 48)),HPTex);
             Blocks _playerLife = new Blocks(new Rectangle(0,0,48,64),LifeTex);
 
-            loadPlayer("Stage1.SWAG",3,3);
+
+            loadPlayer("MENU.SWAG",3,3,12);
 
             for (int i = 0; i < 3; i++)
             {
@@ -242,7 +326,16 @@ namespace PhysicsTest
 
             }
 
-            isStage1 = true;
+            Blocks start = new Blocks(new Rectangle(0,0,200,100),StartBtn);
+            mouse.Location = new Point(playerList[0].playerRect.X, Mouse.GetState().Y);
+
+            StartRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2, 100, 150, 50);
+            OptionRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2, 170, 150, 50);
+            ExitRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2, 240, 150, 50);
+
+            Buttons[0] = start;
+
+            isMenu = true;
 
             spawnPoint = new Point(checkPointList[0].blockPos.X, checkPointList[0].blockPos.Y);
 
@@ -271,148 +364,201 @@ namespace PhysicsTest
 
             //player related methods
 
+           
             foreach (Player pl in playerList)
             {
                 if (pl.PlayerLife != 0)
                 {
-                    if (Keyboard.GetState().IsKeyDown(Keys.W) && !pl.pressingJump)
+                    if (isPlaying && !gameFinished)
                     {
-                        JumpControl = JumpSound.CreateInstance();
-                        JumpControl.Volume = 0.2f;
-                        JumpControl.Play();
-                    }
-                    pl.move(devMode);
-
-                    if (!devMode)
-                    {
-                        if (Keyboard.GetState().IsKeyDown(Keys.Space) && !pl.shooting)
+                        if (Keyboard.GetState().IsKeyDown(Keys.W) && !pl.pressingJump)
                         {
-                            if (pl.ammoCounter > 0)
+                            JumpControl = JumpSound.CreateInstance();
+                            JumpControl.Volume = 0.2f;
+                            JumpControl.Play();
+                        }
+
+                        if(pl.spawnDelay==0)
+                            pl.move(devMode);
+
+
+                        if (!devMode)
+                        {
+                            if (Keyboard.GetState().IsKeyDown(Keys.Space) && !pl.shooting)
                             {
-                                if (pl.IdlingLeft || pl.MoveLeft)
+                                if (pl.ammoCounter > 0 && pl.spawnDelay==0)
                                 {
-                                    //if player has shotgun do this                               
-                                    Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 1, 0.3f);
-                                    Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 0, 0.3f);
-                                    Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, -1, 0.3f);
+                                    if (pl.IdlingLeft || pl.MoveLeft)
+                                    {
+                                        //if player has shotgun do this                               
+                                        Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 1, 0.3f);
+                                        Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 0, 0.3f);
+                                        Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, -1, 0.3f);
 
-                                    // p1.lifeTime = 0.5f;
+                                        // p1.lifeTime = 0.5f;
 
-                                    projectiles.Add(p1);
-                                    projectiles.Add(p2);
-                                    projectiles.Add(p3);
-                                    //end shotgun condition
+                                        projectiles.Add(p1);
+                                        projectiles.Add(p2);
+                                        projectiles.Add(p3);
+                                        //end shotgun condition
+                                    }
+                                    if (pl.IdlingRight || pl.MoveRight)
+                                    {
+                                        //if player has shotgun do this
+                                        Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 1, 0.3f);
+                                        Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 0, 0.3f);
+                                        Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, -1, 0.3f);
+
+                                        projectiles.Add(p1);
+                                        projectiles.Add(p2);
+                                        projectiles.Add(p3);
+                                        //end shotgun condition
+                                    }
+                                    pl.shooting = true;
+
+                                    ShootControl = ShootSound.CreateInstance();
+                                    ShootControl.Volume = 0.3f;
+                                    ShootControl.Play();
+
+                                    pl.ammoCounter--;
                                 }
-                                if (pl.IdlingRight || pl.MoveRight)
+                            }
+                            else
+                                if (Keyboard.GetState().IsKeyUp(Keys.Space))
+                            {
+                                pl.shooting = false;
+                            }
+
+                            pl.DoPhysics();
+
+                            foreach (Blocks b in RegularBlockList)
+                            {
+                                pl.Colliders(b);
+                            }
+                            foreach (Blocks b in iceWallList)
+                            {
+                                pl.Colliders(b);
+                            }
+
+                            foreach (Blocks sb in SkateBlockList)
+                            {
+                                pl.Colliders(sb);
+                            }
+
+                            foreach (Blocks sb in spikeBlockList)
+                            {
+                                pl.Colliders(sb);
+                            }
+
+                            foreach (PickUp p in KeyList)
+                            {
+                                if (pl.playerRect.Intersects(p.pickUpRect))
                                 {
-                                    //if player has shotgun do this
-                                    Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 1, 0.3f);
-                                    Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 0, 0.3f);
-                                    Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, -1, 0.3f);
+                                    pl.hasKey = true;
+                                    KeyList.Remove(p);
 
-                                    projectiles.Add(p1);
-                                    projectiles.Add(p2);
-                                    projectiles.Add(p3);
-                                    //end shotgun condition
+                                    break;
                                 }
-                                pl.shooting = true;
+                            }
 
-                                ShootControl = ShootSound.CreateInstance();
-                                ShootControl.Volume = 0.3f;
-                                ShootControl.Play();
+                            foreach (PickUp p in ammoPickUp)
+                            {
+                                if (pl.playerRect.Intersects(p.pickUpRect))
+                                {
+                                    pl.ammoCounter += 4;
+                                    ammoPickUp.Remove(p);
+                                    break;
+                                }
+                            }
 
-                                pl.ammoCounter--;
+                            foreach (PickUp p in healthPickUp)
+                            {
+                                if (pl.playerRect.Intersects(p.pickUpRect))
+                                {
+                                    pl.PlayerHP++;
+
+                                    playerHP = new Blocks[pl.PlayerHP];
+
+                                    Blocks _playerHP = new Blocks((new Rectangle(0, 0, 48, 48)), HPTex);
+
+                                    for (int i = 0; i < pl.PlayerHP; i++)
+                                    {
+                                        playerHP[i] = (_playerHP);
+                                    }
+
+                                    pl.PlayerLife = 3;
+
+                                    healthPickUp.Remove(p);
+                                    break;
+                                }
                             }
                         }
-                        else
-                            if (Keyboard.GetState().IsKeyUp(Keys.Space))
-                        {
-                            pl.shooting = false;
-                        }
-
-                        pl.DoPhysics();
-
-                        foreach (Blocks b in RegularBlockList)
-                        {
-                            pl.Colliders(b);
-                        }
-                        foreach (Blocks b in iceWallList)
-                        {
-                            pl.Colliders(b);
-                        }
-
-                        foreach (Blocks sb in SkateBlockList)
-                        {
-                            pl.Colliders(sb);
-                        }
-
-                        foreach (Blocks sb in spikeBlockList)
-                        {
-                            pl.Colliders(sb);
-                        }
-
-                        foreach(PickUp p in KeyList)
-                        {
-                            if (pl.playerRect.Intersects(p.pickUpRect))
-                            {
-                                pl.hasKey = true;
-                                KeyList.Remove(p);
-
-                                break;
-                            }
-                        } 
                     }
-
                     pl.Animation();
 
                     if (pl.playerPos.Y > Window.ClientBounds.Height)
                     {
-                        pl.velocity = new Point(0, 0);
-                        pl.PlayerHP--;
-                        pl.PlayerLife = 3;
-                        pl.playerPos = spawnPoint;
+                        if (pl.spawnDelay == 0)
+                        {
+                            DeathSoundControl = DeathSound.CreateInstance();
+                            DeathSoundControl.Volume = 0.2f;
+                            DeathSoundControl.Play();
+                        }
+                        pl.spawnDelay++;
+
+                        if (pl.spawnDelay >= 120)
+                        {
+                            pl.velocity = new Point(0, 0);
+                            pl.PlayerHP--;
+                            pl.PlayerLife = 3;
+
+                            pl.playerPos = spawnPoint;
+
+                            pl.spawnDelay = 0;
+                        }
                     }
                     //camera stuff
                     cam.setToCenter(pl.playerRect, new Point(Window.ClientBounds.Width, Window.ClientBounds.Height));
-                }
+                }//else player dies
+
                 //save and load inputs
-                if (Keyboard.GetState().IsKeyDown(Keys.F))
-                {
-                    savePlayer();
-                }
+                //if (Keyboard.GetState().IsKeyDown(Keys.F))
+                //{
+                //    savePlayer();
+                //}
 
-                if (Keyboard.GetState().IsKeyDown(Keys.L) && !isLoading)
-                {
-                    loadPlayer("Stage1.SWAG", 3, 3);
-                    isLoading = true;
-                    break;
-                }
+                //if (Keyboard.GetState().IsKeyDown(Keys.L) && !isLoading)
+                //{
+                //    loadPlayer("Stage2.SWAG", 3, 3, 8);
+                //    isLoading = true;
+                //    break;
+                //}
 
-                if (Keyboard.GetState().IsKeyUp(Keys.L))
-                {
-                    isLoading = false;
-                }
+                //if (Keyboard.GetState().IsKeyUp(Keys.L))
+                //{
+                //    isLoading = false;
+                //}
 
-                if (Keyboard.GetState().IsKeyDown(Keys.T) && !swappingModes)
-                {
-                    if (playMode)
-                    {
-                        playMode = false;
-                        devMode = true;
-                    }
-                    else
-                        if (devMode)
-                    {
-                        devMode = false;
-                        playMode = true;
-                    }
-                    swappingModes = true;
-                }
+                //if (Keyboard.GetState().IsKeyDown(Keys.T) && !swappingModes)
+                //{
+                //    if (playMode)
+                //    {
+                //        playMode = false;
+                //        devMode = true;
+                //    }
+                //    else
+                //        if (devMode)
+                //    {
+                //        devMode = false;
+                //        playMode = true;
+                //    }
+                //    swappingModes = true;
+                //}
 
-                if (Keyboard.GetState().IsKeyUp(Keys.T))
-                {
-                    swappingModes = false;
-                }
+                //if (Keyboard.GetState().IsKeyUp(Keys.T))
+                //{
+                //    swappingModes = false;
+                //}
             }
                 //end save and load
 
@@ -506,16 +652,20 @@ namespace PhysicsTest
                     {
                         if (e.attackingRight)
                         {
-                            Projectile p = new Projectile(new Rectangle(e.enemyRect.X + e.enemyRect.Width, e.enemyRect.Y + 16, 16, 16), snowBallTex, Color.White, 5, 0, 1f);
+                            Projectile p = new Projectile(new Rectangle(e.enemyRect.X + e.enemyRect.Width, e.enemyRect.Y + 16, 16, 16), snowBallTex, Color.White, 5, 0, 0.5f);
                             snowBalls.Add(p);
                             e.spawnSnowBall = false;
                         }
                         if (e.attackingLeft)
                         {
-                            Projectile p = new Projectile(new Rectangle(e.enemyRect.X, e.enemyRect.Y + 16, 16, 16), snowBallTex, Color.White, -5, 0, 1f);
+                            Projectile p = new Projectile(new Rectangle(e.enemyRect.X, e.enemyRect.Y + 16, 16, 16), snowBallTex, Color.White, -5, 0, 0.5f);
                             snowBalls.Add(p);
                             e.spawnSnowBall = false;
                         }
+
+                        enemyShootControl = enemyShootSound.CreateInstance();
+                        enemyShootControl.Volume = 0.3f;
+                        enemyShootControl.Play();
                     }
                 }
             }
@@ -573,16 +723,170 @@ namespace PhysicsTest
                         isStage1 = false;
                         isStage2 = true;
 
-                        loadPlayer("Stage2.SWAG", playerList[0].PlayerLife, playerList[0].PlayerHP);
-                    }
+                        loadPlayer("Stage2.SWAG", playerList[0].PlayerLife, playerList[0].PlayerHP, playerList[0].ammoCounter);
+                    }else
+                    if (isStage2)
+                    {
+                        isPlaying = false;
 
+                        isStage1 = false;
+                        isStage2 = false;
+
+                        Win = true;
+
+                        gameOverControl.Play();
+                    }
                     playerList[0].hasKey = false;
                 }
             }
 
 
             //end keys
-            Console.WriteLine("HP Elements:"+playerList[0].PlayerHP+ "player size"+playerList.Count);
+
+            if(playerList[0].PlayerHP == 0 && !gameFinished) 
+            {
+                Stage1SoundControl.Stop();
+                Stage2SoundControl.Stop();
+                MainMenuSoundControl.Stop();
+
+
+                gameOverControl.Play();
+
+                gameFinished = true;
+
+            }
+
+            if (gameOverControl.State == SoundState.Stopped && isPlaying && !Win)
+            {
+                if (playerList[0].PlayerHP == 0)
+                {
+                    isPlaying = false;
+                    isStage1 = false;
+                    isStage2 = false;
+                    isStage3 = false;
+
+                    
+
+                    isMenu = true;
+                    loadPlayer("MENU.SWAG",3,3,12);
+                }
+            }
+
+            if (Win)
+            {
+
+             //   playerList[0].spawnDelay++;
+
+                if (gameOverControl.State == SoundState.Stopped)
+                {
+                    playerList[0].playerPos = spawnPoint;
+                    playerList[0].PlayerLife = 3;
+                    playerList[0].PlayerHP--;
+
+                 //   playerList[0].spawnDelay = 0;
+
+                    isMenu = true;
+                    Win = false;
+                    loadPlayer("MENU.SWAG", 3, 3, 8);
+                }
+            }
+
+
+            mouse.Location = new Point(playerList[0].playerRect.X, Mouse.GetState().Y);
+
+            Console.WriteLine("Mouse State and player:"+ playerList[0].playerRect.X + Mouse.GetState().X +" Player Rect:"+ playerList[0].playerRect.X+" mouse state:"+Mouse.GetState().X);
+
+            if (isMenu)
+            {
+                IsMouseVisible = true;
+
+                StartRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width/2,100,150,50);
+                OptionRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2, 170, 150, 50);
+                ExitRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2, 240, 150, 50);
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                {
+                    if (OptionRect.Intersects(mouse))
+                    {
+                        isMenu = false;
+
+                        isOption = true;
+
+                        Console.WriteLine("Eks dee");
+                    }
+
+                    if (StartRect.Intersects(mouse))
+                    {
+                        isMenu = false;
+
+                        isStage1 = true;
+                        gameFinished = false;
+                        isPlaying = true;
+
+                        loadPlayer("Stage1.SWAG",3,3,12);
+                    }
+
+                    if (ExitRect.Intersects(mouse))
+                    {
+                        this.Exit();
+                    }
+                }
+            }
+
+            if (isOption)
+            {
+                IsMouseVisible = true;
+
+                ExitRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2, Window.ClientBounds.Height - 50, 150, 50);
+
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                {
+                    if (ExitRect.Intersects(mouse))
+                    {
+                        isMenu = true;
+
+                        isOption = false;
+
+                        Console.WriteLine("Eks dee");
+                    }
+                }
+            }
+
+            if (isMenu || isOption)
+            {
+                if(MainMenuSoundControl.State != SoundState.Playing)
+                {
+                    MainMenuSoundControl.Play();
+                    MainMenuSoundControl.Volume = 0.5f;
+                }
+            }else
+            {
+                MainMenuSoundControl.Stop();
+            }
+
+            if (isStage1 && !gameFinished)
+            {
+                if (Stage1SoundControl.State != SoundState.Playing)
+                {
+                    Stage1SoundControl.Play();
+                    Stage1SoundControl.Volume = 0.5f;
+                }
+            }else
+            {
+                Stage1SoundControl.Stop();
+            }
+
+            if(isStage2 && !gameFinished)
+            {
+                if(Stage2SoundControl.State != SoundState.Playing)
+                {
+                    Stage2SoundControl.Play();
+                    Stage2SoundControl.Volume = 0.5f;
+                }
+            }else
+            {
+                Stage2SoundControl.Stop();
+            }
+           // Console.WriteLine("HP Elements:"+playerList[0].PlayerHP+ "player size"+playerList.Count);
 
             base.Update(gameTime);
         }
@@ -592,6 +896,8 @@ namespace PhysicsTest
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin(SpriteSortMode.Deferred,BlendState.AlphaBlend,null,null,null,null,cam.Transform);
+
+            spriteBatch.Draw(ingameBackground,new Rectangle(playerList[0].playerRect.X - (cam.myView.Bounds.Right/2 - playerList[0].playerRect.Width/2),cam.myView.Bounds.Center.Y - cam.myView.Bounds.Center.Y, 800,600),Color.White);
             //spriteBatch.Draw(_player.playerTexture, _player.playerRect, new Rectangle(_player.spriteSheetX, _player.spriteSheetY, 192, 192), _player.playerColor);
 
             foreach (Blocks b in TreeList)
@@ -613,15 +919,6 @@ namespace PhysicsTest
                         spriteBatch.DrawString(sF, "[1] Regular block [2] sliding blocks [3] spikes [4] ammo [5] medkit [6] snowmen [7] keys [8] check point [9] exit", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 60), Color.White);
                         spriteBatch.DrawString(sF, "[Space]Place Block [B]Remove Block", new Vector2(p.playerRect.X - (cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2), 100), Color.White);
                      }
-
-                    if (p.playerRect.Intersects(exitList[0].blockRect))
-                    {
-                        if (!p.hasKey)
-                        {
-                            spriteBatch.DrawString(sF, "You must have a key to move on!", new Vector2(p.playerRect.X - 150, 100), Color.White);
-                        }
-                    }
-      
                 }
 
                 foreach (Blocks b in RegularBlockList)
@@ -683,7 +980,9 @@ namespace PhysicsTest
                     spriteBatch.Draw(e.pickUpTexture, e.pickUpRect, Color.White);
                 }
 
-            foreach (Player p in playerList)
+            if (isPlaying) {
+
+                foreach (Player p in playerList)
                 {
 
                     for (int i = 0; i < p.PlayerHP; i++)
@@ -708,6 +1007,11 @@ namespace PhysicsTest
                                 if (p.spawnDelay == 0)
                                 {
                                     Explosion e = new Explosion(new Rectangle(p.playerRect.X, p.playerRect.Y, 100, 100), explosionTex, Color.Red);
+
+                                    DeathSoundControl = DeathSound.CreateInstance();
+                                    DeathSoundControl.Volume = 0.2f;
+                                    DeathSoundControl.Play();
+
                                     explosion.Add(e);
                                 }
 
@@ -723,15 +1027,56 @@ namespace PhysicsTest
                                     break;
                                 }
                             }
-                        }else
-                            if(i != (p.PlayerHP - 1))
-                            {
-                                spriteBatch.Draw(playerHP[i].blockTexture, new Rectangle(p.playerRect.X - (cam.myView.Bounds.Right / 2 - playerHP[i].blockRect.Width) + (playerHP[i].blockRect.Width * i), 0, playerHP[i].blockRect.Width, playerHP[i].blockRect.Height), Color.White);
-                            }
+                        }
+                        else
+                            if (i != (p.PlayerHP - 1))
+                        {
+                            spriteBatch.Draw(playerHP[i].blockTexture, new Rectangle(p.playerRect.X - (cam.myView.Bounds.Right / 2 - playerHP[i].blockRect.Width) + (playerHP[i].blockRect.Width * i), 0, playerHP[i].blockRect.Width, playerHP[i].blockRect.Height), Color.White);
+                        }
+                    }
+
+                    if (p.hasKey)
+                    {
+                        spriteBatch.Draw(KeyTexture, new Rectangle(p.playerRect.X - (cam.myView.Bounds.Right / 2 - 48), 128, 48, 64), Color.White);
+                    }
+                    else
+                      if (p.playerRect.Intersects(exitList[0].blockRect) && !p.hasKey)
+                    {
+                        spriteBatch.DrawString(sF, "You must have a key to move on!", new Vector2(p.playerRect.X - 150, 100), Color.White);
+
+                    }
+                    spriteBatch.Draw(ammoTexture, new Rectangle(p.playerRect.X - (cam.myView.Bounds.Right / 2 - 48), 64, 64, 48), Color.White);
+                    if (gameFinished)
+                    {
+                        spriteBatch.DrawString(sF, "Game Over!", new Vector2(p.playerRect.X - 50, Window.ClientBounds.Height/2 - 100), Color.Red);
+                    }
+
+                    spriteBatch.DrawString(sF, playerList[0].ammoCounter.ToString(), new Vector2(p.playerRect.X - ((cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2) - 96), 86), Color.White);
                 }
-                spriteBatch.Draw(ammoTexture, new Rectangle(p.playerRect.X - (cam.myView.Bounds.Right / 2 - 48), 64, 64, 48), Color.White);
-                spriteBatch.DrawString(sF, playerList[0].ammoCounter.ToString(), new Vector2(p.playerRect.X - ((cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2) - 96), 86), Color.White);
             }
+
+
+            if (Win)
+            {
+                spriteBatch.DrawString(sF, "You Win!", new Vector2(playerList[0].playerRect.X - 50, Window.ClientBounds.Height / 2 - 50), Color.Red);
+            }
+            if (isMenu)
+            {
+             //   StartRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2, 100, 150, 50);
+                spriteBatch.Draw(titleCard, new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2 - 60,10,250, 100), Color.White);
+                spriteBatch.Draw(StartBtn,StartRect,Color.White);
+                spriteBatch.Draw(OptionsBtn, OptionRect, Color.White);
+                spriteBatch.Draw(ExitBtn,ExitRect,Color.White);
+            }
+
+            if (isOption)
+            {
+                spriteBatch.Draw(ingameBackground, new Rectangle(playerList[0].playerRect.X - (cam.myView.Bounds.Right / 2 - playerList[0].playerRect.Width / 2), cam.myView.Bounds.Center.Y - cam.myView.Bounds.Center.Y, 800, 600), Color.White);
+                spriteBatch.Draw(Instructibles, new Rectangle(playerList[0].playerRect.X - (cam.myView.Bounds.Right / 2 - playerList[0].playerRect.Width / 2), cam.myView.Bounds.Center.Y - cam.myView.Bounds.Center.Y, 800, 600),Color.White);
+                spriteBatch.Draw(ExitBtn, ExitRect, Color.White);
+            }
+
+
 
             //dev mode stuff
             if (devMode) {
@@ -771,9 +1116,6 @@ namespace PhysicsTest
                 
             }
             //end
-           // spriteBatch.Draw(p.playerTexture, p.playerRect, new Rectangle(p.spriteSheetX, p.spriteSheetY, 192, 192), p.playerColor);
-           //spriteBatch.Draw(LevelEditor_snowmen.enemyTexture,LevelEditor_snowmen.enemyRect,new Rectangle(LevelEditor_snowmen.SpriteSheetX,LevelEditor_snowmen.SpriteSheetY,96,96),Color.White);
-              
             spriteBatch.End();
 
             base.Draw(gameTime);
@@ -784,7 +1126,7 @@ namespace PhysicsTest
 
         void LevelSave()
         {
-            StreamWriter sw = new StreamWriter("Stage1.SWAG");
+            StreamWriter sw = new StreamWriter("Stage2.SWAG");
 
             sw.WriteLine(playerList[0].playerRect.X+","+playerList[0].playerRect.Y); //save player pos
 
@@ -865,7 +1207,7 @@ namespace PhysicsTest
             LevelSave();
         }
 
-        void loadPlayer(String fileName, int Life, int HP)
+        void loadPlayer(String fileName, int Life, int HP, int ammo)
         {
             StreamReader sr = new StreamReader(fileName);
             string spaceEater;
@@ -1092,7 +1434,7 @@ namespace PhysicsTest
             }
 
             spaceEater = fileData;
-
+                
             while ((fileData = sr.ReadLine()) != null)
             {
                 if (fileData == "")
@@ -1211,6 +1553,10 @@ namespace PhysicsTest
 
             playerList[0].PlayerLife = Life;
             playerList[0].PlayerHP = HP;
+            playerList[0].ammoCounter = ammo;
+
+            spawnPoint = new Point(playerList[0].playerRect.X,playerList[0].playerRect.Y);
+
         }
         //save and load finish
 
@@ -1221,7 +1567,7 @@ namespace PhysicsTest
              
             if (devMode)
             {
-                if(Keyboard.GetState().IsKeyDown(Keys.F) && !swappingBlocks)
+                if(Keyboard.GetState().IsKeyDown(Keys.G) && !swappingBlocks)
                 {
                     levelEditor_IsRegBlock = false;
                     levelEditor_IsSlipBlock = false;

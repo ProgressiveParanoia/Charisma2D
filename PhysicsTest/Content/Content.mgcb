@@ -67,3 +67,9 @@
 /processorParam:Quality=Best
 /build:Stage2Music.wav
 
+#begin PickUpPower.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:PickUpPower.wav
+

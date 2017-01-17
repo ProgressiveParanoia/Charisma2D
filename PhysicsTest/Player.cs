@@ -79,7 +79,7 @@ namespace PhysicsTest
             _physicsTimer = 0.5f;
             _slideTime = 1f;
 
-            _ammoCounter = 8;
+            _ammoCounter = 15;
 
             playerLife = 3;
             playerHP = 3;
