@@ -102,13 +102,23 @@ namespace PhysicsTest
 
         Texture2D StartBtn;
         Texture2D OptionsBtn;
+        Texture2D realOptionBtn;
         Texture2D ExitBtn;
+        Texture2D Optionsbackground;
+
+        Texture2D yesBtn;
+        Texture2D noBtn;
 
         Texture2D Instructibles;
+        Texture2D controllerInstructibles;
 
         Rectangle StartRect;
         Rectangle OptionRect;
+        Rectangle RealOptionRect;
         Rectangle ExitRect;
+
+        Rectangle enableSoundRect;
+        Rectangle enableControllerRect;
 
         Rectangle mouse;
 
@@ -123,10 +133,12 @@ namespace PhysicsTest
 
         bool isMenu;
         bool isOption;
+        bool isRealOption;
 
         bool isStage1;
         bool isStage2;
         bool isStage3;
+        bool isStage4;
 
         bool Win;
 
@@ -183,6 +195,9 @@ namespace PhysicsTest
 
         SoundEffectInstance pickUpItemControl;
 
+        bool enabledStuff;
+        bool HasEnabledControllers;
+
         //key points in the map
         Point spawnPoint;
 
@@ -195,6 +210,8 @@ namespace PhysicsTest
             playMode = true;
 
             levelEditor_IsRegBlock = true;
+
+            HasEnabledControllers = true;
         }
 
         protected override void Initialize()
@@ -222,9 +239,16 @@ namespace PhysicsTest
 
             StartBtn = Content.Load<Texture2D>(@"StartBtn");
             OptionsBtn = Content.Load<Texture2D>(@"OptionsBtn");
+            realOptionBtn = Content.Load<Texture2D>(@"realOptionsBtn");
             ExitBtn = Content.Load<Texture2D>(@"ExitBtn");
 
+            Optionsbackground = Content.Load<Texture2D>(@"OptionsAndStuff");
+
+            noBtn = Content.Load<Texture2D>(@"NoBtn");
+            yesBtn = Content.Load<Texture2D>(@"YesBtn"); 
+
             Instructibles = Content.Load<Texture2D>(@"Instructibles");
+            controllerInstructibles = Content.Load<Texture2D>(@"ControllerInstructibles");
 
             ammoTexture = Content.Load<Texture2D>(@"AmmoPickup");
             healthTexture = Content.Load<Texture2D>(@"HealthPickup");
@@ -268,7 +292,7 @@ namespace PhysicsTest
 
             sF = Content.Load<SpriteFont>(@"spriteFont");
 
-            _player = new Player(new Rectangle(0,0,64,64),playerTex,Color.White,new Point(Window.ClientBounds.Width,Window.ClientBounds.Height));
+            _player = new Player(new Rectangle(0,0,64,64),playerTex,Color.White,new Point(Window.ClientBounds.Width,Window.ClientBounds.Height),HasEnabledControllers);
             cam = new Camera(GraphicsDevice.Viewport);
 
             LevelEditor_RegularBlock = new Blocks(new Rectangle(0,0,200,50),blockTex);
@@ -331,7 +355,11 @@ namespace PhysicsTest
 
             StartRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2, 100, 150, 50);
             OptionRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2, 170, 150, 50);
+            RealOptionRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2, 240, 150, 50);
             ExitRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2, 240, 150, 50);
+
+            enableControllerRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2,130,150,50);
+            enableSoundRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2, 240, 150, 50);
 
             Buttons[0] = start;
 
@@ -358,9 +386,8 @@ namespace PhysicsTest
 
         protected override void Update(GameTime gameTime)
         {
+          //  Console.WriteLine("WAT:"+playerList[0].usingController);
             LevelEditor();
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
 
             //player related methods
             Console.WriteLine("Shooting:"+GamePad.GetState(PlayerIndex.One).Buttons.LeftShoulder);
@@ -860,7 +887,8 @@ namespace PhysicsTest
 
                 StartRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width/2,100,150,50);
                 OptionRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2, 170, 150, 50);
-                ExitRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2, 240, 150, 50);
+                RealOptionRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2, 240, 150, 50);
+                ExitRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2, 310, 150, 50);
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                 {
                     if (OptionRect.Intersects(mouse))
@@ -882,11 +910,49 @@ namespace PhysicsTest
 
                         loadPlayer("Stage1.SWAG",3,3,12);
                     }
+                    if (RealOptionRect.Intersects(mouse))
+                    {
+                        isMenu = false;
 
+                        isRealOption = true;
+                    }
                     if (ExitRect.Intersects(mouse))
                     {
                         this.Exit();
                     }
+                }
+            }
+
+            if (isRealOption)
+            {
+                IsMouseVisible = true;
+                ExitRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2, Window.ClientBounds.Height - 50, 150, 50);
+
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                {
+                    if (ExitRect.Intersects(mouse))
+                    {
+                        isMenu = true;
+
+                        isRealOption = false;
+
+                        Console.WriteLine("Eks dee");
+                    }
+                    if (enableControllerRect.Intersects(mouse) && !enabledStuff)
+                    {
+                        if (HasEnabledControllers)
+                        {
+                            HasEnabledControllers = false;
+                        }
+                        else
+                            HasEnabledControllers = true;
+
+                        enabledStuff = true;
+                    }
+                }else
+                    if(Mouse.GetState().LeftButton == ButtonState.Released)
+                {
+                    enabledStuff = false;
                 }
             }
 
@@ -1124,16 +1190,31 @@ namespace PhysicsTest
                 spriteBatch.Draw(titleCard, new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2 - 60,10,250, 100), Color.White);
                 spriteBatch.Draw(StartBtn,StartRect,Color.White);
                 spriteBatch.Draw(OptionsBtn, OptionRect, Color.White);
+                spriteBatch.Draw(realOptionBtn, RealOptionRect, Color.White);
                 spriteBatch.Draw(ExitBtn,ExitRect,Color.White);
             }
 
             if (isOption)
             {
                 spriteBatch.Draw(ingameBackground, new Rectangle(playerList[0].playerRect.X - (cam.myView.Bounds.Right / 2 - playerList[0].playerRect.Width / 2), cam.myView.Bounds.Center.Y - cam.myView.Bounds.Center.Y, 800, 600), Color.White);
-                spriteBatch.Draw(Instructibles, new Rectangle(playerList[0].playerRect.X - (cam.myView.Bounds.Right / 2 - playerList[0].playerRect.Width / 2), cam.myView.Bounds.Center.Y - cam.myView.Bounds.Center.Y, 800, 600),Color.White);
+                if (!HasEnabledControllers)
+                    spriteBatch.Draw(Instructibles, new Rectangle(playerList[0].playerRect.X - (cam.myView.Bounds.Right / 2 - playerList[0].playerRect.Width / 2), cam.myView.Bounds.Center.Y - cam.myView.Bounds.Center.Y, 800, 600), Color.White);
+                else
+                    spriteBatch.Draw(controllerInstructibles, new Rectangle(playerList[0].playerRect.X - (cam.myView.Bounds.Right / 2 - playerList[0].playerRect.Width / 2), cam.myView.Bounds.Center.Y - cam.myView.Bounds.Center.Y, 800, 600), Color.White);
+
                 spriteBatch.Draw(ExitBtn, ExitRect, Color.White);
             }
 
+            if (isRealOption)
+            {
+                spriteBatch.Draw(ingameBackground, new Rectangle(playerList[0].playerRect.X - (cam.myView.Bounds.Right / 2 - playerList[0].playerRect.Width / 2), cam.myView.Bounds.Center.Y - cam.myView.Bounds.Center.Y, 800, 600), Color.White);
+                spriteBatch.Draw(Optionsbackground, new Rectangle(playerList[0].playerRect.X - (cam.myView.Bounds.Right / 2 - playerList[0].playerRect.Width / 2), cam.myView.Bounds.Center.Y - cam.myView.Bounds.Center.Y, 800, 600), Color.White);
+                if(HasEnabledControllers)
+                spriteBatch.Draw(yesBtn,enableControllerRect,Color.White);
+                else
+                    spriteBatch.Draw(noBtn, enableControllerRect, Color.White);
+                spriteBatch.Draw(ExitBtn, ExitRect, Color.White);
+            }
 
 
             //dev mode stuff
@@ -1357,7 +1438,7 @@ namespace PhysicsTest
                 int posY = int.Parse(PosData[1]);
 
                
-                Player P = new Player(new Rectangle(posX, posY, 64, 64), playerTex, Color.White, new Point(Window.ClientBounds.Width, Window.ClientBounds.Height));
+                Player P = new Player(new Rectangle(posX, posY, 64, 64), playerTex, Color.White, new Point(Window.ClientBounds.Width, Window.ClientBounds.Height),HasEnabledControllers);
                 playerList.Add(P);
             }
 

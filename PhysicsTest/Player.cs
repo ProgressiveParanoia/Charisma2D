@@ -67,9 +67,9 @@ namespace PhysicsTest
 
             //end life  
               
-        public Player(Rectangle _playerRect, Texture2D _playerTexture, Color _playerColor, Point _bounds)
+        public Player(Rectangle _playerRect, Texture2D _playerTexture, Color _playerColor, Point _bounds, bool usingController)
         {
-            usingController = true;
+            this.usingController = usingController;
 
             this._playerRect = _playerRect;
             this._playerTexture = _playerTexture;
