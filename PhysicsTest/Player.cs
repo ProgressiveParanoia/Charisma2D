@@ -63,10 +63,14 @@ namespace PhysicsTest
         private bool isTakingDamage;
         private bool _hasKey;
 
+        public bool usingController;
+
             //end life  
               
         public Player(Rectangle _playerRect, Texture2D _playerTexture, Color _playerColor, Point _bounds)
         {
+            usingController = true;
+
             this._playerRect = _playerRect;
             this._playerTexture = _playerTexture;
             this._playerColor = _playerColor;
@@ -360,107 +364,200 @@ namespace PhysicsTest
             int posX = _playerRect.X;
             int posY = _playerRect.Y;
 
-            if (!isJumping)
+            if (!usingController)
             {
-                if (!isPressingJump && Keyboard.GetState().IsKeyDown(Keys.W))
+                if (!isJumping)
                 {
-                    isJumping = true;
-                    isPressingJump = true;
+                    if (!isPressingJump && Keyboard.GetState().IsKeyDown(Keys.W))
+                    {
+                        isJumping = true;
+                        isPressingJump = true;
+                    }
                 }
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                if (!devMode)
-                    posX += 3;
-                else
-                    posX += 9;
-                if (!movingRight)
+                if (Keyboard.GetState().IsKeyDown(Keys.D))
                 {
-                    _SpriteSheetX = 384;
-                    _SpriteSheetY = 0;
+                    if (!devMode)
+                        posX += 3;
+                    else
+                        posX += 9;
+                    if (!movingRight)
+                    {
+                        _SpriteSheetX = 384;
+                        _SpriteSheetY = 0;
 
-                    slideRight = true;
-                    slideLeft = false;
+                        slideRight = true;
+                        slideLeft = false;
+                    }
+
+                    movingRight = true;
+                    movingLeft = false;
+                    idleRight = false;
+                    idleLeft = false;
+
+                    _slideTime = 1f;
+
+
                 }
 
-                movingRight = true;
-                movingLeft = false;
-                idleRight = false;
-                idleLeft = false;
-
-                _slideTime = 1f;
-
-
-            }
-
-            if (Keyboard.GetState().IsKeyUp(Keys.D) && movingRight && !idleRight && !movingLeft)
-            {
+                if (Keyboard.GetState().IsKeyUp(Keys.D) && movingRight && !idleRight && !movingLeft)
+                {
                     idleRight = true;
 
                     _SpriteSheetX = 0;
-                    _SpriteSheetY = 0;        
-            }
+                    _SpriteSheetY = 0;
+                }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                if (!devMode)
-                    posX -= 3;
-                else
-                    posX -= 9;
-               
-                if (!movingLeft)
+                if (Keyboard.GetState().IsKeyDown(Keys.A))
                 {
-                    _SpriteSheetX = 384;
+                    if (!devMode)
+                        posX -= 3;
+                    else
+                        posX -= 9;
+
+                    if (!movingLeft)
+                    {
+                        _SpriteSheetX = 384;
+                        _SpriteSheetY = 384;
+
+                        slideRight = false;
+                        slideLeft = true;
+                    }
+
+                    movingRight = false;
+                    movingLeft = true;
+                    idleRight = false;
+                    idleLeft = false;
+
+                    _slideTime = 1f;
+                }
+                if (Keyboard.GetState().IsKeyUp(Keys.A) && !movingRight && !idleLeft && movingLeft)
+                {
+
+                    idleLeft = true;
+
+                    _SpriteSheetX = 0;
                     _SpriteSheetY = 384;
 
-                    slideRight = false;
-                    slideLeft = true;
                 }
 
-                movingRight = false;
-                movingLeft = true;
-                idleRight = false;
-                idleLeft = false;
-
-                _slideTime = 1f;
-            }
-
-            if (Keyboard.GetState().IsKeyUp(Keys.A) && !movingRight && !idleLeft && movingLeft)
-            {
-
-                idleLeft = true;
-
-                _SpriteSheetX = 0;
-                _SpriteSheetY = 384;
-
-            }
-
-            if (devMode)
-            {
-                if (Keyboard.GetState().IsKeyDown(Keys.W))
+                if (devMode)
                 {
-                    posY -= 9;
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.S))
-                {
-                    posY += 9;
-                }
-               
-            }
+                    if (Keyboard.GetState().IsKeyDown(Keys.W))
+                    {
+                        posY -= 9;
+                    }
+                    if (Keyboard.GetState().IsKeyDown(Keys.S))
+                    {
+                        posY += 9;
+                    }
 
-            if (idleRight)
-            {
-                movingRight = false;
-                movingLeft = false;
-                idleLeft = false;
+                }
+
+                if (idleRight)
+                {
+                    movingRight = false;
+                    movingLeft = false;
+                    idleLeft = false;
+                }
+                else
+                    if (idleLeft)
+                {
+                    movingRight = false;
+                    movingLeft = false;
+                    idleRight = false;
+                }
             }else
-                if (idleLeft)
+                if (usingController)
             {
-                movingRight = false;
-                movingLeft = false;
-                idleRight = false;
-            }
+                if (!isJumping)
+                {
+                    if (!isPressingJump && GamePad.GetState(PlayerIndex.One).Buttons.RightShoulder == ButtonState.Pressed)
+                    {
+                        isJumping = true;
+                        isPressingJump = true;
+                    }
+                }
 
+                if (GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X > 0)
+                {
+                    if (!devMode)
+                        posX += (int)(3 * GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X);
+                    else
+                        posX -= 9;
+
+                    if (!movingRight)
+                    {
+                        _SpriteSheetX = 384;
+                        _SpriteSheetY = 0;
+
+                        slideRight = true;
+                        slideLeft = false;
+                    }
+
+                    movingRight = true;
+                    movingLeft = false;
+                    idleRight = false;
+                    idleLeft = false;
+
+                    _slideTime = 1f;
+                }
+                
+
+                if (GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X == 0 && movingRight && !idleRight && !movingLeft)
+                {
+                    idleRight = true;
+
+                    _SpriteSheetX = 0;
+                    _SpriteSheetY = 0;
+                }
+
+                if (GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X < 0)
+                {
+                    if (!devMode)
+                        posX += (int)(3 * GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X);
+                    else
+                        posX -= 9;
+
+                    if (!movingLeft)
+                    {
+                        _SpriteSheetX = 384;
+                        _SpriteSheetY = 384;
+
+                        slideRight = false;
+                        slideLeft = true;
+                    }
+
+                    movingRight = false;
+                    movingLeft = true;
+                    idleRight = false;
+                    idleLeft = false;
+
+                    _slideTime = 1f;
+                }
+                if (GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X == 0 && !movingRight && !idleLeft && movingLeft)
+                {
+
+                    idleLeft = true;
+
+                    _SpriteSheetX = 0;
+                    _SpriteSheetY = 384;
+
+                }
+
+                if (idleRight)
+                {
+                    movingRight = false;
+                    movingLeft = false;
+                    idleLeft = false;
+                }
+                else
+                    if (idleLeft)
+                {
+                    movingRight = false;
+                    movingLeft = false;
+                    idleRight = false;
+                }
+            }
           
             _playerRect.Location = new Point(posX,posY);
         }

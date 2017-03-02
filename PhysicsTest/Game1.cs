@@ -363,72 +363,130 @@ namespace PhysicsTest
                 Exit();
 
             //player related methods
-
-           
+            Console.WriteLine("Shooting:"+GamePad.GetState(PlayerIndex.One).Buttons.LeftShoulder);
+        //    Console.WriteLine("LEFT:"+GamePad.GetState(PlayerIndex.One).ThumbSticks.Left+"RIGHT:"+ GamePad.GetState(PlayerIndex.One).ThumbSticks.Right);
             foreach (Player pl in playerList)
             {
                 if (pl.PlayerLife != 0)
                 {
                     if (isPlaying && !gameFinished)
                     {
-                        if (Keyboard.GetState().IsKeyDown(Keys.W) && !pl.pressingJump)
+                        if (!pl.usingController)
                         {
-                            JumpControl = JumpSound.CreateInstance();
-                            JumpControl.Volume = 0.2f;
-                            JumpControl.Play();
-                        }
+                            if (Keyboard.GetState().IsKeyDown(Keys.W) && !pl.pressingJump)
+                            {
+                                JumpControl = JumpSound.CreateInstance();
+                                JumpControl.Volume = 0.2f;
+                                JumpControl.Play();
+                            }
+                        }else
+                            if(GamePad.GetState(PlayerIndex.One).Buttons.RightShoulder == ButtonState.Pressed && !pl.pressingJump)
+                            {
+                                JumpControl = JumpSound.CreateInstance();
+                                JumpControl.Volume = 0.2f;
+                                JumpControl.Play();
+                            }
 
-                        if(pl.spawnDelay==0)
+                        if (pl.spawnDelay==0)
                             pl.move(devMode);
 
 
                         if (!devMode)
                         {
-                            if (Keyboard.GetState().IsKeyDown(Keys.Space) && !pl.shooting)
+                            if (!pl.usingController)
                             {
-                                if (pl.ammoCounter > 0 && pl.spawnDelay==0)
+                                if (Keyboard.GetState().IsKeyDown(Keys.Space) && !pl.shooting)
                                 {
-                                    if (pl.IdlingLeft || pl.MoveLeft)
+                                    if (pl.ammoCounter > 0 && pl.spawnDelay == 0)
                                     {
-                                        //if player has shotgun do this                               
-                                        Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 1, 0.3f);
-                                        Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 0, 0.3f);
-                                        Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, -1, 0.3f);
+                                        if (pl.IdlingLeft || pl.MoveLeft)
+                                        {
+                                            //if player has shotgun do this                               
+                                            Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 1, 0.3f);
+                                            Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 0, 0.3f);
+                                            Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, -1, 0.3f);
 
-                                        // p1.lifeTime = 0.5f;
+                                            // p1.lifeTime = 0.5f;
 
-                                        projectiles.Add(p1);
-                                        projectiles.Add(p2);
-                                        projectiles.Add(p3);
-                                        //end shotgun condition
+                                            projectiles.Add(p1);
+                                            projectiles.Add(p2);
+                                            projectiles.Add(p3);
+                                            //end shotgun condition
+                                        }
+                                        if (pl.IdlingRight || pl.MoveRight)
+                                        {
+                                            //if player has shotgun do this
+                                            Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 1, 0.3f);
+                                            Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 0, 0.3f);
+                                            Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, -1, 0.3f);
+
+                                            projectiles.Add(p1);
+                                            projectiles.Add(p2);
+                                            projectiles.Add(p3);
+                                            //end shotgun condition
+                                        }
+                                        pl.shooting = true;
+
+                                        ShootControl = ShootSound.CreateInstance();
+                                        ShootControl.Volume = 0.3f;
+                                        ShootControl.Play();
+
+                                        pl.ammoCounter--;
                                     }
-                                    if (pl.IdlingRight || pl.MoveRight)
-                                    {
-                                        //if player has shotgun do this
-                                        Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 1, 0.3f);
-                                        Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 0, 0.3f);
-                                        Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, -1, 0.3f);
-
-                                        projectiles.Add(p1);
-                                        projectiles.Add(p2);
-                                        projectiles.Add(p3);
-                                        //end shotgun condition
-                                    }
-                                    pl.shooting = true;
-
-                                    ShootControl = ShootSound.CreateInstance();
-                                    ShootControl.Volume = 0.3f;
-                                    ShootControl.Play();
-
-                                    pl.ammoCounter--;
                                 }
-                            }
-                            else
-                                if (Keyboard.GetState().IsKeyUp(Keys.Space))
-                            {
-                                pl.shooting = false;
-                            }
+                                else
+                                    if (Keyboard.GetState().IsKeyUp(Keys.Space))
+                                {
+                                    pl.shooting = false;
+                                }
+                            }else
+                                if (pl.usingController)
+                                {
+                                    if(GamePad.GetState(PlayerIndex.One).Buttons.LeftShoulder == ButtonState.Pressed && !pl.shooting)
+                                    {
+                                        if(pl.ammoCounter > 0 && pl.spawnDelay == 0)
+                                        {
+                                            if (pl.IdlingLeft || pl.MoveLeft)
+                                            {
+                                                //if player has shotgun do this                               
+                                                Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 1, 0.3f);
+                                                Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, 0, 0.3f);
+                                                Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, -10, -1, 0.3f);
 
+                                                // p1.lifeTime = 0.5f;
+
+                                                projectiles.Add(p1);
+                                                projectiles.Add(p2);
+                                                projectiles.Add(p3);
+                                                //end shotgun condition
+                                            }
+                                            if (pl.IdlingRight || pl.MoveRight)
+                                            {
+                                                //if player has shotgun do this
+                                                Projectile p1 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 1, 0.3f);
+                                                Projectile p2 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, 0, 0.3f);
+                                                Projectile p3 = new Projectile(new Rectangle(pl.playerRect.X + pl.playerRect.Width, pl.playerRect.Y + 16, 16, 16), shotgunPellet, Color.White, 10, -1, 0.3f);
+
+                                                projectiles.Add(p1);
+                                                projectiles.Add(p2);
+                                                projectiles.Add(p3);
+                                                //end shotgun condition
+                                            }
+                                            pl.shooting = true;
+
+                                            ShootControl = ShootSound.CreateInstance();
+                                            ShootControl.Volume = 0.3f;
+                                            ShootControl.Play();
+
+                                            pl.ammoCounter--;
+                                        }
+                                    }
+                                else
+                                    if (GamePad.GetState(PlayerIndex.One).Buttons.LeftShoulder == ButtonState.Released)
+                                    {
+                                        pl.shooting = false;
+                                    }
+                            }
                             pl.DoPhysics();
 
                             foreach (Blocks b in RegularBlockList)
@@ -794,7 +852,7 @@ namespace PhysicsTest
 
             mouse.Location = new Point(playerList[0].playerRect.X, Mouse.GetState().Y);
 
-            Console.WriteLine("Mouse State and player:"+ playerList[0].playerRect.X + Mouse.GetState().X +" Player Rect:"+ playerList[0].playerRect.X+" mouse state:"+Mouse.GetState().X);
+            //Console.WriteLine("Mouse State and player:"+ playerList[0].playerRect.X + Mouse.GetState().X +" Player Rect:"+ playerList[0].playerRect.X+" mouse state:"+Mouse.GetState().X);
 
             if (isMenu)
             {
