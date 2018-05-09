@@ -483,7 +483,7 @@ namespace PhysicsTest
                     if (!devMode)
                         posX += (int)(3 * GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X);
                     else
-                        posX -= 9;
+                        posX += (int)(9 * GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X);
 
                     if (!movingRight)
                     {
@@ -516,7 +516,7 @@ namespace PhysicsTest
                     if (!devMode)
                         posX += (int)(3 * GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X);
                     else
-                        posX -= 9;
+                        posX += (int)(9 * GamePad.GetState(PlayerIndex.One).ThumbSticks.Right.X);
 
                     if (!movingLeft)
                     {

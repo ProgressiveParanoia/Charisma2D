@@ -11,6 +11,7 @@ namespace PhysicsTest
 
     public class Game1 : Game
     {
+        ScoreTracker scoreTracker;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
@@ -71,6 +72,8 @@ namespace PhysicsTest
         List<PickUp> ammoPickUp;
         List<PickUp> KeyList;
 
+        List<ScoreTracker> scores;
+
         List<Blocks> TreeList;
 
         Texture2D ingameBackground;
@@ -130,6 +133,7 @@ namespace PhysicsTest
         bool gameFinished;
 
         bool isPlaying;
+        bool isLobby;
 
         bool isMenu;
         bool isOption;
@@ -139,6 +143,8 @@ namespace PhysicsTest
         bool isStage2;
         bool isStage3;
         bool isStage4;
+
+        bool checkPress;
 
         bool Win;
 
@@ -167,6 +173,9 @@ namespace PhysicsTest
         bool isRemovingBlock;
 
         bool isLoading;
+
+        int score;
+        string plName;
         //Input end
 
         SoundEffect mainMenuTheme;
@@ -197,7 +206,6 @@ namespace PhysicsTest
 
         bool enabledStuff;
         bool HasEnabledControllers;
-
         //key points in the map
         Point spawnPoint;
 
@@ -211,11 +219,15 @@ namespace PhysicsTest
 
             levelEditor_IsRegBlock = true;
 
-            HasEnabledControllers = true;
+            HasEnabledControllers = false;
+
+            plName = "";
         }
 
         protected override void Initialize()
         {
+            scores = new List<ScoreTracker>();
+
             ingameBackground = Content.Load<Texture2D>(@"GameBackground");
 
             playerTex = Content.Load<Texture2D>(@"Elf_shotty_sheet");
@@ -367,6 +379,8 @@ namespace PhysicsTest
 
             spawnPoint = new Point(checkPointList[0].blockPos.X, checkPointList[0].blockPos.Y);
 
+
+            loadScore();
             base.Initialize();
         }
 
@@ -390,7 +404,7 @@ namespace PhysicsTest
             LevelEditor();
 
             //player related methods
-            Console.WriteLine("Shooting:"+GamePad.GetState(PlayerIndex.One).Buttons.LeftShoulder);
+          //  Console.WriteLine("Shooting:"+GamePad.GetState(PlayerIndex.One).Buttons.LeftShoulder);
         //    Console.WriteLine("LEFT:"+GamePad.GetState(PlayerIndex.One).ThumbSticks.Left+"RIGHT:"+ GamePad.GetState(PlayerIndex.One).ThumbSticks.Right);
             foreach (Player pl in playerList)
             {
@@ -540,6 +554,7 @@ namespace PhysicsTest
                                 if (pl.playerRect.Intersects(p.pickUpRect))
                                 {
                                     pl.hasKey = true;
+                                    score += 500;
                                     KeyList.Remove(p);
 
                                     break;
@@ -551,6 +566,7 @@ namespace PhysicsTest
                                 if (pl.playerRect.Intersects(p.pickUpRect))
                                 {
                                     pl.ammoCounter += 4;
+                                    score += 500;
                                     ammoPickUp.Remove(p);
                                     break;
                                 }
@@ -572,6 +588,7 @@ namespace PhysicsTest
                                     }
 
                                     pl.PlayerLife = 3;
+                                    score += 500;
 
                                     healthPickUp.Remove(p);
                                     break;
@@ -607,43 +624,43 @@ namespace PhysicsTest
                 }//else player dies
 
                 //save and load inputs
-                //if (Keyboard.GetState().IsKeyDown(Keys.F))
-                //{
-                //    savePlayer();
-                //}
+                if (Keyboard.GetState().IsKeyDown(Keys.F))
+                {
+                    savePlayer();
+                }
 
-                //if (Keyboard.GetState().IsKeyDown(Keys.L) && !isLoading)
-                //{
-                //    loadPlayer("Stage2.SWAG", 3, 3, 8);
-                //    isLoading = true;
-                //    break;
-                //}
+                if (Keyboard.GetState().IsKeyDown(Keys.L) && !isLoading)
+                {
+                    loadPlayer("Stage4.SWAG", 3, 3, 8);
+                    isLoading = true;
+                    break;
+                }
 
-                //if (Keyboard.GetState().IsKeyUp(Keys.L))
-                //{
-                //    isLoading = false;
-                //}
+                if (Keyboard.GetState().IsKeyUp(Keys.L))
+                {
+                    isLoading = false;
+                }
 
-                //if (Keyboard.GetState().IsKeyDown(Keys.T) && !swappingModes)
-                //{
-                //    if (playMode)
-                //    {
-                //        playMode = false;
-                //        devMode = true;
-                //    }
-                //    else
-                //        if (devMode)
-                //    {
-                //        devMode = false;
-                //        playMode = true;
-                //    }
-                //    swappingModes = true;
-                //}
+                if (Keyboard.GetState().IsKeyDown(Keys.T) && !swappingModes)
+                {
+                    if (playMode)
+                    {
+                        playMode = false;
+                        devMode = true;
+                    }
+                    else
+                        if (devMode)
+                    {
+                        devMode = false;
+                        playMode = true;
+                    }
+                    swappingModes = true;
+                }
 
-                //if (Keyboard.GetState().IsKeyUp(Keys.T))
-                //{
-                //    swappingModes = false;
-                //}
+                if (Keyboard.GetState().IsKeyUp(Keys.T))
+                {
+                    swappingModes = false;
+                }
             }
                 //end save and load
 
@@ -767,6 +784,7 @@ namespace PhysicsTest
                         projectiles.Remove(p);
                         snowmenList.Remove(e);
 
+                        score += 100;
                         goto outside;
                     }
                 }
@@ -807,19 +825,44 @@ namespace PhysicsTest
                     {
                         isStage1 = false;
                         isStage2 = true;
+                        isStage3 = false;
 
                         loadPlayer("Stage2.SWAG", playerList[0].PlayerLife, playerList[0].PlayerHP, playerList[0].ammoCounter);
-                    }else
+                    } else
                     if (isStage2)
+                    {
+    
+                        isStage1 = false;
+                        isStage2 = false;
+                        isStage3 = true;
+
+                        loadPlayer("Stage3.SWAG", playerList[0].PlayerLife, playerList[0].PlayerHP, playerList[0].ammoCounter);
+                       // Win = true;
+
+                      //  gameOverControl.Play();
+                    } else
+                        if (isStage3)
+                    {
+                        isStage1 = false;
+                        isStage2 = false;
+                        isStage3 = false;
+                        isStage4 = true;
+
+                        loadPlayer("Stage3.SWAG", playerList[0].PlayerLife, playerList[0].PlayerHP, playerList[0].ammoCounter);
+                    }
+                    else
+                        if (isStage4)
                     {
                         isPlaying = false;
 
                         isStage1 = false;
                         isStage2 = false;
+                        isStage3 = false;
+                        isStage4 = false;
 
                         Win = true;
-
                         gameOverControl.Play();
+                        //loadPlayer("Menu.SWAG", playerList[0].PlayerLife, playerList[0].PlayerHP, playerList[0].ammoCounter);
                     }
                     playerList[0].hasKey = false;
                 }
@@ -849,10 +892,12 @@ namespace PhysicsTest
                     isStage1 = false;
                     isStage2 = false;
                     isStage3 = false;
+                    isStage4 = false;
 
-                    
+                    saveScore();
 
                     isMenu = true;
+                    score = 0;
                     loadPlayer("MENU.SWAG",3,3,12);
                 }
             }
@@ -868,10 +913,12 @@ namespace PhysicsTest
                     playerList[0].PlayerLife = 3;
                     playerList[0].PlayerHP--;
 
-                 //   playerList[0].spawnDelay = 0;
+                    //   playerList[0].spawnDelay = 0;
+                    saveScore();
 
                     isMenu = true;
                     Win = false;
+                    score = 0;
                     loadPlayer("MENU.SWAG", 3, 3, 8);
                 }
             }
@@ -880,7 +927,67 @@ namespace PhysicsTest
             mouse.Location = new Point(playerList[0].playerRect.X, Mouse.GetState().Y);
 
             //Console.WriteLine("Mouse State and player:"+ playerList[0].playerRect.X + Mouse.GetState().X +" Player Rect:"+ playerList[0].playerRect.X+" mouse state:"+Mouse.GetState().X);
+            if (isLobby)
+            {
+                IsMouseVisible = true;
+                StartRect = new Rectangle(playerList[0].playerRect.X - playerList[0].playerRect.Width / 2, 410, 150, 50);
 
+                Keys[] d = Keyboard.GetState().GetPressedKeys();
+                foreach (Keys k in d)
+                {
+                    if (checkPress)
+                    {
+                        try
+                        {
+                            char charname = char.Parse(k.ToString());
+
+                            if (char.IsLetter(charname) && plName.Length <= 10)
+                            {
+                                plName += k.ToString();
+                            }
+                        }
+                        catch { }
+
+                        if (k == Keys.Back && plName.Length > 0)
+                        {
+                            plName = plName.Substring(0, plName.Length - 1);
+                        }
+
+                        if (k == Keys.Space)
+                        {
+                            plName += " ";
+                        }
+
+                        if (k == Keys.OemMinus)
+                        {
+                            plName += "_";
+                        }
+
+                    }
+
+                }
+
+                if (d.Length > 0)
+                {
+                    checkPress = false;
+                }
+                else
+                    checkPress = true;
+
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                {
+                    if (StartRect.Intersects(mouse) && plName!="")
+                    {
+                        isStage1 = true;
+                        gameFinished = false;
+                        isPlaying = true;
+                        isMenu = false;
+                        isLobby = false;
+
+                        loadPlayer("Stage1.SWAG", 3, 3, 12);
+                    }
+                }
+            }
             if (isMenu)
             {
                 IsMouseVisible = true;
@@ -907,8 +1014,10 @@ namespace PhysicsTest
                         isStage1 = true;
                         gameFinished = false;
                         isPlaying = true;
+                        isMenu = false;
+                        isLobby = false;
 
-                        loadPlayer("Stage1.SWAG",3,3,12);
+                        loadPlayer("Stage1.SWAG", 3, 3, 12);
                     }
                     if (RealOptionRect.Intersects(mouse))
                     {
@@ -975,7 +1084,7 @@ namespace PhysicsTest
                 }
             }
 
-            if (isMenu || isOption)
+            if (isMenu || isOption||isLobby|| isRealOption)
             {
                 if(MainMenuSoundControl.State != SoundState.Playing)
                 {
@@ -993,10 +1102,15 @@ namespace PhysicsTest
                 {
                     Stage1SoundControl.Play();
                     Stage1SoundControl.Volume = 0.5f;
+               
                 }
+               
+
             }else
+            if(!isStage1 && gameFinished)
             {
                 Stage1SoundControl.Stop();
+                
             }
 
             if(isStage2 && !gameFinished)
@@ -1010,8 +1124,35 @@ namespace PhysicsTest
             {
                 Stage2SoundControl.Stop();
             }
-           // Console.WriteLine("HP Elements:"+playerList[0].PlayerHP+ "player size"+playerList.Count);
 
+            if (isStage3 && !gameFinished)
+            {
+                if (Stage1SoundControl.State != SoundState.Playing)
+                {
+                    Stage1SoundControl.Play();
+                    Stage1SoundControl.Volume = 0.5f;
+                }
+            }
+            else
+            {
+                Stage1SoundControl.Stop();
+            }
+
+
+            if (isStage4 && !gameFinished)
+            {
+                if (Stage2SoundControl.State != SoundState.Playing)
+                {
+                    Stage2SoundControl.Play();
+                    Stage2SoundControl.Volume = 0.5f;
+                }
+            }
+            else
+            {
+                Stage2SoundControl.Stop();
+            }
+            // Console.WriteLine("HP Elements:"+playerList[0].PlayerHP+ "player size"+playerList.Count);
+           // Console.WriteLine(isStage1 + "game finished" + gameFinished);
             base.Update(gameTime);
         }
 
@@ -1176,6 +1317,8 @@ namespace PhysicsTest
                     }
 
                     spriteBatch.DrawString(sF, playerList[0].ammoCounter.ToString(), new Vector2(p.playerRect.X - ((cam.myView.Bounds.Right / 2 - p.playerRect.Width / 2) - 96), 86), Color.White);
+                //    spriteBatch.DrawString(sF, "Score:" + score, new Vector2(playerList[0].playerRect.X - ((cam.myView.Bounds.Right / 2 - playerList[0].playerRect.Width / 2) - 612),20), Color.Red);
+                //    spriteBatch.DrawString(sF, "Name:" + plName, new Vector2(playerList[0].playerRect.X - ((cam.myView.Bounds.Right / 2 - playerList[0].playerRect.Width / 2) - 612), 40), Color.LightGreen);
                 }
             }
 
@@ -1216,7 +1359,25 @@ namespace PhysicsTest
                 spriteBatch.Draw(ExitBtn, ExitRect, Color.White);
             }
 
+            if (isLobby)
+            {
+                spriteBatch.Draw(ingameBackground, new Rectangle(playerList[0].playerRect.X - (cam.myView.Bounds.Right / 2 - playerList[0].playerRect.Width / 2), cam.myView.Bounds.Center.Y - cam.myView.Bounds.Center.Y, 800, 600), Color.White);
+                spriteBatch.DrawString(sF, "High Scores", new Vector2(playerList[0].playerRect.X - ((cam.myView.Bounds.Right / 2 - playerList[0].playerRect.Width / 2) - 350), 10), Color.Red);
+                spriteBatch.DrawString(sF, "Name", new Vector2(playerList[0].playerRect.X - ((cam.myView.Bounds.Right / 2 - playerList[0].playerRect.Width / 2) - 96), 20), Color.White);
+                spriteBatch.DrawString(sF, "Scores", new Vector2(playerList[0].playerRect.X - ((cam.myView.Bounds.Right / 2 - playerList[0].playerRect.Width / 2) - 612), 20), Color.White);
 
+                spriteBatch.DrawString(sF, "Your Name:", new Vector2(playerList[0].playerRect.X - ((cam.myView.Bounds.Right / 2 - playerList[0].playerRect.Width / 2) - 100), 312), Color.White);
+                spriteBatch.DrawString(sF, plName, new Vector2(playerList[0].playerRect.X - ((cam.myView.Bounds.Right / 2 - playerList[0].playerRect.Width / 2) - 300), 312), Color.White);
+
+                for(int i = 0; i<scores.Count;i++)
+                {
+                    spriteBatch.DrawString(sF, (i + 1).ToString(), new Vector2(playerList[0].playerRect.X - ((cam.myView.Bounds.Right / 2 - playerList[0].playerRect.Width / 2) - 50), 25+(25*(i+1))), Color.Red);
+                    spriteBatch.DrawString(sF, scores[i].Name, new Vector2(playerList[0].playerRect.X - ((cam.myView.Bounds.Right / 2 - playerList[0].playerRect.Width / 2) - 96), 25 + (25 * (i + 1))), Color.Red);
+                    spriteBatch.DrawString(sF, scores[i].Score.ToString(), new Vector2(playerList[0].playerRect.X - ((cam.myView.Bounds.Right / 2 - playerList[0].playerRect.Width / 2) - 612), 25 + (25 * (i + 1))), Color.White);
+                }
+                spriteBatch.Draw(StartBtn, StartRect, Color.White);
+               
+            }
             //dev mode stuff
             if (devMode) {
                 if(levelEditor_IsRegBlock)
@@ -1265,7 +1426,7 @@ namespace PhysicsTest
 
         void LevelSave()
         {
-            StreamWriter sw = new StreamWriter("Stage2.SWAG");
+            StreamWriter sw = new StreamWriter("Stage4.SWAG");
 
             sw.WriteLine(playerList[0].playerRect.X+","+playerList[0].playerRect.Y); //save player pos
 
@@ -2622,5 +2783,43 @@ namespace PhysicsTest
                 IsMouseVisible = false;
             }
         } //level editor end
+
+        void saveScore()
+        {
+            StreamWriter sw = new StreamWriter("HS");
+
+            ScoreTracker temp = new ScoreTracker(plName, score);
+            scores.Add(temp);
+
+            scores.Sort((a, b) => -1 * a.Score.CompareTo(b.Score));
+
+            foreach (ScoreTracker s in scores)
+            {
+                sw.WriteLine(s.Name + "," + s.Score);
+            }
+
+            sw.Close();
+        }
+
+        void loadScore()
+        {
+            StreamReader sr = new StreamReader("HS");
+
+            string fileData = "";
+
+            while ((fileData = sr.ReadLine()) != null)
+            {
+                string[] data = fileData.Split(',');
+
+                string prevName = data[0];
+                int previousScore = int.Parse(data[1]);
+
+                ScoreTracker temp = new ScoreTracker(prevName, previousScore);
+                scores.Add(temp);
+            }
+            scores.Sort((a, b) => -1 * a.Score.CompareTo(b.Score));
+
+            sr.Close();
+        }
     }
 }
