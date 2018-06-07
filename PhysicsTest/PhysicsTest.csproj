@@ -38,19 +38,20 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Blocks.cs" />
-    <Compile Include="Camera.cs" />
-    <Compile Include="Collision.cs" />
-    <Compile Include="Enemy.cs" />
-    <Compile Include="Explosion.cs" />
+    <Compile Include="Code\Constants\FilePath.cs" />
+    <Compile Include="Code\Game_Objects\Environment\Blocks.cs" />
+    <Compile Include="Code\Utilities\Camera.cs" />
+    <Compile Include="Code\Utilities\Collision.cs" />
+    <Compile Include="Code\Game_Objects\Enemy\Enemy.cs" />
+    <Compile Include="Code\Game_Objects\Player\Explosion.cs" />
     <Compile Include="Game1.cs" />
-    <Compile Include="LevelEditor.cs" />
-    <Compile Include="PickUp.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Code\Utilities\Level_Editor\LevelEditor.cs" />
+    <Compile Include="Code\Game_Objects\Environment\PickUp.cs" />
+    <Compile Include="Code\Game_Objects\Player\Player.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Projectile.cs" />
+    <Compile Include="Code\Game_Objects\Sprites\Projectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScoreTracker.cs" />
+    <Compile Include="Code\Utilities\ScoreTracker.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -60,122 +61,59 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\AmmoPickup.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\BlockTest.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\CheckPointSheet.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\ControllerInstructibles.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\DeathSound.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Elf_shotty_sheet.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\ExitBtn.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\exitTex.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\GameBackground.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\GameOver.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\HealthPickup.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\HP.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\IceExplosion.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\icewall.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\icicleDown.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Instructibles.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Jump.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Key.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\LIFE.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\MainMenuSound.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\NoBtn.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\OptionsAndStuff.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\OptionsBtn.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\PickUpPower.wav" />
-    <Content Include="Content\realOptionsBtn.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Shoot.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\ShootingSound.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\shotgunPellet.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\skateBlocks.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\snowBall.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\snowman_sheet.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\spawnPoint.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Stage1Music.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Stage2Music.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\StartBtn.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\TitleCard.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\tree.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\YesBtn.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Content\gun.png" />
+    <Content Include="Content\laser.png" />
+    <Content Include="Content\penguin_sheet.png" />
+    <Content Include="Content\Sound\DeathSound.wav" />
+    <Content Include="Content\Sound\GameOver.wav" />
+    <Content Include="Content\Sound\Jump.wav" />
+    <Content Include="Content\Sound\MainMenuSound.wav" />
+    <Content Include="Content\Sound\PickUpPower.wav" />
+    <Content Include="Content\Sound\Shoot.wav" />
+    <Content Include="Content\Sound\ShootingSound.wav" />
+    <Content Include="Content\Sound\Stage1Music.wav" />
+    <Content Include="Content\Sound\Stage2Music.wav" />
+    <Content Include="Content\Sprites\Enemy\Snowman\IceExplosion.png" />
+    <Content Include="Content\Sprites\Enemy\Snowman\snowBall.png" />
+    <Content Include="Content\Sprites\Enemy\Snowman\snowman_sheet.png" />
+    <Content Include="Content\Sprites\Environment\BlockTest.png" />
+    <Content Include="Content\Sprites\Environment\CheckPointSheet.png" />
+    <Content Include="Content\Sprites\Environment\exitTex.png" />
+    <Content Include="Content\Sprites\Environment\GameBackground.png" />
+    <Content Include="Content\Sprites\Environment\icewall.png" />
+    <Content Include="Content\Sprites\Environment\icicleDown.png" />
+    <Content Include="Content\Sprites\Environment\skateBlocks.png" />
+    <Content Include="Content\Sprites\Environment\spawnPoint.png" />
+    <Content Include="Content\Sprites\Environment\tree.png" />
+    <Content Include="Content\Sprites\gun.png" />
+    <Content Include="Content\Sprites\laser.png" />
+    <Content Include="Content\Sprites\penguin_sheet.png" />
+    <Content Include="Content\Sprites\Pickups\AmmoPickup.png" />
+    <Content Include="Content\Sprites\Pickups\HealthPickup.png" />
+    <Content Include="Content\Sprites\Pickups\Key.png" />
+    <Content Include="Content\Sprites\Player\Elf_shotty_idle.png" />
+    <Content Include="Content\Sprites\Player\Elf_shotty_sheet.png" />
+    <Content Include="Content\Sprites\Player\Elf_unarmed.png" />
+    <Content Include="Content\Sprites\Player\LIFE.png" />
+    <Content Include="Content\Sprites\Player\shotgunPellet.png" />
+    <Content Include="Content\Sprites\UI\Ingame\HP.png" />
+    <Content Include="Content\Sprites\UI\Menu\ControllerInstructibles.png" />
+    <Content Include="Content\Sprites\UI\Menu\ExitBtn.png" />
+    <Content Include="Content\Sprites\UI\Menu\Instructibles.png" />
+    <Content Include="Content\Sprites\UI\Menu\NoBtn.png" />
+    <Content Include="Content\Sprites\UI\Menu\OptionsAndStuff.png" />
+    <Content Include="Content\Sprites\UI\Menu\OptionsBtn.png" />
+    <Content Include="Content\Sprites\UI\Menu\realOptionsBtn.png" />
+    <Content Include="Content\Sprites\UI\Menu\StartBtn.png" />
+    <Content Include="Content\Sprites\UI\Menu\TitleCard.png" />
+    <Content Include="Content\Sprites\UI\Menu\YesBtn.png" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Code\Game_Objects\Player\Actions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

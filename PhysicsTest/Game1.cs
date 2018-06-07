@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using PhysicsTest.Code.Constants;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -228,7 +229,7 @@ namespace PhysicsTest
         {
             scores = new List<ScoreTracker>();
 
-            ingameBackground = Content.Load<Texture2D>(@"GameBackground");
+            ingameBackground = Content.Load<Texture2D>(FilePath.BACKGROUND_NIGHTBACKGROUND);
 
             playerTex = Content.Load<Texture2D>(@"Elf_shotty_sheet");
             blockTex = Content.Load<Texture2D>(@"BlockTest");
