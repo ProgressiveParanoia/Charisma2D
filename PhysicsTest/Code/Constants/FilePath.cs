@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,8 +11,12 @@ namespace PhysicsTest.Code.Constants
     {
 
         //TODO CREATE A NAMING SCHEME FOR EVERY FILE
+        public const string CHRISTMAS_THEME = "_CHRISTMAS";
+        public const string REGULAR_THEME = "_REGULAR";
+
         public const string REGULAR_BLOCK = @"Sprites\Environment\BlockTest";
 
-        public const string BACKGROUND_NIGHTBACKGROUND = @"Sprites\Environment\GameBackground";
+        public const string BACKGROUND_NIGHTBACKGROUND = @"Sprites\Environment\GameBackground"; 
+                
     }
 }
