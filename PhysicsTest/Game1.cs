@@ -230,7 +230,8 @@ namespace PhysicsTest
         {
             scores = new List<ScoreTracker>();
 
-            Code.Utilities.IO.FileHandler.Instance.GetSpriteLoader.CheckDirectories();
+            FileHandler.Instance.Initialize(this.Content);
+            FileHandler.Instance.GetSpriteLoader.LoadSprites();
 
             ingameBackground = Content.Load<Texture2D>(FilePath.BACKGROUND_NIGHTBACKGROUND);
 
@@ -307,7 +308,7 @@ namespace PhysicsTest
             Stage2SoundControl.IsLooped = true;
 
             sF = Content.Load<SpriteFont>(@"spriteFont");
-
+            
             _player = new Player(new Rectangle(0,0,64,64),playerTex,Color.White,new Point(Window.ClientBounds.Width,Window.ClientBounds.Height),HasEnabledControllers);
             cam = new Camera(GraphicsDevice.Viewport);
 
@@ -359,7 +360,7 @@ namespace PhysicsTest
 
 
             loadPlayer("MENU.SWAG",3,3,12);
-
+            
             for (int i = 0; i < 3; i++)
             {
                 playerHP[i]=(_playerHP);

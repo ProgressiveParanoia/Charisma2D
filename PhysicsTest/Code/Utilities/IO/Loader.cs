@@ -11,6 +11,7 @@ namespace ParanoidGames.Utilities.IO
     /// </summary>
     class Loader
     {
+    
         /// <summary>
         /// Get all file paths inside a specified directory.
         /// </summary>
