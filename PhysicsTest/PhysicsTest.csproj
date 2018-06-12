@@ -44,6 +44,9 @@
     <Compile Include="Code\Utilities\Collision.cs" />
     <Compile Include="Code\Game_Objects\Enemy\Enemy.cs" />
     <Compile Include="Code\Game_Objects\Player\Explosion.cs" />
+    <Compile Include="Code\Utilities\IO\FileHandler.cs" />
+    <Compile Include="Code\Utilities\IO\Loader.cs" />
+    <Compile Include="Code\Utilities\IO\SpriteLoader.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Code\Utilities\Level_Editor\LevelEditor.cs" />
     <Compile Include="Code\Game_Objects\Environment\PickUp.cs" />
@@ -114,7 +117,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Code\Game_Objects\Player\Actions\" />
-    <Folder Include="Code\Utilities\IO\" />
     <Folder Include="Content\Sprites\Environment\Background\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

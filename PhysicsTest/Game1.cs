@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PhysicsTest.Code.Constants;
+using ParanoidGames.Utilities.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -228,6 +229,8 @@ namespace PhysicsTest
         protected override void Initialize()
         {
             scores = new List<ScoreTracker>();
+
+            Code.Utilities.IO.FileHandler.Instance.GetSpriteLoader.CheckDirectories();
 
             ingameBackground = Content.Load<Texture2D>(FilePath.BACKGROUND_NIGHTBACKGROUND);
 
