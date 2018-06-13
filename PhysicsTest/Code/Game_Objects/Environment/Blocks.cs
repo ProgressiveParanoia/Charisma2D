@@ -22,34 +22,19 @@ namespace PhysicsTest
             this._blockTexture = _blockTexture;
         }
 
-        public Texture2D blockTexture
+        public Texture2D BlockTexture
         {
-            set
-            {
-                _blockTexture = value;
-            }
-            get
-            {
-                return _blockTexture;
-            }
+            get {  return _blockTexture; }
         }
 
-        public Rectangle blockRect
+        public Rectangle BlockRect
         {
-            set
-            {
-                _blockRect = value;
-            }
-            get
-            {
-                return _blockRect;
-            }
+            get { return _blockRect; }
         }
 
-        public Point blockPos
+        public Point BlockPos
         {
             get { return _blockRect.Location; }
-            set { _blockRect.Location = value; }
         }
 
         public bool isSlipBlock
@@ -63,9 +48,9 @@ namespace PhysicsTest
             get { return isPointy; }
             set { isPointy = value; }
         }
-
         
-        public void Move(int x, int y)
+        
+        public virtual void Move(int x, int y)
         {
             _blockRect.Location = new Point(x,y);
         }

@@ -589,7 +589,7 @@ namespace PhysicsTest
         {
             if (!block.isSpikeBlock)
             {
-                if (collision.TouchTopOf(_playerRect, block.blockRect))
+                if (collision.TouchTopOf(_playerRect, block.BlockRect))
                 {
                     _velocity.Y = 0;
 
@@ -604,7 +604,7 @@ namespace PhysicsTest
                         isPressingJump = false;
                     }
 
-                    if (Math.Abs(_playerRect.Y - block.blockRect.Y) < _playerRect.Height) //push player up if player rammed into the ground
+                    if (Math.Abs(_playerRect.Y - block.BlockRect.Y) < _playerRect.Height) //push player up if player rammed into the ground
                     {
                         _playerRect.Y -= 1;
                     }
@@ -684,24 +684,24 @@ namespace PhysicsTest
                     }
                 }
 
-                if (collision.TouchBottomOf(_playerRect, block.blockRect))
+                if (collision.TouchBottomOf(_playerRect, block.BlockRect))
                 {
                     _velocity.Y += -_velocity.Y / 2;
                 }
 
 
-                if (block.blockRect.Intersects(_playerRect))
+                if (block.BlockRect.Intersects(_playerRect))
                 {
-                    if (block.blockRect.Left > _playerRect.Left)
+                    if (block.BlockRect.Left > _playerRect.Left)
                     {
-                        if (block.blockRect.Top != _playerRect.Bottom - 1)
+                        if (block.BlockRect.Top != _playerRect.Bottom - 1)
                         {
                             _playerRect.X -= 3;
                         }
                     }
-                    if (block.blockRect.Right < _playerRect.Right)
+                    if (block.BlockRect.Right < _playerRect.Right)
                     {
-                        if (block.blockRect.Top != _playerRect.Bottom - 1)
+                        if (block.BlockRect.Top != _playerRect.Bottom - 1)
                         {
                             _playerRect.X += 3;
                         }
@@ -710,7 +710,7 @@ namespace PhysicsTest
             }else
                 if(block.isSpikeBlock)
                 {
-                    if (_playerRect.Intersects(block.blockRect) && !isTakingDamage)
+                    if (_playerRect.Intersects(block.BlockRect) && !isTakingDamage)
                     {
 
                             playerLife = 0;
