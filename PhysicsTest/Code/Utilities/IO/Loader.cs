@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using ParanoidGames.Constants;
 
 namespace ParanoidGames.Utilities.IO
 {
@@ -11,7 +12,7 @@ namespace ParanoidGames.Utilities.IO
     /// </summary>
     class Loader
     {
-    
+        private string targetDirectory = FileDirectory.Content;
         /// <summary>
         /// Get all file paths inside a specified directory.
         /// </summary>
@@ -19,13 +20,17 @@ namespace ParanoidGames.Utilities.IO
         /// <returns></returns>
         internal string[] GetFilePaths(string targetDirectory)
         {
-            if (Directory.Exists(targetDirectory) == false)
+            this.targetDirectory += targetDirectory;
+
+            if (Directory.Exists(this.targetDirectory) == false)
             {
                 return null;
             }
 
-            string[] filePathCollection = Directory.GetFiles(targetDirectory);
-            
+            string[] filePathCollection = Directory.GetFiles(this.targetDirectory);
+
+            this.targetDirectory = FileDirectory.Content;
+
             return filePathCollection;
         }
 
@@ -37,15 +42,19 @@ namespace ParanoidGames.Utilities.IO
         /// <returns></returns>
         internal string[] RecurseGetFilePaths(string targetDirectory)
         {
-            if(Directory.Exists(targetDirectory) == false)
+            this.targetDirectory += targetDirectory;
+
+            if(Directory.Exists(this.targetDirectory) == false)
             {
                 return null;
             }
      
-            filePathList.Clear();
-            CheckSubdirectories(targetDirectory);
+            this.filePathList.Clear();
+            CheckSubdirectories(this.targetDirectory);
 
-            return filePathList.ToArray();
+            this.targetDirectory = FileDirectory.Content;
+
+            return this.filePathList.ToArray();
         }
 
         /// <summary>
@@ -54,8 +63,9 @@ namespace ParanoidGames.Utilities.IO
         /// <param name="targetDirectory">Check directory for files</param>
         private void CheckSubdirectories(string targetDirectory)
         {
+
             string[] filePathCollection = Directory.GetFiles(targetDirectory);
-            filePathList.AddRange(filePathCollection);
+            this.filePathList.AddRange(filePathCollection);
             string[] subDirectories = Directory.GetDirectories(targetDirectory);
 
             foreach (string subDir in subDirectories)
