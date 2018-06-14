@@ -30,6 +30,13 @@ namespace ParanoidGames.Utilities.IO
         Prop
     }
 
+    public enum SpriteUIType
+    {
+        Undefined,
+        Ingame,
+        Menu
+    }
+
     public enum SpriteEnemyType
     {
         Undefined
@@ -40,14 +47,21 @@ namespace ParanoidGames.Utilities.IO
     {
         private ContentManager content = FileHandler.Instance.GetContentManager;
 
-        private HashSet<Texture2D> platformTextureData = new HashSet<Texture2D>();
+        #region UI texture data
+        private Dictionary<string, Texture2D> ingameTextureData = new Dictionary<string, Texture2D>();
+        private Dictionary<string, Texture2D> menuTextureData = new Dictionary<string, Texture2D>();
+        #endregion
+
+        #region Environment texture data
+        private Dictionary<string, Texture2D> platformTextureData = new Dictionary<string, Texture2D>();
         private Dictionary<string, Texture2D> propTextureData = new Dictionary<string, Texture2D>();
         private Dictionary<string, Texture2D> PickupTextureData = new Dictionary<string, Texture2D>();
         private Dictionary<string, Texture2D> backgroundTextureData = new Dictionary<string, Texture2D>();
+        #endregion
 
-
+        #region Player texture data
         private Dictionary<string, Texture2D> playerTextureData = new Dictionary<string, Texture2D>();
-
+        #endregion
 
         public void LoadSprites()
         {
@@ -67,21 +81,21 @@ namespace ParanoidGames.Utilities.IO
                 return;
             }
 
-            foreach (string path in filePaths)
-            {
-                string texPath = path.Replace(".xnb", "").Replace(FileDirectory.Content, "");
+            //foreach (string path in filePaths)
+            //{
+            //    string texPath = path.Replace(".xnb", "").Replace(FileDirectory.Content, "");
 
-                Texture2D tex2d = content.Load<Texture2D>(@texPath);
+            //    Texture2D tex2d = content.Load<Texture2D>(@texPath);
 
-                texPath = texPath.Replace(FileDirectory.Environment_Platform, "");
+            //    texPath = texPath.Replace(FileDirectory.Environment_Platform, "");
 
-                platformTextureData.Add(tex2d);
-            }
-            // CheckSpriteType()
-            foreach (Texture2D platTex2d in platformTextureData)
-            {
-                Console.WriteLine("KEY LIST:"+platTex2d);
-            }
+            //    platformTextureData.Add(tex2d);
+            //}
+            //// CheckSpriteType()
+            //foreach (Texture2D platTex2d in platformTextureData)
+            //{
+            //    Console.WriteLine("KEY LIST:"+platTex2d);
+            //}
 
             #endregion
         }
@@ -113,9 +127,14 @@ namespace ParanoidGames.Utilities.IO
             }
 
 
-            foreach (Texture2D texThing in platformTextureData)
+            foreach (KeyValuePair<string,Texture2D> texThing in platformTextureData)
             {
-                Console.WriteLine("LOAD SPRITES 2:"+texThing);
+                Console.WriteLine("PLATFORM DATA:"+texThing);
+            }
+
+            foreach (KeyValuePair<string, Texture2D> texThing in menuTextureData)
+            {
+                Console.WriteLine("menu data:" + texThing);
             }
         }
 
@@ -138,35 +157,79 @@ namespace ParanoidGames.Utilities.IO
 
                 string spriteTypeString = splitFilePath[1];
                 string spriteSubtypeString = splitFilePath[2];
+                string spriteName = splitFilePath[splitFilePath.Length - 1];
 
                 SpriteType currentSpriteType = SpriteType.Undefined;
-
+    
                 Console.WriteLine("Current data:" + texPath);
 
                 Enum.TryParse(spriteTypeString, out currentSpriteType);
-
+                
                 switch (currentSpriteType)
                 {
                     case SpriteType.Undefined:
                         Console.WriteLine("Unknown sprite value. Skipping...");
                         break;
-                        
+                       
                     case SpriteType.Environment:
-                        this.CheckSubtype(SpriteType.Environment, tex2d);
+                        SpriteEnvironmentType spriteEnv = SpriteEnvironmentType.Undefined;
+                        Enum.TryParse(spriteSubtypeString, out spriteEnv);
+
+                        if (spriteEnv == SpriteEnvironmentType.Undefined)
+                        {
+                            break;
+                        }
+
+                        this.CheckSubtype_Environment(spriteEnv, spriteName, tex2d);
+                        
                         break;
+
+                    case SpriteType.UI:
+                        SpriteUIType spriteUI = SpriteUIType.Undefined;
+                        Enum.TryParse(spriteSubtypeString, out spriteUI);
+
+                        if(spriteUI == SpriteUIType.Undefined)
+                        {
+                            break;
+                        }
+
+                        this.CheckSubtype_UI(spriteUI, spriteName, tex2d);
+
+                        break;
+                    
+
                 }
             }
         }
 
-        private void CheckSubtype_Environment(Texture2D texture)
+        private void CheckSubtype_Environment(SpriteEnvironmentType spriteEnvironmentType, string key, Texture2D texture)
         {
-
+            switch (spriteEnvironmentType)
+            {
+                case SpriteEnvironmentType.Background:
+                    backgroundTextureData.Add(key, texture);
+                    break;
+                case SpriteEnvironmentType.Platform:
+                    platformTextureData.Add(key,texture);
+                    break;
+                case SpriteEnvironmentType.Prop:
+                    propTextureData.Add(key, texture);
+                    break;
+            }
         }
 
-        private void CheckSubtype(Enum enumType, Texture2D texture)
+        private void CheckSubtype_UI(SpriteUIType spriteUIType, string key, Texture2D texture)
         {
-
+            switch (spriteUIType)
+            {
+                case SpriteUIType.Ingame:
+                    ingameTextureData.Add(key,texture);
+                    break;
+                case SpriteUIType.Menu:
+                    menuTextureData.Add(key, texture);
+                    break;
+            }
         }
-
+      
     }
 }
