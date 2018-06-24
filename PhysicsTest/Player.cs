@@ -6,7 +6,7 @@ using System;
 
 namespace PhysicsTest
 {
-    class Player
+    public class Player
     {
         private Collision collision;
 
@@ -58,7 +58,7 @@ namespace PhysicsTest
 
         //life vars
         private int playerHP;
-        private int playerLife;
+        private int playerLife =2;
 
         private bool isTakingDamage;
         private bool _hasKey;
@@ -89,6 +89,11 @@ namespace PhysicsTest
             playerHP = 3;
 
             idleRight = true;
+        }
+
+        public Player(Rectangle _playerRect)
+        {
+
         }
 
         public Rectangle playerRect

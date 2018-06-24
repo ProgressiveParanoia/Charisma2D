@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PhysicsTest
 {
-    class Enemy
+    public class Enemy
     {
 
         private Rectangle _enemyRect;
@@ -38,6 +38,8 @@ namespace PhysicsTest
         private int MinLocationY;
 
         private float attackDelay;
+
+        private bool detectedPlayer;
         //end movement vars
 
         public Enemy(Rectangle _enemyRect, Texture2D _enemyTexture)
@@ -52,6 +54,19 @@ namespace PhysicsTest
 
             attackDelay = 0.5f;
    
+        }
+
+        public Enemy(Rectangle _enemyRect)
+        {
+            this._enemyRect = _enemyRect;
+
+            movingRight = true;
+
+            MaxLocationX = _enemyRect.X + 50;
+            MinLocationX = _enemyRect.X - 50;
+
+            attackDelay = 0.5f;
+
         }
 
         public Rectangle enemyRect
@@ -196,7 +211,7 @@ namespace PhysicsTest
             _animationDelay++;
         }
 
-        public void snowmanMovement(Player target)
+        public void SnowmanMovement(Player target)
         {
             int posX = _enemyRect.X;
             int posY = _enemyRect.Y;
@@ -242,6 +257,7 @@ namespace PhysicsTest
                         movingLeft = false;
                     }
 
+                    detectedPlayer = true;
                 }
                 else
                 {
@@ -251,6 +267,7 @@ namespace PhysicsTest
                         attackRight = false;
                         attackLeft = false;
                     }
+                    detectedPlayer = false;
                 }
             }
             else
@@ -259,6 +276,7 @@ namespace PhysicsTest
                 attackRight = false;
 
                 movingLeft = true;
+                detectedPlayer = false;
             }
 
             _enemyRect.Location = new Point(posX,posY);
@@ -272,6 +290,14 @@ namespace PhysicsTest
         public void Move(int x, int y)
         {
             _enemyRect.Location = new Point(x, y);
+        }
+
+        public bool DetectedPlayer
+        {
+            get
+            {
+                return detectedPlayer;
+            }
         }
     }
 }

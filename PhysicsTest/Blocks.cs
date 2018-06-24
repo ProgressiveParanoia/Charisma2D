@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PhysicsTest
 {
-    class Blocks
+    public class Blocks
     {
         private Rectangle _blockRect;
         private Texture2D _blockTexture;
