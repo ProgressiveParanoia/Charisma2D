@@ -6,6 +6,12 @@ using System;
 
 namespace PhysicsTest
 {
+    public enum HitDirection
+    {
+        Unidentified,
+        Left,
+        Right
+    }
     public class Player
     {
         private Collision collision;
@@ -47,6 +53,7 @@ namespace PhysicsTest
         private bool movingRight;
         private bool idleRight;
         private bool idleLeft;
+        private HitDirection hitDirection;
 
         private bool slideAndShoot;
         //end animation variables
@@ -58,9 +65,10 @@ namespace PhysicsTest
 
         //life vars
         private int playerHP;
-        private int playerLife =2;
+        private int playerLife =99;
 
         private bool isTakingDamage;
+        
         private bool _hasKey;
 
         public bool usingController;
@@ -85,15 +93,15 @@ namespace PhysicsTest
 
             _ammoCounter = 15;
 
-            playerLife = 3;
-            playerHP = 3;
+            playerLife = 99;
+            playerHP = 99;
 
             idleRight = true;
         }
 
         public Player(Rectangle _playerRect)
         {
-
+           hitDirection = HitDirection.Unidentified;
         }
 
         public Rectangle playerRect
@@ -364,6 +372,10 @@ namespace PhysicsTest
             _animationDelay++;
         }
 
+        public HitDirection HitDirection
+        {
+            get { return hitDirection; }
+        }
         public void move(bool devMode)
         {
             int posX = _playerRect.X;
@@ -738,10 +750,14 @@ namespace PhysicsTest
             if(obj.X < _playerRect.X)
             {
                 _velocity.X += 3;
+
+                hitDirection = HitDirection.Left;
             }else
                 if (obj.X > _playerRect.X)
             {
                 _velocity.X -= 3;
+
+                hitDirection = HitDirection.Right;
             }
 
             _velocity.Y -= 2;
