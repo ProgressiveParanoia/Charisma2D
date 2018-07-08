@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using ParanoidGames.Constants;
+using ParanoidGames.Charisma2D.Utilities.Constants;
 
 namespace ParanoidGames.Charisma2D.Utilities.IO
 {

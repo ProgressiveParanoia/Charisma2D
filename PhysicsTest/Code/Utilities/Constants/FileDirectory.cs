@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ParanoidGames.Constants
+namespace ParanoidGames.Charisma2D.Utilities.Constants
 {
     public static class FileDirectory
     {
