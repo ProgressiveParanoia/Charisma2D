@@ -1,17 +1,14 @@
-﻿using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ParanoidGames.Charisma2D.Utilities.IO;
-using ParanoidGames.Charisma2D;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using ParanoidGames.Charisma2D;
+using ParanoidGames.Charisma2D.Utilities.IO;
 
 namespace ParanoidGames.Charisma2D.Utilities
 {
-    class GameObjectManager : GameObject
+    class GameObjectManager : GameObject, IManager
     {
         #region singleton implementation
         private static GameObjectManager instance;
@@ -36,57 +33,61 @@ namespace ParanoidGames.Charisma2D.Utilities
             this.content = content;
             this.gameObjects = new List<GameObject>();
 
-            LevelBackground background = new LevelBackground();
+            LevelBackground background = new LevelBackground(new Rectangle(0,0,800,600));
             gameObjects.Add(background);
 
-            foreach (GameObject g in gameObjects)
-            {
-                LoadEnvironmentTextureData(g);
-            }
         }
 
-        private void LoadEnvironmentTextureData(GameObject g)
+        public void LoadEnvironmentTextureData()
         {
-            if (g is LevelBackground == false)
+            if(this.gameObjects == null)
+            {
                 return;
-
-            g.Initialize();
-
-            SpriteLoader spriteLoader = FileHandler.Instance.GetSpriteLoader;
-
-            foreach (KeyValuePair<string, Texture2D> backgroundData in spriteLoader.BackgroundTextureData)
-            {
-                if(backgroundData.Key == g.TextureName)
-                {
-                    g.Texture = backgroundData.Value;
-                    break;
-                }    
             }
 
-            foreach (KeyValuePair<string, Texture2D> pickupTextureData in spriteLoader.PickupTextureData)
+            foreach (GameObject g in this.gameObjects)
             {
-                if(pickupTextureData.Key == g.TextureName)
+                if (g is LevelBackground == false)
+                    continue;
+
+                g.Initialize();
+
+                SpriteLoader spriteLoader = FileHandler.Instance.GetSpriteLoader;
+
+                foreach (KeyValuePair<string, Texture2D> backgroundData in spriteLoader.BackgroundTextureData)
                 {
-                    g.Texture = pickupTextureData.Value;
-                    break;
+                    if (backgroundData.Key == g.TextureName)
+                    {
+                        g.Texture = backgroundData.Value;
+                        break;
+                    }
                 }
-            }
 
-            foreach (KeyValuePair<string, Texture2D> propTextureData in spriteLoader.PropTextureData)
-            {
-                if(propTextureData.Key == g.TextureName)
+                foreach (KeyValuePair<string, Texture2D> pickupTextureData in spriteLoader.PickupTextureData)
                 {
-                    g.Texture = propTextureData.Value;
-                    break;
+                    if (pickupTextureData.Key == g.TextureName)
+                    {
+                        g.Texture = pickupTextureData.Value;
+                        break;
+                    }
                 }
-            }
 
-            foreach (KeyValuePair<string, Texture2D> platformTextureData in spriteLoader.PlatformTextureData)
-            {
-                if(platformTextureData.Key == g.TextureName)
+                foreach (KeyValuePair<string, Texture2D> propTextureData in spriteLoader.PropTextureData)
                 {
-                    g.Texture = platformTextureData.Value;
-                    break;
+                    if (propTextureData.Key == g.TextureName)
+                    {
+                        g.Texture = propTextureData.Value;
+                        break;
+                    }
+                }
+
+                foreach (KeyValuePair<string, Texture2D> platformTextureData in spriteLoader.PlatformTextureData)
+                {
+                    if (platformTextureData.Key == g.TextureName)
+                    {
+                        g.Texture = platformTextureData.Value;
+                        break;
+                    }
                 }
             }
         }

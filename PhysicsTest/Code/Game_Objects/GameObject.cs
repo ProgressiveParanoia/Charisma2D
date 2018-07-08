@@ -12,12 +12,19 @@ namespace ParanoidGames.Charisma2D
         protected Texture2D texture;
         protected Color color;
 
+        public GameObject(Rectangle rect)
+        {
+            this.rect = rect;
+        }
+
+        public GameObject()
+        {
+
+        }
+
         public virtual void Initialize()
         {
-            this.textureName = string.Empty;
-            this.rect = Rectangle.Empty;
-            this.texture = null;
-            this.color = Color.White;
+            color = Color.White;
         }
 
         public virtual void Update(GameTime gameTime)
@@ -27,7 +34,7 @@ namespace ParanoidGames.Charisma2D
 
         public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            throw new NotImplementedException();
+           
         }
         #region properties 
         public Rectangle Rectangle
