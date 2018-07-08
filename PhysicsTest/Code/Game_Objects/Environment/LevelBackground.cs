@@ -12,16 +12,13 @@ namespace ParanoidGames.Charisma2D
 {
     class LevelBackground : GameObject
     {
-        public LevelBackground(Rectangle rect) : base(rect)
+        public LevelBackground(Rectangle rect, string name) : base(rect, name)
         {
-            this.rect = rect;
         }
 
         public override void Initialize()
         {
             base.Initialize();
-
-            this.textureName = "GameBackground";
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

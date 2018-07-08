@@ -25,67 +25,72 @@ namespace ParanoidGames.Charisma2D.Utilities
             }
         }
         #endregion
-        private List<GameObject> gameObjects;
-
+        /// <summary>
+        /// Keeps a dictionary of game object references for instantiation.
+        /// </summary>
+        private Dictionary<string, GameObject> gameObjectPrefabs = new Dictionary<string, GameObject>();
+        
         private ContentManager content;
+
         public void Initialize(ContentManager content)
         {
             this.content = content;
-            this.gameObjects = new List<GameObject>();
+            this.gameObjectPrefabs = new Dictionary<string, GameObject>();
 
-            LevelBackground background = new LevelBackground(new Rectangle(0,0,800,600));
-            gameObjects.Add(background);
+            //place game objects here...
+            LevelBackground background = new LevelBackground(new Rectangle(0,0,800,600), "GameBackground");
+            gameObjectPrefabs.Add(background.Name, background);
 
         }
 
         public void LoadEnvironmentTextureData()
         {
-            if(this.gameObjects == null)
+            if(this.gameObjectPrefabs == null)
             {
                 return;
             }
 
-            foreach (GameObject g in this.gameObjects)
+            foreach (KeyValuePair<string, GameObject> g in this.gameObjectPrefabs)
             {
-                if (g is LevelBackground == false)
+                if (g.Value is LevelBackground == false)
                     continue;
 
-                g.Initialize();
+                g.Value.Initialize();
 
                 SpriteLoader spriteLoader = FileHandler.Instance.GetSpriteLoader;
 
                 foreach (KeyValuePair<string, Texture2D> backgroundData in spriteLoader.BackgroundTextureData)
                 {
-                    if (backgroundData.Key == g.TextureName)
+                    if (backgroundData.Key == g.Value.Name)
                     {
-                        g.Texture = backgroundData.Value;
+                        g.Value.Texture = backgroundData.Value;
                         break;
                     }
                 }
 
                 foreach (KeyValuePair<string, Texture2D> pickupTextureData in spriteLoader.PickupTextureData)
                 {
-                    if (pickupTextureData.Key == g.TextureName)
+                    if (pickupTextureData.Key == g.Value.Name)
                     {
-                        g.Texture = pickupTextureData.Value;
+                        g.Value.Texture = pickupTextureData.Value;
                         break;
                     }
                 }
 
                 foreach (KeyValuePair<string, Texture2D> propTextureData in spriteLoader.PropTextureData)
                 {
-                    if (propTextureData.Key == g.TextureName)
+                    if (propTextureData.Key == g.Value.Name)
                     {
-                        g.Texture = propTextureData.Value;
+                        g.Value.Texture = propTextureData.Value;
                         break;
                     }
                 }
 
                 foreach (KeyValuePair<string, Texture2D> platformTextureData in spriteLoader.PlatformTextureData)
                 {
-                    if (platformTextureData.Key == g.TextureName)
+                    if (platformTextureData.Key == g.Value.Name)
                     {
-                        g.Texture = platformTextureData.Value;
+                        g.Value.Texture = platformTextureData.Value;
                         break;
                     }
                 }
@@ -96,9 +101,9 @@ namespace ParanoidGames.Charisma2D.Utilities
         {
             base.Update(gameTime);
 
-            foreach (GameObject g in gameObjects)
+            foreach (KeyValuePair<string, GameObject> g in gameObjectPrefabs)
             {
-                g.Update(gameTime);
+                g.Value.Update(gameTime);
             }
         }
 
@@ -106,9 +111,9 @@ namespace ParanoidGames.Charisma2D.Utilities
         {
             base.Draw(gameTime, spriteBatch);
 
-            foreach (GameObject g in gameObjects)
+            foreach (KeyValuePair<string, GameObject> g in gameObjectPrefabs)
             {
-                g.Draw(gameTime, spriteBatch);
+                g.Value.Draw(gameTime, spriteBatch);
             }
         }
     }

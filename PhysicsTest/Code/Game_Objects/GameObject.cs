@@ -7,14 +7,15 @@ namespace ParanoidGames.Charisma2D
 {
     class GameObject : IGameObject
     {
-        protected string textureName;
+        protected string name;
         protected Rectangle rect;
         protected Texture2D texture;
         protected Color color;
 
-        public GameObject(Rectangle rect)
+        public GameObject(Rectangle rect, string name)
         {
             this.rect = rect;
+            this.name = name;
         }
 
         public GameObject()
@@ -29,7 +30,7 @@ namespace ParanoidGames.Charisma2D
 
         public virtual void Update(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            
         }
 
         public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -65,11 +66,11 @@ namespace ParanoidGames.Charisma2D
             }
         }
 
-        public string TextureName
+        public string Name
         {
             get
             {
-                return this.textureName;
+                return this.name;
             }
         }
        
