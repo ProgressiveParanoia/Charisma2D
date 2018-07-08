@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ParanoidGames.Constants;
 
-namespace ParanoidGames.Utilities.IO
+namespace ParanoidGames.Charisma2D.Utilities.IO
 {
     /// <summary>
     /// Base class for  IO classes

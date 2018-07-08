@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using ParanoidGames.Constants;
 
-namespace ParanoidGames.Utilities.IO
+namespace ParanoidGames.Charisma2D.Utilities.IO
 {
     public enum SeasonType
     {
@@ -53,54 +53,89 @@ namespace ParanoidGames.Utilities.IO
         #endregion
 
         #region Environment texture data
+
         private Dictionary<string, Texture2D> platformTextureData = new Dictionary<string, Texture2D>();
         private Dictionary<string, Texture2D> propTextureData = new Dictionary<string, Texture2D>();
-        private Dictionary<string, Texture2D> PickupTextureData = new Dictionary<string, Texture2D>();
+        private Dictionary<string, Texture2D> pickupTextureData = new Dictionary<string, Texture2D>();
         private Dictionary<string, Texture2D> backgroundTextureData = new Dictionary<string, Texture2D>();
+
+
+        public Dictionary<string, Texture2D> PlatformTextureData
+        {
+            get
+            {
+                return platformTextureData;
+            }
+        }
+
+        public Dictionary<string, Texture2D> PropTextureData
+        {
+            get
+            {
+                return propTextureData;
+            }
+        }
+
+        public Dictionary<string, Texture2D> PickupTextureData
+        {
+            get
+            {
+                return pickupTextureData;
+            }
+        }
+
+        public Dictionary<string, Texture2D> BackgroundTextureData
+        {
+            get
+            {
+                return backgroundTextureData;
+            }
+        }
+
         #endregion
 
         #region Player texture data
         private Dictionary<string, Texture2D> playerTextureData = new Dictionary<string, Texture2D>();
         #endregion
 
+        //public void LoadSprites()
+        //{
+        //    if (content == null)
+        //    {
+        //        Console.WriteLine("[FILE HANDLER]No reference to content manager!");
+        //        return;
+        //    }
+
+        //    #region Load Platform Surfaces
+
+        //    string[] filePaths = GetFilePaths(FileDirectory.Environment_Platform);
+
+        //    if (filePaths == null)
+        //    {
+        //        Console.WriteLine("Null file path!");
+        //        return;
+        //    }
+
+        //    foreach (string path in filePaths)
+        //    {
+        //        string texPath = path.Replace(".xnb", "").Replace(FileDirectory.Content, "");
+
+        //        Texture2D tex2d = content.Load<Texture2D>(@texPath);
+
+        //        texPath = texPath.Replace(FileDirectory.Environment_Platform, "");
+
+        //        platformTextureData.Add(tex2d);
+        //    }
+        //    // CheckSpriteType()
+        //    foreach (Texture2D platTex2d in platformTextureData)
+        //    {
+        //        Console.WriteLine("KEY LIST:" + platTex2d);
+        //    }
+
+        //    #endregion
+        //}
+
         public void LoadSprites()
-        {
-            if(content == null)
-            {
-                Console.WriteLine("[FILE HANDLER]No reference to content manager!");
-                return;
-            }
-
-            #region Load Platform Surfaces
-
-            string[] filePaths = GetFilePaths(FileDirectory.Environment_Platform);
-
-            if(filePaths == null)
-            {
-                Console.WriteLine("Null file path!");
-                return;
-            }
-
-            //foreach (string path in filePaths)
-            //{
-            //    string texPath = path.Replace(".xnb", "").Replace(FileDirectory.Content, "");
-
-            //    Texture2D tex2d = content.Load<Texture2D>(@texPath);
-
-            //    texPath = texPath.Replace(FileDirectory.Environment_Platform, "");
-
-            //    platformTextureData.Add(tex2d);
-            //}
-            //// CheckSpriteType()
-            //foreach (Texture2D platTex2d in platformTextureData)
-            //{
-            //    Console.WriteLine("KEY LIST:"+platTex2d);
-            //}
-
-            #endregion
-        }
-
-        public void RecursiveLoadSprites()
         {
             ContentManager content = FileHandler.Instance.GetContentManager;
 
@@ -126,7 +161,6 @@ namespace ParanoidGames.Utilities.IO
                 this.CheckSpriteTypes(spritePath);
             }
 
-
             foreach (KeyValuePair<string,Texture2D> texThing in platformTextureData)
             {
                 Console.WriteLine("PLATFORM DATA:"+texThing);
@@ -135,6 +169,11 @@ namespace ParanoidGames.Utilities.IO
             foreach (KeyValuePair<string, Texture2D> texThing in menuTextureData)
             {
                 Console.WriteLine("menu data:" + texThing);
+            }
+
+            foreach (KeyValuePair<string, Texture2D> texThing in backgroundTextureData)
+            {
+                Console.WriteLine("Environment data:" + texThing);
             }
         }
 
@@ -196,8 +235,6 @@ namespace ParanoidGames.Utilities.IO
                         this.CheckSubtype_UI(spriteUI, spriteName, tex2d);
 
                         break;
-                    
-
                 }
             }
         }

@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 
-namespace ParanoidGames.Utilities.IO
+namespace ParanoidGames.Charisma2D.Utilities.IO
 {
     class FileHandler
     {
@@ -30,7 +30,7 @@ namespace ParanoidGames.Utilities.IO
 
         public void Initialize(ContentManager contentManager)
         {
-            this.contentManager = contentManager;
+            this.contentManager = contentManager; 
         }
 
         public SpriteLoader GetSpriteLoader
@@ -41,7 +41,7 @@ namespace ParanoidGames.Utilities.IO
                 {
                     this.spriteLoader = new SpriteLoader();
                 }
-
+               
                 return this.spriteLoader;
             }
         }
