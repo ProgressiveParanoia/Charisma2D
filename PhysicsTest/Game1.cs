@@ -6,7 +6,6 @@ using PhysicsTest.Code.Constants;
 using ParanoidGames.Charisma2D;
 using ParanoidGames.Charisma2D.Utilities;
 using ParanoidGames.Charisma2D.Utilities.IO;
-using ParanoidGames.Constants;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -232,7 +231,7 @@ namespace PhysicsTest
         {
             scores = new List<ScoreTracker>();
 
-            FileDirectory.Initialize();
+//            FileDirectory.Initialize();
 
             FileHandler.Instance.Initialize(this.Content);
           //  FileHandler.Instance.GetSpriteLoader.LoadSprites();
