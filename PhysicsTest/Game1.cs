@@ -3,7 +3,9 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PhysicsTest.Code.Constants;
-using ParanoidGames.Utilities.IO;
+using ParanoidGames.Charisma2D;
+using ParanoidGames.Charisma2D.Utilities;
+using ParanoidGames.Charisma2D.Utilities.IO;
 using ParanoidGames.Constants;
 using System;
 using System.Collections.Generic;
@@ -11,7 +13,6 @@ using System.IO;
 
 namespace PhysicsTest
 {
-
     public class Game1 : Game
     {
         ScoreTracker scoreTracker;
@@ -235,8 +236,9 @@ namespace PhysicsTest
 
             FileHandler.Instance.Initialize(this.Content);
           //  FileHandler.Instance.GetSpriteLoader.LoadSprites();
-            FileHandler.Instance.GetSpriteLoader.RecursiveLoadSprites();
-
+            FileHandler.Instance.GetSpriteLoader.LoadSprites();
+            GameObjectManager.Instance.Initialize(Content);
+            
             ingameBackground = Content.Load<Texture2D>(FilePath.BACKGROUND_NIGHTBACKGROUND);
 
             playerTex = Content.Load<Texture2D>(@"Elf_shotty_sheet");
