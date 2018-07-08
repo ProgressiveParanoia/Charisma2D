@@ -12,12 +12,6 @@ namespace ParanoidGames.Charisma2D
         protected Texture2D texture;
         protected Color color;
 
-        public GameObject(Rectangle rect, string name)
-        {
-            this.rect = rect;
-            this.name = name;
-        }
-
         public GameObject()
         {
 

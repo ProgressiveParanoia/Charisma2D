@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ParanoidGames.Charisma2D
 {
-    class LevelBackground : GameObject
+    class LevelBackground : Environment
     {
         public LevelBackground(Rectangle rect, string name) : base(rect, name)
         {

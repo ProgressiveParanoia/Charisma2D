@@ -38,6 +38,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Code\Game_Objects\Environment\Environment.cs" />
     <Compile Include="Code\Game_Objects\IManager.cs" />
     <Compile Include="Code\Utilities\Constants\FileDirectory.cs" />
     <Compile Include="Code\Utilities\Constants\FileNames.cs" />

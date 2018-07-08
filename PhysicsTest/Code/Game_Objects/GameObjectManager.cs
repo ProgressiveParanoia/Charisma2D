@@ -52,7 +52,7 @@ namespace ParanoidGames.Charisma2D.Utilities
 
             foreach (KeyValuePair<string, GameObject> g in this.gameObjectPrefabs)
             {
-                if (g.Value is LevelBackground == false)
+                if (g.Value is Environment == false)
                     continue;
 
                 g.Value.Initialize();
