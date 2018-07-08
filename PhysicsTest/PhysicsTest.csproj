@@ -42,7 +42,10 @@
     <Compile Include="Code\Constants\FileNames.cs" />
     <Compile Include="Code\Constants\FilePath.cs" />
     <Compile Include="Code\Game_Objects\Environment\Blocks.cs" />
+    <Compile Include="Code\Game_Objects\Environment\LevelBackground.cs" />
     <Compile Include="Code\Game_Objects\GameObject.cs" />
+    <Compile Include="Code\Game_Objects\GameObjectManager.cs" />
+    <Compile Include="Code\Game_Objects\IGameObject.cs" />
     <Compile Include="Code\Utilities\Camera.cs" />
     <Compile Include="Code\Utilities\Collision.cs" />
     <Compile Include="Code\Game_Objects\Enemy\Enemy.cs" />
@@ -54,6 +57,7 @@
     <Compile Include="Code\Utilities\Level_Editor\LevelEditor.cs" />
     <Compile Include="Code\Game_Objects\Environment\PickUp.cs" />
     <Compile Include="Code\Game_Objects\Player\Player.cs" />
+    <Compile Include="MainGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Code\Game_Objects\Sprites\Projectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -85,7 +89,7 @@
     <Content Include="Content\Sprites\Environment\Platform\Platform_Regular_Christmas.png" />
     <Content Include="Content\Sprites\Environment\Platform\Platform_Checkpoint_Christmas.png" />
     <Content Include="Content\Sprites\Environment\Platform\Platform_Exit_Christmas.png" />
-    <Content Include="Content\Sprites\Environment\GameBackground.png" />
+    <Content Include="Content\Sprites\Environment\Background\GameBackground.png" />
     <Content Include="Content\Sprites\Environment\Platform\Platform_Tall_Plat_Christmas.png" />
     <Content Include="Content\Sprites\Environment\Platform\Platform_Spikes_Christmas.png" />
     <Content Include="Content\Sprites\Environment\Platform\Platform_Slippery_Christmas.png" />
@@ -120,7 +124,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Code\Game_Objects\Player\Actions\" />
-    <Folder Include="Content\Sprites\Environment\Background\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

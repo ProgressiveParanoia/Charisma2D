@@ -470,7 +470,7 @@
 /processorParam:TextureFormat=Color
 /build:Sprites/Environment/Prop/Prop_Tree_Christmas.png
 
-#begin Sprites/Environment/GameBackground.png
+#begin Sprites/Environment/Background/GameBackground.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -480,5 +480,5 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Environment/GameBackground.png
+/build:Sprites/Environment/Background/GameBackground.png
 
