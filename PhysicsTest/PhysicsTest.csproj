@@ -38,9 +38,10 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Code\Constants\FileDirectory.cs" />
-    <Compile Include="Code\Constants\FileNames.cs" />
-    <Compile Include="Code\Constants\FilePath.cs" />
+    <Compile Include="Code\Game_Objects\IManager.cs" />
+    <Compile Include="Code\Utilities\Constants\FileDirectory.cs" />
+    <Compile Include="Code\Utilities\Constants\FileNames.cs" />
+    <Compile Include="Code\Utilities\Constants\FilePath.cs" />
     <Compile Include="Code\Game_Objects\Environment\Blocks.cs" />
     <Compile Include="Code\Game_Objects\Environment\LevelBackground.cs" />
     <Compile Include="Code\Game_Objects\GameObject.cs" />
