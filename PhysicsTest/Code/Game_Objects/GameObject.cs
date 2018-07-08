@@ -3,27 +3,50 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace ParanoidGames.Code
+namespace ParanoidGames.Charisma2D
 {
-    class GameObject
+    class GameObject : IGameObject
     {
-        internal Rectangle rect;
-        internal Texture2D texture;
-        internal Color color;
-       
+        protected string textureName;
+        protected Rectangle rect;
+        protected Texture2D texture;
+        protected Color color;
+
+        public virtual void Initialize()
+        {
+            this.textureName = string.Empty;
+            this.rect = Rectangle.Empty;
+            this.texture = null;
+            this.color = Color.White;
+        }
+
+        public virtual void Update(GameTime gameTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            throw new NotImplementedException();
+        }
+        #region properties 
         public Rectangle Rectangle
         {
             get
             {
-                return rect;
+                return this.rect;
             }
         }
 
         public Texture2D Texture
         {
+            protected internal set
+            {
+                this.texture = value;
+            }
             get
             {
-                return texture;
+                return this.texture;
             }
         }
 
@@ -31,7 +54,15 @@ namespace ParanoidGames.Code
         {
             get
             {
-                return color;
+                return this.color;
+            }
+        }
+
+        public string TextureName
+        {
+            get
+            {
+                return this.textureName;
             }
         }
        
@@ -39,13 +70,23 @@ namespace ParanoidGames.Code
         {
             get
             {
-                return rect.Location;
+                return this.rect.Location;
             }
 
-            internal set
+            protected set
             {
-                rect.Location = value;
+                this.rect.Location = value;
             }
         }
+
+        public bool SetActive
+        {
+            set { SetActive = value; }
+            get { return SetActive; }
+        }
+
+        #endregion
+
+
     }
 }
