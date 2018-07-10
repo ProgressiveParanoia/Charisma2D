@@ -56,12 +56,13 @@ namespace ParanoidGames.Charisma2D.Utilities
             #region manual addition of basic prefabs
             LevelBackground background = new LevelBackground(new Rectangle(0,0,800,600), "GameBackground");
             gameObjectPrefabs.Add(background.Name, background);
-            
-            Block RegularBlock = new Block(new Rectangle(400, 300, 200, 50),"Platform_Regular_Christmas",PlatformerBlockType.Regular);
-            gameObjectPrefabs.Add(RegularBlock.Name, RegularBlock);
 
             PlatformerPlayer player = new PlatformerPlayer(new Rectangle(450, 0, 32, 32), "LIFE");
             gameObjectPrefabs.Add(player.Name, player);
+
+            Block RegularBlock = new Block(new Rectangle(400, 300, 200, 50),"Platform_Regular_Christmas",PlatformerBlockType.Regular);
+            gameObjectPrefabs.Add(RegularBlock.Name, RegularBlock);
+
             #endregion
         }
 
@@ -139,6 +140,37 @@ namespace ParanoidGames.Charisma2D.Utilities
             //test collision
             foreach (KeyValuePair<string, GameObject> obj in gameObjectPrefabs)
             {
+                if(obj.Key == "Platform_Regular_Christmas")
+                {
+                    if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                    {
+                        obj.Value.Move(obj.Value.Position.X, obj.Value.Position.Y - 1);
+                    }
+                    else
+                     if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                    {
+                        obj.Value.Move(obj.Value.Position.X, obj.Value.Position.Y + 1);
+                    }
+
+                    if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                    {
+                        obj.Value.Move(obj.Value.Position.X + 1, obj.Value.Position.Y );
+                    }
+                    else
+                     if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                    {
+                        obj.Value.Move(obj.Value.Position.X - 1, obj.Value.Position.Y );
+                    }
+                }
+
+                if (obj.Key == "LIFE")
+                {
+                    if (obj.Value.Position.Y > 600)
+                    {
+                        obj.Value.Move(450, 0);
+                    }
+                }
+
                 CollisionManager.Instance.Update(gameTime, obj.Value);
             }
         }
