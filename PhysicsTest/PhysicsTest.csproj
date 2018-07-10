@@ -38,8 +38,15 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Code\Game_Objects\CollisionManager.cs" />
+    <Compile Include="Code\Game_Objects\Environment\Block\Block.cs" />
     <Compile Include="Code\Game_Objects\Environment\Environment.cs" />
+    <Compile Include="Code\Game_Objects\ICollider.cs" />
     <Compile Include="Code\Game_Objects\IManager.cs" />
+    <Compile Include="Code\Game_Objects\IPhysics.cs" />
+    <Compile Include="Code\Game_Objects\Player\PlatformerPlayer.cs" />
+    <Compile Include="Code\Game_Objects\Player\Player.cs" />
+    <Compile Include="Code\Game_Objects\RigidBody.cs" />
     <Compile Include="Code\Utilities\Constants\FileDirectory.cs" />
     <Compile Include="Code\Utilities\Constants\FileNames.cs" />
     <Compile Include="Code\Utilities\Constants\FilePath.cs" />
@@ -55,10 +62,11 @@
     <Compile Include="Code\Utilities\IO\FileHandler.cs" />
     <Compile Include="Code\Utilities\IO\Loader.cs" />
     <Compile Include="Code\Utilities\IO\SpriteLoader.cs" />
+    <Compile Include="Code\Utilities\Physics\RectangleCollider.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Code\Utilities\Level_Editor\LevelEditor.cs" />
     <Compile Include="Code\Game_Objects\Environment\PickUp.cs" />
-    <Compile Include="Code\Game_Objects\Player\Player.cs" />
+    <Compile Include="Code\Game_Objects\Player\Player_1.cs" />
     <Compile Include="MainGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Code\Game_Objects\Sprites\Projectile.cs" />

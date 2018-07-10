@@ -196,7 +196,7 @@ namespace PhysicsTest
             _animationDelay++;
         }
 
-        public void snowmanMovement(Player target)
+        public void snowmanMovement(Player_1 target)
         {
             int posX = _enemyRect.X;
             int posY = _enemyRect.Y;
