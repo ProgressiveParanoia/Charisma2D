@@ -31,7 +31,6 @@ namespace ParanoidGames.BadElf
             //Initialize the content of file directories
             FileHandler.Instance.Initialize(this.Content);
 
-
             //TODO: LEVEL DATA INITIALIZATION
 
             //Instantiate and initialize all game objects for future references
@@ -61,6 +60,8 @@ namespace ParanoidGames.BadElf
 
         protected override void Update(GameTime gameTime)
         {
+            GameObjectManager.Instance.Update(gameTime);
+
             base.Update(gameTime);
         }
 

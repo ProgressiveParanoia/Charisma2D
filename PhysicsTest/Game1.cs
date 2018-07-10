@@ -18,7 +18,7 @@ namespace PhysicsTest
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Player _player;
+        Player_1 _player;
         Camera cam;
 
         Blocks LevelEditor_RegularBlock;
@@ -61,7 +61,7 @@ namespace PhysicsTest
         Blocks[] playerHP;
         Blocks[] Buttons;
 
-        List<Player> playerList;
+        List<Player_1> playerList;
 
         List<Enemy> snowmenList;
         List<Enemy> penguinList;
@@ -314,7 +314,7 @@ namespace PhysicsTest
 
             sF = Content.Load<SpriteFont>(@"spriteFont");
             
-            _player = new Player(new Rectangle(0,0,64,64),playerTex,Color.White,new Point(Window.ClientBounds.Width,Window.ClientBounds.Height),HasEnabledControllers);
+            _player = new Player_1(new Rectangle(0,0,64,64),playerTex,Color.White,new Point(Window.ClientBounds.Width,Window.ClientBounds.Height),HasEnabledControllers);
             cam = new Camera(GraphicsDevice.Viewport);
 
             LevelEditor_RegularBlock = new Blocks(new Rectangle(0,0,200,50),blockTex);
@@ -352,7 +352,7 @@ namespace PhysicsTest
             Buttons = new Blocks[3];
 
             projectiles = new List<Projectile>();
-            playerList = new List<Player>();
+            playerList = new List<Player_1>();
 
             KeyList = new List<PickUp>();
             ammoPickUp = new List<PickUp>();
@@ -416,7 +416,7 @@ namespace PhysicsTest
             //player related methods
           //  Console.WriteLine("Shooting:"+GamePad.GetState(PlayerIndex.One).Buttons.LeftShoulder);
         //    Console.WriteLine("LEFT:"+GamePad.GetState(PlayerIndex.One).ThumbSticks.Left+"RIGHT:"+ GamePad.GetState(PlayerIndex.One).ThumbSticks.Right);
-            foreach (Player pl in playerList)
+            foreach (Player_1 pl in playerList)
             {
                 if (pl.PlayerLife != 0)
                 {
@@ -732,7 +732,7 @@ namespace PhysicsTest
                         break;
                     }
 
-                    foreach (Player pl in playerList)
+                    foreach (Player_1 pl in playerList)
                     {
                         if (p.projectileRect.Intersects(pl.playerRect) && pl.PlayerLife != 0)
                         {
@@ -1179,7 +1179,7 @@ namespace PhysicsTest
             {
                 spriteBatch.Draw(b.BlockTexture, b.BlockRect, Color.White);
             }
-                foreach (Player p in playerList)
+                foreach (Player_1 p in playerList)
                 {
                     if (p.PlayerLife != 0)
                     {
@@ -1257,7 +1257,7 @@ namespace PhysicsTest
 
             if (isPlaying) {
 
-                foreach (Player p in playerList)
+                foreach (Player_1 p in playerList)
                 {
 
                     for (int i = 0; i < p.PlayerHP; i++)
@@ -1609,7 +1609,7 @@ namespace PhysicsTest
                 int posY = int.Parse(PosData[1]);
 
                
-                Player P = new Player(new Rectangle(posX, posY, 64, 64), playerTex, Color.White, new Point(Window.ClientBounds.Width, Window.ClientBounds.Height),HasEnabledControllers);
+                Player_1 P = new Player_1(new Rectangle(posX, posY, 64, 64), playerTex, Color.White, new Point(Window.ClientBounds.Width, Window.ClientBounds.Height),HasEnabledControllers);
                 playerList.Add(P);
             }
 
@@ -2773,7 +2773,7 @@ namespace PhysicsTest
             }
             else
             {
-                foreach (Player p in playerList)
+                foreach (Player_1 p in playerList)
                 {
                         LevelEditor_RegularBlock.Move(p.playerRect.Location.X, p.playerRect.Location.Y);    
                         LevelEditor_SlipBlock.Move(p.playerRect.Location.X, p.playerRect.Location.Y);
