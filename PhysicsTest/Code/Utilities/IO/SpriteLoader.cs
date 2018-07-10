@@ -96,6 +96,14 @@ namespace ParanoidGames.Charisma2D.Utilities.IO
 
         #region Player texture data
         private Dictionary<string, Texture2D> playerTextureData = new Dictionary<string, Texture2D>();
+
+        public Dictionary<string, Texture2D> PlayerTextureData
+        {
+            get
+            {
+                return playerTextureData;
+            }
+        }
         #endregion
 
         //public void LoadSprites()
@@ -235,6 +243,11 @@ namespace ParanoidGames.Charisma2D.Utilities.IO
                         this.CheckSubtype_UI(spriteUI, spriteName, tex2d);
 
                         break;
+
+                    case SpriteType.Player:
+                        this.CheckPlayer(spriteName, tex2d);
+                        break;
+                        
                 }
             }
         }
@@ -267,6 +280,10 @@ namespace ParanoidGames.Charisma2D.Utilities.IO
                     break;
             }
         }
-      
+
+        private void CheckPlayer(string key, Texture2D texture)
+        {
+            playerTextureData.Add(key, texture);
+        }
     }
 }
