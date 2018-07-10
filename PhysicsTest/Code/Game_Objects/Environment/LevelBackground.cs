@@ -20,11 +20,5 @@ namespace ParanoidGames.Charisma2D
         {
             base.Initialize();
         }
-
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(texture, rect, color);
-            base.Draw(gameTime, spriteBatch);
-        }
     }
 }

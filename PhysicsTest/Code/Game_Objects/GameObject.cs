@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ParanoidGames.Charisma2D.Utilities;
 
 namespace ParanoidGames.Charisma2D
 {
@@ -17,9 +18,26 @@ namespace ParanoidGames.Charisma2D
 
         }
 
+        public GameObject(Rectangle rect, string name)
+        {
+            this.rect = rect;
+            this.name = name;
+        }
+
         public virtual void Initialize()
         {
             color = Color.White;
+
+            GameObjectManager.Instance.DrawAction += this.Draw;
+            GameObjectManager.Instance.UpdateAction += this.Update;
+            GameObjectManager.Instance.DestroyAction += this.Destroy;
+        }
+
+        public virtual void Destroy()
+        {
+            GameObjectManager.Instance.DrawAction -= this.Draw;
+            GameObjectManager.Instance.UpdateAction -= this.Update;
+            GameObjectManager.Instance.DestroyAction -= this.Destroy;
         }
 
         public virtual void Update(GameTime gameTime)
@@ -29,8 +47,9 @@ namespace ParanoidGames.Charisma2D
 
         public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-           
+            spriteBatch.Draw(texture, rect, color);
         }
+
         #region properties 
         public Rectangle Rectangle
         {
@@ -67,17 +86,12 @@ namespace ParanoidGames.Charisma2D
                 return this.name;
             }
         }
-       
+
         public Point Position
         {
             get
             {
                 return this.rect.Location;
-            }
-
-            protected set
-            {
-                this.rect.Location = value;
             }
         }
 
@@ -89,6 +103,13 @@ namespace ParanoidGames.Charisma2D
 
         #endregion
 
+        public virtual void Move(int x, int y)
+        {
+            this.rect.Location = new Point(x,y);
+        }
 
+        #region Level editor methods
+        
+        #endregion
     }
 }
